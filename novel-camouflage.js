@@ -6,7 +6,7 @@
 // @author       NiaoBlush
 // @license      MIT
 // @match        https://www.qidian.com/chapter/*
-// @require      https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js
+// @require      https://code.jquery.com/jquery-3.7.1.min.js
 // @grant        GM_addStyle
 // ==/UserScript==
 
