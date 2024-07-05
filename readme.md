@@ -4,6 +4,11 @@
 
 章节放置于上方标题栏，
 
-字数，发布时间等信息在左下角
+字数，发布时间等信息在左下角。
 
-![img](https://github.com/NiaoBlush/novel-disguise/blob/master/img/img1.png?raw=true)
+字体、登录等需要关闭脚本，在原版网页中完成修改等操作后再开启脚本。
+
+![1.jpg](https://s21.ax1x.com/2024/07/05/pkRJ9nH.jpg)
+
+
+![2.jpg](https://s21.ax1x.com/2024/07/05/pkRJYgU.jpg)
