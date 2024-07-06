@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         小说页面伪装|起点页面伪装
 // @namespace    https://github.com/NiaoBlush/novel-disguise
-// @version      0.1
+// @version      0.1.1
 // @description  将小说页面伪装成一个word文档
 // @author       NiaoBlush
 // @license      MIT
@@ -30,12 +30,16 @@
      * 起点
      */
     function qidian() {
-        $(`<div id='word-header'></div>`).insertBefore('#app');
+        $(`<div id='word-header'></div>`).addClass("img-fill-in").insertBefore('#app');
         $(`<div id='word-title'></div>`).insertBefore('#app');
         $(`<div id='word-footer'></div>`).insertAfter('#app');
         $('#navbar').parent().hide();
         GM_addStyle(`
 
+        .img-fill-in {
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+        }
         #left-container {
             display: none;
     
@@ -56,6 +60,8 @@
         }
         #reader{
             background-image: url(${body_img}) !important;
+            background-repeat: repeat-y;
+            background-size: 100% auto;
         }
         #app{
           margin-top: ${headerHeight}px;
