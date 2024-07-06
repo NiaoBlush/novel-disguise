@@ -1,11 +1,12 @@
 // ==UserScript==
-// @name         小说页面伪装|起点页面伪装
+// @name         小说页面伪装|起点页面伪装|番茄页面伪装
 // @namespace    https://github.com/NiaoBlush/novel-disguise
-// @version      0.1.1
+// @version      0.2.0
 // @description  将小说页面伪装成一个word文档
 // @author       NiaoBlush
 // @license      MIT
 // @match        https://www.qidian.com/chapter/*
+// @match        https://fanqienovel.com/reader/*
 // @require      https://libs.baidu.com/jquery/2.0.3/jquery.min.js
 // @grant        GM_addStyle
 // ==/UserScript==
@@ -26,13 +27,18 @@
     const headerHeight = 159;
     const footerHeight = 22;
 
+    // 图标
+    var link = $('<link rel="icon" type="image/x-icon">').attr('href', icon_img);
+    $('link[type="image/x-icon"]').remove();
+    $('head').append(link);
+
     /**
      * 起点
      */
     function qidian() {
         $(`<div id='word-header'></div>`).addClass("img-fill-in").insertBefore('#app');
         $(`<div id='word-title'></div>`).insertBefore('#app');
-        $(`<div id='word-footer'></div>`).insertAfter('#app');
+        $(`<div id='word-footer'></div>`).addClass("img-fill-in").insertAfter('#app');
         $('#navbar').parent().hide();
         GM_addStyle(`
 
@@ -117,7 +123,6 @@
         const titleEl = $('.chapter-wrapper h1.title');
         const title = titleEl.clone().children().remove().end().text();
         titleEl.hide();
-
         $('#word-title').text(title);
 
         const infoEl = titleEl.next();
@@ -133,11 +138,96 @@
             const admireBtnEl = $('._admireBtn_131ir_200');
             admireBtnEl.hide();
 
-            // 图标
-            var link = $('<link rel="icon" type="image/x-icon">').attr('href', icon_img);
-            $('link[type="image/x-icon"]').remove();
-            $('head').append(link);
         }, 2000);
+    }
+
+    /**
+     * 番茄
+     */
+    function fanqie(){
+        $(`<div id='word-header'></div>`).addClass("img-fill-in").insertBefore('#app');
+        $(`<div id='word-title'></div>`).insertBefore('#app');
+        $(`<div id='word-footer'></div>`).addClass("img-fill-in").insertAfter('#app');
+
+        GM_addStyle(`
+
+        .img-fill-in {
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+        }
+        .muye-reader {
+            background-image: url(${body_img}) !important;
+            background-repeat: repeat-y;
+            background-size: 100% auto;
+            padding-top: ${headerHeight}px;
+            padding-bottom: ${footerHeight}px;
+        }
+        .reader-toolbar {
+            display: none;
+        }
+        #word-header{
+          height: ${headerHeight}px;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          z-index: 1000;
+          background-image: url(${header_img});
+        }
+        #word-footer{
+          height: ${footerHeight}px;
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          z-index: 1000;
+          background-image: url(${footer_img});
+    
+          color: #262626;
+          padding-left:20px;
+          font-size: small;
+        }
+        
+        #word-footer span {
+            line-height: ${footerHeight}px;
+            
+        }
+        #word-footer > span{
+            margin-right: 10px;
+        }
+        
+        .muye-reader-box{
+          background-color: #FFF;
+          border-left-color: #c6c6c6;
+          border-right-color: #c6c6c6;
+          border-left-width: 1px;
+          border-right-width: 1px;
+        }
+        #word-title{
+          position: fixed;
+          top: 5px;
+          left: 0;
+          width: 100%;
+          z-index: 1001;
+          text-align: center;
+          color: #edffff;
+        }
+        .byte-btn {
+            background: #f6f6f6 !important;
+            color: rgba(0,0,0,.7) !important;
+        }
+        
+        `);
+
+        const titleEl = $('h1.muye-reader-title');
+        const title = titleEl.text();
+        titleEl.remove();
+        $('#word-title').text(title);
+
+        const infoEl = $('.muye-reader-subtitle');
+        infoEl.children().clone().appendTo('#word-footer');
+        infoEl.hide();
+
     }
 
     // main
@@ -145,6 +235,9 @@
     switch (currentHost) {
         case 'www.qidian.com':
             qidian();
+            break;
+        case 'fanqienovel.com':
+            fanqie();
             break;
     }
 })();
