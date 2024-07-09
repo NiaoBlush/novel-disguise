@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         小说页面伪装|起点页面伪装|番茄页面伪装
 // @namespace    https://github.com/NiaoBlush/novel-disguise
-// @version      0.2.0
+// @version      0.2.1
 // @description  将小说页面伪装成一个word文档
 // @author       NiaoBlush
 // @license      MIT
@@ -116,6 +116,12 @@
         }
         .chapter-end-qrcode{
           display:none;
+        }
+        .review-icon {
+          background: var(--surface-gray-100) !important;
+        }
+        .review-count {
+          color: var(--surface-gray-200) !important;
         }
         
         `);
