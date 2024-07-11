@@ -1,10 +1,12 @@
 // ==UserScript==
 // @name         小说页面伪装|起点页面伪装|番茄页面伪装
 // @namespace    https://github.com/NiaoBlush/novel-disguise
-// @version      0.2.1
-// @description  将小说页面伪装成一个word文档
+// @version      0.2.2
+// @description  将小说页面伪装成一个word文档，适用于起点小说、番茄小说
 // @author       NiaoBlush
 // @license      MIT
+// homepageURL   https://github.com/NiaoBlush/novel-disguise
+// @supportURL   https://github.com/NiaoBlush/novel-disguise/issues
 // @match        https://www.qidian.com/chapter/*
 // @match        https://fanqienovel.com/reader/*
 // @require      https://libs.baidu.com/jquery/2.0.3/jquery.min.js
@@ -26,6 +28,7 @@
     document.title = "文档1";
     const headerHeight = 159;
     const footerHeight = 22;
+    const readerHeight = window.innerHeight - 159 - 22;
 
     // 图标
     var link = $('<link rel="icon" type="image/x-icon">').attr('href', icon_img);
@@ -54,6 +57,7 @@
             //display: none;
             background-color: #FFF;
             margin-top: ${headerHeight}px;
+            height: ${readerHeight}px;
         }
         .tooltip-wrapper{
             display: none;
@@ -150,7 +154,7 @@
     /**
      * 番茄
      */
-    function fanqie(){
+    function fanqie() {
         $(`<div id='word-header'></div>`).addClass("img-fill-in").insertBefore('#app');
         $(`<div id='word-title'></div>`).insertBefore('#app');
         $(`<div id='word-footer'></div>`).addClass("img-fill-in").insertAfter('#app');
