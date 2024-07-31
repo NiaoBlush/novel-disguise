@@ -5,7 +5,7 @@ on:
     - cron: '0 15 * * *' # 每天北京时间08:00运行一次
   push:
     branches:
-      - main
+      - master
 
 jobs:
   scrape:
