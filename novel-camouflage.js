@@ -1,14 +1,15 @@
 // ==UserScript==
-// @name         小说页面伪装|起点页面伪装|番茄页面伪装
+// @name         小说页面伪装为Word|起点页面伪装|番茄页面伪装|笔趣阁页面伪装
 // @namespace    https://github.com/NiaoBlush/novel-disguise
 // @version      0.2.2
-// @description  将小说页面伪装成一个word文档，适用于起点小说、番茄小说
+// @description  将小说页面伪装成一个word文档，适用于起点小说、番茄小说、部分笔趣阁
 // @author       NiaoBlush
 // @license      MIT
 // homepageURL   https://github.com/NiaoBlush/novel-disguise
 // @supportURL   https://github.com/NiaoBlush/novel-disguise/issues
 // @match        https://www.qidian.com/chapter/*
 // @match        https://fanqienovel.com/reader/*
+// @include      /.*www\.biquge\.net\/\d+\/\d+\/\d+\.html/
 // @require      https://libs.baidu.com/jquery/2.0.3/jquery.min.js
 // @grant        GM_addStyle
 // ==/UserScript==
@@ -16,7 +17,7 @@
 
 (function () {
     'use strict';
-    console.log("started");
+    console.log("novel-disguise loaded");
     // alert("started")
     // alert($.fn.jquery)
 
@@ -25,15 +26,135 @@
     const footer_img = `data:image/png;base64,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`;
     const icon_img = `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAAGSUExURQAAAEGl7iJnxDSL3BdWuRZUtxJHoBA/kUGl7kGl7kGl7kGl7kGl7kGl7kGl7kGl7kGl7kOo8EGm7yJnxCJnxB9hwDGG2DqX4iJnxB5kwh9kwh5jwh5kwhhYuhdVuBRSthRPsxNMrRdVuBZUtxZTuhFClg87iBA+jxA/kRA/kRA/kRA/kRA/kRA/kRA/kRA/kRA/kRA/kUGm70Gl7jqX4zqW4jqY40Ci6x9lwh1iwR9kwC5/zjWO3zSN3iJmw0uCzS1txT53yUd+yyVmwkuAzB9gviRtwit80yt70x5iwZe24mOR05a04bXK6k6CzaS+5B9fvCt91Blev3Kb15Oy4KC747HH6ISn24Sm2hVVtyJpvyh30Bldv0h+y8XV7pWz4Iqr3MbV7VqGzBJQtBdVsxpdvxpdvilnwsfW7nid1lyIztPe8TRovxNOsRZSsBhavRlbvRpauztwxChhvSFbuj1twRhRtBNMrxhbvhhavhBIqhJIqhFFpBJFmxRMpg87hw86hw45hQ88ixA/kRA/kP///xKQTWAAAAAydFJOUwAAAAAAAAAABzA5LTbg7u3jQvgkLipl+eHt7PH+4e3s8f4kLipl+UL4NuDu7eMHMDktwGYuSAAAAAFiS0dEhRXXaucAAAAHdElNRQfoBwMJMTkA3/SEAAAAwklEQVQY02NgYGDk4OSCA24GoAAPLx8/FPAJMDAxMQsKGRkZGUMBg7CIqJi4iamZOUxAQlJKWsbC0sraxhYMGOzsHRydnF1c3dw9wIDB08vbx9fPP8At0B0MGIKCQ0LDwiMio6IhgCEmNi4+ITEpOSUVAhjS0jMys7JzcvPyIYChoLCouKS0rDyvohIMGGTl5BUUq6prausggEFJWUVVrb6hsam5BQwYWFjZ1DWaEQDoOXZNLW0dKNDWBQno6RvAgSEA5bRC+u10r/IAAAAldEVYdGRhdGU6Y3JlYXRlADIwMjQtMDctMDNUMDk6NDk6NTErMDA6MDAWBZ07AAAAJXRFWHRkYXRlOm1vZGlmeQAyMDI0LTA3LTAzVDA5OjQ5OjUxKzAwOjAwZ1glhwAAACh0RVh0ZGF0ZTp0aW1lc3RhbXAAMjAyNC0wNy0wM1QwOTo0OTo1NyswMDowMFOdMWIAAAAASUVORK5CYII=`;
 
-    document.title = "文档1";
     const headerHeight = 159;
     const footerHeight = 22;
-    const readerHeight = window.innerHeight - 159 - 22;
+    const readerHeight = window.innerHeight - headerHeight - footerHeight;
 
-    // 图标
-    var link = $('<link rel="icon" type="image/x-icon">').attr('href', icon_img);
-    $('link[type="image/x-icon"]').remove();
-    $('head').append(link);
+    const link_text_color = "rgba(0,0,0,.7)";
+    const link_bg_color = "#f6f6f6";
+    const link_front_color = "rgba(0,0,0,.7)";
+
+    function common() {
+        document.title = "文档1";
+
+        //公共样式
+        GM_addStyle(`
+        .img-fill-in {
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+        }
+        
+        #word-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            
+            display:flex;
+            flex-direction: column;
+        }
+        #word-header{
+            height: ${headerHeight}px;
+            width: 100%;
+            background-image: url(${header_img});
+        }
+        
+        #word-title{
+            position: fixed;
+            top: 5px;
+            left: 0;
+            width: 100%;
+            z-index: 9999;
+            text-align: center;
+            color: #edffff;
+            font-size: 12px;
+        }
+        
+        #word-footer{
+          height: ${footerHeight}px;
+          line-height: ${footerHeight}px;
+          width: 100%;
+          background-image: url(${footer_img});
+    
+          color: #262626;
+          padding-left:20px;
+          font-size: small;
+        }
+        
+        #word-body{
+            flex:1;
+            padding-left:25%;
+            padding-right:25%;
+            background-image: url(${body_img}) !important;
+            background-repeat: repeat-y;
+            background-size: 100% auto;
+            overflow-y: scroll;
+        }
+        
+        #word-content{
+            background-color: #FFF;
+            border-left-color: #c6c6c6;
+            border-right-color: #c6c6c6;
+            border-left-width: 1px;
+            border-right-width: 1px;
+            min-height: 100%;
+        }
+        
+        #word-content div{
+            background-color: #FFF !important;
+        }
+        
+        #word-right-content {
+            display: none;
+            position: fixed;
+            right: 0;
+            top: ${headerHeight}px;
+            height: ${readerHeight}px;
+            width: 400px;
+            
+            // overflow-y: scroll;
+        }
+        
+        
+        `);
+
+        // 图标
+        var link = $('<link rel="icon" type="image/x-icon">').attr('href', icon_img);
+        $('link[type="image/x-icon"]').remove();
+        $('head').append(link);
+
+        $('body').children().hide();
+
+        $(`<div id='word-page'>
+                <div id='word-title'></div>
+                <div id='word-header' class='img-fill-in'></div>
+                <div id='word-body'>
+                    <div id='word-content'></div> 
+                    <div id='word-right-content'></div>
+                </div>
+                <div id='word-footer' class='img-fill-in'>简体中文（中国大陆） 辅助功能：一切就绪</div>
+               
+           </div>`).appendTo("body");
+
+    }
+
+    function setContent($contentEl) {
+        $contentEl.show().appendTo("#word-content");
+    }
+
+    function setTitle(titleStr) {
+        $('#word-title').text(titleStr);
+    }
+
+    function setDetail(detailStr) {
+        $('#word-footer').text(detailStr);
+    }
+
+    function setRightContent($contentEl) {
+        $contentEl.appendTo($("#word-right-content"));
+    }
+
 
     /**
      * 起点
@@ -45,10 +166,6 @@
         $('#navbar').parent().hide();
         GM_addStyle(`
 
-        .img-fill-in {
-            background-repeat: no-repeat;
-            background-size: 100% 100%;
-        }
         #left-container {
             display: none;
     
@@ -151,6 +268,89 @@
         }, 2000);
     }
 
+    function qidian2() {
+
+        GM_addStyle(`
+        #right-container {
+            position: unset;
+            height:100%;
+        }
+        .chapter-end-qrcode{
+          display:none;
+        }
+        .review-icon {
+          background: var(--surface-gray-100) !important;
+        }
+        .review-count {
+          color: var(--surface-gray-200) !important;
+        }
+        .tooltip-wrapper{
+            display: none;
+        }
+        #side-sheet div, #side-sheet section{
+            background-color: #FFF;
+        }
+        #word-right-content{
+            // overflow-y: scroll;
+        }
+      
+        `);
+
+
+        //内容
+        const targetNode = document.querySelector('main.content');
+        const config = {childList: true};
+        const callback = function (mutationsList, observer) {
+            for (let mutation of mutationsList) {
+                if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                    setContent($(".chapter-wrapper"));
+                    setRightContent($("#right-container"));
+                    observeComments();
+                    observer.disconnect();
+                    break;
+                }
+            }
+        };
+        const observer = new MutationObserver(callback);
+        observer.observe(targetNode, config);
+
+
+        function observeComments() {
+            //本章说
+            const targetNode2 = document.querySelector('#side-sheet');
+            const callback2 = function (mutationsList, observer) {
+                for (let mutation of mutationsList) {
+                    if (mutation.type === 'childList') {
+                        if (mutation.addedNodes.length > 0) {
+                            $("#word-right-content").show();
+                        }
+                        if (mutation.removedNodes.length > 0) {
+                            $("#word-right-content").hide();
+                        }
+                    }
+                }
+            };
+            const observer2 = new MutationObserver(callback2);
+            observer2.observe(targetNode2, {childList: true});
+        }
+
+        const titleEl = $('.chapter-wrapper h1.title');
+        setTitle(titleEl.children().remove().end().text());
+
+        const detailText = titleEl.next().children()
+            .map(function () {
+                return $(this).text();
+            })
+            .get().join('  ');
+        setDetail(detailText);
+
+        setTimeout(function () {
+            // 打赏按钮
+            const admireBtnEl = $('._admireBtn_131ir_200');
+            admireBtnEl.hide();
+        }, 2000);
+    }
+
     /**
      * 番茄
      */
@@ -161,10 +361,6 @@
 
         GM_addStyle(`
 
-        .img-fill-in {
-            background-repeat: no-repeat;
-            background-size: 100% 100%;
-        }
         .muye-reader {
             background-image: url(${body_img}) !important;
             background-repeat: repeat-y;
@@ -240,14 +436,60 @@
 
     }
 
+    function fanqie2() {
+        GM_addStyle(`
+        .muye-reader-nav {
+            display: none !important;
+        }
+        
+        .byte-btn {
+            background:${link_bg_color} !important;
+            color: ${link_front_color} !important;
+        }
+        `);
+
+        setContent($(".muye-reader-inner"));
+    }
+
+    /**
+     * 笔趣阁
+     */
+    function biquge() {
+        // $("<div id='word-page'></div>").appendTo("body");
+        // $(`<div id='word-header'></div>`).addClass("img-fill-in").appendTo('#word-page');
+        // $(`<div id='word-body'></div>`).appendTo('#word-page');
+        // $(`<div id='word-footer'></div>`).addClass("img-fill-in").appendTo('#word-page');
+        // $(`<div id='word-content'></div>`).appendTo("#word-body");
+
+
+        // $(`<div id='word-header'></div>`).addClass("img-fill-in").insertBefore('#app');
+        // $(`<div id='word-title'></div>`).insertBefore('#app');
+        // $(`<div id='word-footer'></div>`).addClass("img-fill-in").insertAfter('#app');
+
+        GM_addStyle(`
+        
+        
+        `);
+
+        setContent($(".reader-main"));
+        setTitle($(".title").text());
+        // setDetail($(".layout-tit").text());
+    }
+
     // main
+    common();
     const currentHost = window.location.host;
+    console.log('currentHost', currentHost);
     switch (currentHost) {
         case 'www.qidian.com':
-            qidian();
+            // qidian();
+            qidian2();
             break;
         case 'fanqienovel.com':
-            fanqie();
+            fanqie2();
+            break;
+        case `www.biquge.net`:
+            biquge();
             break;
     }
 })();
