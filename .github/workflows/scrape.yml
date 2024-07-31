@@ -2,7 +2,7 @@ name: Scrape Install Count
 
 on:
   schedule:
-    - cron: '0 15 * * *' # 每天北京时间08:00运行一次
+    - cron: '0 0 * * *' # 每天北京时间08:00运行一次
   push:
     branches:
       - master
@@ -33,7 +33,7 @@ jobs:
 
       - name: Commit and push data
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
@@ -43,7 +43,7 @@ jobs:
 
       - name: Update README
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo '![Install Count](install_count.png)' > README.md
           git add README.md
