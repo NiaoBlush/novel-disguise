@@ -41,4 +41,3 @@ jobs:
           git commit -m "Update install count and graph"
           git push "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 
-    
