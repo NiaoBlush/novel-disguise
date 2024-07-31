@@ -2,7 +2,7 @@ name: Scrape Install Count
 
 on:
   schedule:
-    - cron: '0 0 * * *' # 每天北京时间08:00运行一次
+    - cron: '0 15 * * *' # 每天北京时间08:00运行一次
 
 jobs:
   scrape:
