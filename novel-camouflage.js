@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         小说页面伪装为Word|起点页面伪装|番茄页面伪装|笔趣阁页面伪装
 // @namespace    https://github.com/NiaoBlush/novel-disguise
-// @version      0.2.2
-// @description  将小说页面伪装成一个word文档，适用于起点小说、番茄小说、部分笔趣阁
+// @version      1.0.0
+// @description  将小说页面伪装成一个word文档，同时净化小说页面，去除不必要的元素。适用于起点小说、番茄小说、部分笔趣阁
 // @author       NiaoBlush
 // @license      MIT
 // homepageURL   https://github.com/NiaoBlush/novel-disguise
@@ -44,23 +44,27 @@
             background-size: 100% 100%;
         }
         
+        html{
+            overflow-y: hidden;
+        }
+        
         #word-page {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            
-            display:flex;
+            display: flex;
             flex-direction: column;
         }
-        #word-header{
+        
+        #word-header {
             height: ${headerHeight}px;
             width: 100%;
             background-image: url(${header_img});
         }
         
-        #word-title{
+        #word-title {
             position: fixed;
             top: 5px;
             left: 0;
@@ -71,28 +75,40 @@
             font-size: 12px;
         }
         
-        #word-footer{
-          height: ${footerHeight}px;
-          line-height: ${footerHeight}px;
-          width: 100%;
-          background-image: url(${footer_img});
-    
-          color: #262626;
-          padding-left:20px;
-          font-size: small;
+        #word-footer {
+            height: ${footerHeight}px;
+            line-height: ${footerHeight}px;
+            width: 100%;
+            background-image: url(${footer_img});
+            font-size: 13px;
+            color: #262626;
+            padding-left: 20px;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            align-content: center;
+            justify-content: flex-start;
+            align-items: center;
         }
         
-        #word-body{
-            flex:1;
-            padding-left:25%;
-            padding-right:25%;
+        #word-footer > * {
+            height: ${footerHeight}px;
+            line-height: ${footerHeight}px;
+            margin-right: 10px;
+            font-size: 13px;
+        }
+        
+        #word-body {
+            flex: 1;
+            padding-left: 25%;
+            padding-right: 25%;
             background-image: url(${body_img}) !important;
             background-repeat: repeat-y;
             background-size: 100% auto;
             overflow-y: scroll;
         }
         
-        #word-content{
+        #word-content {
             background-color: #FFF;
             border-left-color: #c6c6c6;
             border-right-color: #c6c6c6;
@@ -101,7 +117,7 @@
             min-height: 100%;
         }
         
-        #word-content div{
+        #word-content div {
             background-color: #FFF !important;
         }
         
@@ -112,8 +128,6 @@
             top: ${headerHeight}px;
             height: ${readerHeight}px;
             width: 400px;
-            
-            // overflow-y: scroll;
         }
         
         
@@ -133,25 +147,32 @@
                     <div id='word-content'></div> 
                     <div id='word-right-content'></div>
                 </div>
-                <div id='word-footer' class='img-fill-in'>简体中文（中国大陆） 辅助功能：一切就绪</div>
+                <div id='word-footer' class='img-fill-in'><span>简体中文（中国大陆）</span><span>辅助功能：一切就绪</span></div>
                
            </div>`).appendTo("body");
 
     }
 
-    function setContent($contentEl) {
+    function setWordContent($contentEl) {
         $contentEl.show().appendTo("#word-content");
     }
 
-    function setTitle(titleStr) {
+    function setWordTitle(titleStr) {
         $('#word-title').text(titleStr);
     }
 
-    function setDetail(detailStr) {
-        $('#word-footer').text(detailStr);
+    function setWordDetail(detail) {
+        const $footerEl = $('#word-footer');
+        $footerEl.text("");
+        if (typeof detail === "string") {
+            $footerEl.text(detailStr);
+        } else {
+            detail.appendTo($footerEl);
+        }
+
     }
 
-    function setRightContent($contentEl) {
+    function setWordRightContent($contentEl) {
         $contentEl.appendTo($("#word-right-content"));
     }
 
@@ -160,123 +181,14 @@
      * 起点
      */
     function qidian() {
-        $(`<div id='word-header'></div>`).addClass("img-fill-in").insertBefore('#app');
-        $(`<div id='word-title'></div>`).insertBefore('#app');
-        $(`<div id='word-footer'></div>`).addClass("img-fill-in").insertAfter('#app');
-        $('#navbar').parent().hide();
-        GM_addStyle(`
-
-        #left-container {
-            display: none;
-    
-        }
-        #right-container {
-            //display: none;
-            background-color: #FFF;
-            margin-top: ${headerHeight}px;
-            height: ${readerHeight}px;
-        }
-        .tooltip-wrapper{
-            display: none;
-        }
-        #r-breadcrumbs{
-            display: none;
-        }
-        .noise-bg {
-            background-image:none;
-        }
-        #reader{
-            background-image: url(${body_img}) !important;
-            background-repeat: repeat-y;
-            background-size: 100% auto;
-        }
-        #app{
-          margin-top: ${headerHeight}px;
-          margin-bottom: ${footerHeight}px;
-        }
-        #side-sheet div, #side-sheet section{
-            background-color: #FFF;
-        }
-        #word-header{
-          height: ${headerHeight}px;
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          z-index: 1000;
-          background-image: url(${header_img});
-        }
-        #word-footer{
-          height: ${footerHeight}px;
-          position: fixed;
-          bottom: 0;
-          left: 0;
-          width: 100%;
-          z-index: 1000;
-          background-image: url(${footer_img});
-    
-          color: #262626;
-          padding-left:20px;
-          font-size: small;
-        }
-        #reader-content{
-          background-color: #FFF;
-          border-left-color: #c6c6c6;
-          border-right-color: #c6c6c6;
-          border-left-width: 1px;
-          border-right-width: 1px;
-        }
-        #word-title{
-          position: fixed;
-          top: 5px;
-          left: 0;
-          width: 100%;
-          z-index: 1001;
-          text-align: center;
-          color: #edffff;
-        }
-        .chapter-end-qrcode{
-          display:none;
-        }
-        .review-icon {
-          background: var(--surface-gray-100) !important;
-        }
-        .review-count {
-          color: var(--surface-gray-200) !important;
-        }
-        
-        `);
-
-        const titleEl = $('.chapter-wrapper h1.title');
-        const title = titleEl.clone().children().remove().end().text();
-        titleEl.hide();
-        $('#word-title').text(title);
-
-        const infoEl = titleEl.next();
-        infoEl.children().clone().appendTo('#word-footer');
-        infoEl.hide();
-
-        const downloadEl = $('#r-authorSay :contains("下载App")');
-        downloadEl.hide();
-
-        //处理异步内容
-        setTimeout(function () {
-            // 打赏按钮
-            const admireBtnEl = $('._admireBtn_131ir_200');
-            admireBtnEl.hide();
-
-        }, 2000);
-    }
-
-    function qidian2() {
 
         GM_addStyle(`
         #right-container {
             position: unset;
-            height:100%;
+            height: 100%;
         }
-        .chapter-end-qrcode{
-          display:none;
+        .chapter-end-qrcode {
+          display: none;
         }
         .review-icon {
           background: var(--surface-gray-100) !important;
@@ -284,14 +196,11 @@
         .review-count {
           color: var(--surface-gray-200) !important;
         }
-        .tooltip-wrapper{
+        .tooltip-wrapper {
             display: none;
         }
-        #side-sheet div, #side-sheet section{
+        #side-sheet div, #side-sheet section {
             background-color: #FFF;
-        }
-        #word-right-content{
-            // overflow-y: scroll;
         }
       
         `);
@@ -303,8 +212,8 @@
         const callback = function (mutationsList, observer) {
             for (let mutation of mutationsList) {
                 if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-                    setContent($(".chapter-wrapper"));
-                    setRightContent($("#right-container"));
+                    setWordContent($(".chapter-wrapper"));
+                    setWordRightContent($("#right-container"));
                     observeComments();
                     observer.disconnect();
                     break;
@@ -335,14 +244,15 @@
         }
 
         const titleEl = $('.chapter-wrapper h1.title');
-        setTitle(titleEl.children().remove().end().text());
+        setWordTitle(titleEl.children().remove().end().text());
+        titleEl.hide();
 
-        const detailText = titleEl.next().children()
-            .map(function () {
-                return $(this).text();
-            })
-            .get().join('  ');
-        setDetail(detailText);
+        const infoEl = titleEl.next();
+        setWordDetail(infoEl.children());
+        infoEl.hide();
+
+        const downloadEl = $('#r-authorSay :contains("下载App")');
+        downloadEl.hide();
 
         setTimeout(function () {
             // 打赏按钮
@@ -355,125 +265,64 @@
      * 番茄
      */
     function fanqie() {
-        $(`<div id='word-header'></div>`).addClass("img-fill-in").insertBefore('#app');
-        $(`<div id='word-title'></div>`).insertBefore('#app');
-        $(`<div id='word-footer'></div>`).addClass("img-fill-in").insertAfter('#app');
-
-        GM_addStyle(`
-
-        .muye-reader {
-            background-image: url(${body_img}) !important;
-            background-repeat: repeat-y;
-            background-size: 100% auto;
-            padding-top: ${headerHeight}px;
-            padding-bottom: ${footerHeight}px;
-        }
-        .reader-toolbar {
-            display: none;
-        }
-        #word-header{
-          height: ${headerHeight}px;
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          z-index: 1000;
-          background-image: url(${header_img});
-        }
-        #word-footer{
-          height: ${footerHeight}px;
-          position: fixed;
-          bottom: 0;
-          left: 0;
-          width: 100%;
-          z-index: 1000;
-          background-image: url(${footer_img});
-    
-          color: #262626;
-          padding-left:20px;
-          font-size: small;
-        }
-        
-        #word-footer span {
-            line-height: ${footerHeight}px;
-            
-        }
-        #word-footer > span{
-            margin-right: 10px;
-        }
-        
-        .muye-reader-box{
-          background-color: #FFF;
-          border-left-color: #c6c6c6;
-          border-right-color: #c6c6c6;
-          border-left-width: 1px;
-          border-right-width: 1px;
-        }
-        #word-title{
-          position: fixed;
-          top: 5px;
-          left: 0;
-          width: 100%;
-          z-index: 1001;
-          text-align: center;
-          color: #edffff;
-        }
-        .byte-btn {
-            background: #f6f6f6 !important;
-            color: rgba(0,0,0,.7) !important;
-        }
-        
-        `);
-
-        const titleEl = $('h1.muye-reader-title');
-        const title = titleEl.text();
-        titleEl.remove();
-        $('#word-title').text(title);
-
-        const infoEl = $('.muye-reader-subtitle');
-        infoEl.children().clone().appendTo('#word-footer');
-        infoEl.hide();
-
-    }
-
-    function fanqie2() {
         GM_addStyle(`
         .muye-reader-nav {
             display: none !important;
         }
         
         .byte-btn {
-            background:${link_bg_color} !important;
+            background: ${link_bg_color} !important;
             color: ${link_front_color} !important;
         }
+        
+        .reader-toolbar {
+            display: none;
+        }
+        
+        .muye-reader-box {
+            padding-top: 50px;
+        }
+        
         `);
 
-        setContent($(".muye-reader-inner"));
+        setWordContent($(".muye-reader-inner"));
+        const titleEl = $('h1.muye-reader-title');
+        setWordTitle(titleEl.text());
+        titleEl.remove();
+
+        const infoEl = $('.muye-reader-subtitle');
+        setWordDetail(infoEl.children());
+        infoEl.hide();
     }
 
     /**
      * 笔趣阁
      */
-    function biquge() {
-        // $("<div id='word-page'></div>").appendTo("body");
-        // $(`<div id='word-header'></div>`).addClass("img-fill-in").appendTo('#word-page');
-        // $(`<div id='word-body'></div>`).appendTo('#word-page');
-        // $(`<div id='word-footer'></div>`).addClass("img-fill-in").appendTo('#word-page');
-        // $(`<div id='word-content'></div>`).appendTo("#word-body");
-
-
-        // $(`<div id='word-header'></div>`).addClass("img-fill-in").insertBefore('#app');
-        // $(`<div id='word-title'></div>`).insertBefore('#app');
-        // $(`<div id='word-footer'></div>`).addClass("img-fill-in").insertAfter('#app');
+    function biquge_net() {
 
         GM_addStyle(`
+        #read_tj {
+            display: none;
+        }
         
+        .section-opt {
+            border-top: none !important;
+            border-bottom: none !important;
+            color: ${link_text_color};
+        }
+        
+        .section-opt a {
+            color: ${link_text_color} !important;
+        }
+        
+        .reader-main > a {
+            display: none;
+        }
         
         `);
 
-        setContent($(".reader-main"));
-        setTitle($(".title").text());
-        // setDetail($(".layout-tit").text());
+        setWordContent($(".reader-main"));
+        setWordTitle($(".title").text());
     }
 
     // main
@@ -482,14 +331,13 @@
     console.log('currentHost', currentHost);
     switch (currentHost) {
         case 'www.qidian.com':
-            // qidian();
-            qidian2();
+            qidian();
             break;
         case 'fanqienovel.com':
-            fanqie2();
+            fanqie();
             break;
         case `www.biquge.net`:
-            biquge();
+            biquge_net();
             break;
     }
 })();
