@@ -3,9 +3,6 @@ name: Scrape Install Count
 on:
   schedule:
     - cron: '0 0 * * *' # 每天北京时间08:00运行一次
-  push:
-    branches:
-      - master
 
 jobs:
   scrape:
