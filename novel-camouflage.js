@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         小说页面伪装为Word|起点页面伪装|番茄页面伪装|笔趣阁页面伪装
+// @name         小说页面伪装为Word|小说页面精简|起点页面伪装|番茄页面伪装|笔趣阁页面伪装|书香小说页面伪装
 // @namespace    https://github.com/NiaoBlush/novel-disguise
-// @version      1.0.0
-// @description  将小说页面伪装成一个word文档，同时净化小说页面，去除不必要的元素。适用于起点小说、番茄小说、部分笔趣阁
+// @version      1.1.0
+// @description  将小说页面伪装成一个word文档，同时净化小说页面，去除不必要的元素。适用于起点小说、番茄小说、部分笔趣阁、书香小说
 // @author       NiaoBlush
 // @license      MIT
 // homepageURL   https://github.com/NiaoBlush/novel-disguise
@@ -10,6 +10,7 @@
 // @match        https://www.qidian.com/chapter/*
 // @match        https://fanqienovel.com/reader/*
 // @include      /.*www\.biquge\.net\/\d+\/\d+\/\d+\.html/
+// @include      /.*www\.xbiqugu\.net\/\d+\/\d+\/\d+\.html/
 // @require      https://libs.baidu.com/jquery/2.0.3/jquery.min.js
 // @grant        GM_addStyle
 // ==/UserScript==
@@ -73,6 +74,7 @@
             text-align: center;
             color: #edffff;
             font-size: 12px;
+            line-height: 22px;
         }
         
         #word-footer {
@@ -89,6 +91,7 @@
             align-content: center;
             justify-content: flex-start;
             align-items: center;
+            box-sizing: border-box;
         }
         
         #word-footer > * {
@@ -106,6 +109,8 @@
             background-repeat: repeat-y;
             background-size: 100% auto;
             overflow-y: scroll;
+            width: 100%;
+            box-sizing: border-box;
         }
         
         #word-content {
@@ -115,6 +120,7 @@
             border-left-width: 1px;
             border-right-width: 1px;
             min-height: 100%;
+            width: 100%;
         }
         
         #word-content div {
@@ -201,6 +207,9 @@
         }
         #side-sheet div, #side-sheet section {
             background-color: #FFF;
+        }
+        .chapter-date {
+            background: unset !important;
         }
       
         `);
@@ -325,6 +334,41 @@
         setWordTitle($(".title").text());
     }
 
+    /**
+     * 书香小说
+     */
+    function xbiqugu_net() {
+        GM_addStyle(`
+        .con_top, #listtj, #content_tip, .bookname>h1, #bdshare, #content>p {
+            display: none;
+        }
+        
+        .box_con {
+            border: none;
+        }
+        
+        .bookname {
+            border-bottom: none;
+            color: ${link_text_color};
+        }
+        
+        .bottem2 {
+            border-top: none;
+            color: ${link_text_color};
+        }
+        
+        .bottem1>a, .bottem2>a {
+            color: ${link_text_color};
+        }
+        
+        `)
+
+
+        setWordContent($(".box_con"));
+        setWordTitle($(".bookname h1").text())
+
+    }
+
     // main
     common();
     const currentHost = window.location.host;
@@ -338,6 +382,9 @@
             break;
         case `www.biquge.net`:
             biquge_net();
+            break;
+        case 'www.xbiqugu.net':
+            xbiqugu_net();
             break;
     }
 })();
