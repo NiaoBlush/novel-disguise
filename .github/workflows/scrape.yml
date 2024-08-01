@@ -37,7 +37,8 @@ jobs:
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
-          git add install_counts.json install_count.png
-          git commit -m "Update install count and graph"
+          if [ -f install_counts.json ]; then git add install_counts.json; fi
+          if [ -f install_count.png ]; then git add install_count.png; fi
+          git commit -m "Update install count and graph" || echo "No changes to commit"
           git push "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
 
