@@ -5,7 +5,7 @@
 // @description  将小说页面伪装成一个word文档，同时净化小说页面，去除不必要的元素。适用于起点小说、番茄小说、部分笔趣阁、书香小说
 // @author       NiaoBlush
 // @license      MIT
-// homepageURL   https://github.com/NiaoBlush/novel-disguise
+// @homepageURL  https://github.com/NiaoBlush/novel-disguise
 // @supportURL   https://github.com/NiaoBlush/novel-disguise/issues
 // @match        https://www.qidian.com/chapter/*
 // @match        https://fanqienovel.com/reader/*
