@@ -2,11 +2,13 @@
 
 将小说页面伪装成一个word文档，
 
-适用于起点小说、番茄小说、部分笔趣阁
+适用于起点小说、番茄小说、部分笔趣阁(众所周知好多站都叫笔趣阁)
 
 ___
 
 项目地址[在这里](https://github.com/NiaoBlush/novel-disguise)
+
+脚本安装地址[在这里](https://greasyfork.org/zh-CN/scripts/499657)
 
 需要**适配其他网站**欢迎在反馈区提出来
 
