@@ -38,4 +38,4 @@ plt.title('Install Count Over Time')
 # plt.legend()
 
 # 保存图表
-plt.savefig('install_counts.png')
+plt.savefig('install_count.png')
