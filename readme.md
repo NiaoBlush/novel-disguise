@@ -62,3 +62,7 @@ ___
 ![1.jpg](https://s21.ax1x.com/2024/07/05/pkRJ9nH.jpg)
 
 ![2.jpg](https://s21.ax1x.com/2024/07/05/pkRJYgU.jpg)
+
+### 安装数
+
+![install_count](https://github.com/NiaoBlush/novel-disguise/blob/master/install_count.png?raw=true)
