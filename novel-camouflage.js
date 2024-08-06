@@ -7,6 +7,7 @@
 // @license      MIT
 // @homepageURL  https://github.com/NiaoBlush/novel-disguise
 // @supportURL   https://github.com/NiaoBlush/novel-disguise/issues
+// @icon64       https://s21.ax1x.com/2024/08/06/pkxPf0S.png
 // @match        https://www.qidian.com/chapter/*
 // @match        https://fanqienovel.com/reader/*
 // @match        *://www.biquge.net/*/*/*.html
