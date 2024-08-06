@@ -9,8 +9,10 @@
 // @supportURL   https://github.com/NiaoBlush/novel-disguise/issues
 // @match        https://www.qidian.com/chapter/*
 // @match        https://fanqienovel.com/reader/*
-// @include      /.*www\.biquge\.net\/\d+\/\d+\/\d+\.html/
-// @include      /.*www\.xbiqugu\.net\/\d+\/\d+\/\d+\.html/
+// @match        *://www.biquge.net/*/*/*.html
+// @match        *://www.xbiqugu.net/*/*/*.html
+// @match        *://www.biquge.co/*/*.html
+// @match        *://www.52wx.com/*/*.html
 // @require      https://libs.baidu.com/jquery/2.0.3/jquery.min.js
 // @grant        GM_addStyle
 // ==/UserScript==
@@ -361,12 +363,38 @@
             color: ${link_text_color};
         }
         
-        `)
+        `);
 
 
         setWordContent($(".box_con"));
-        setWordTitle($(".bookname h1").text())
+        setWordTitle($(".bookname h1").text());
 
+    }
+
+    /**
+     * 笔趣阁
+     * biquge.co
+     */
+    function biquge_co() {
+        xbiqugu_net();
+        GM_addStyle(`
+        .lm {
+            display: none;
+        }
+        `);
+    }
+
+    /**
+     * 笔趣阁
+     * www.52wx.com
+     */
+    function www_52wx_com() {
+        GM_addStyle(`
+        .hotcmd-box {
+            display: none !important;
+        }
+        `);
+        biquge_net();
     }
 
     // main
@@ -386,5 +414,12 @@
         case 'www.xbiqugu.net':
             xbiqugu_net();
             break;
+        case 'www.biquge.co':
+            biquge_co();
+            break;
+        case 'www.52wx.com':
+            www_52wx_com();
+            break;
+
     }
 })();
