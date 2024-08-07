@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         小说页面伪装为Word|小说页面精简|起点页面伪装|番茄页面伪装|笔趣阁页面伪装|书香小说页面伪装
 // @namespace    https://github.com/NiaoBlush/novel-disguise
-// @version      1.2.0
+// @version      1.3.0
 // @description  将小说页面伪装成一个word文档，同时净化小说页面，去除不必要的元素。适用于起点小说、番茄小说、部分笔趣阁、书香小说
 // @author       NiaoBlush
 // @license      MIT
@@ -14,6 +14,7 @@
 // @match        *://www.xbiqugu.net/*/*/*.html
 // @match        *://www.biquge.co/*/*.html
 // @match        *://www.52wx.com/*/*.html
+// @match        https://www.3bqg.cc/book/*/*.html
 // @require      https://libs.baidu.com/jquery/2.0.3/jquery.min.js
 // @grant        GM_addStyle
 // ==/UserScript==
@@ -398,6 +399,30 @@
         biquge_net();
     }
 
+    /**
+     * 笔趣阁
+     * www.3bqg.cc
+     */
+    function www_3bqg_cc() {
+        GM_addStyle(`
+        #chaptercontent {
+            border-top: none !important;
+            border-bottom: none !important;
+        }
+        
+        .content > h1, .content > .link, .readinline {
+            display: none !important;
+        }
+        
+        .Readpage a{
+            color: ${link_text_color} !important;
+            text-shadow: none !important;
+        }
+        `);
+        setWordContent($(".content"));
+        setWordTitle($(".content>h1").text());
+    }
+
     // main
     common();
     const currentHost = window.location.host;
@@ -420,6 +445,9 @@
             break;
         case 'www.52wx.com':
             www_52wx_com();
+            break;
+        case 'www.3bqg.cc':
+            www_3bqg_cc();
             break;
 
     }
