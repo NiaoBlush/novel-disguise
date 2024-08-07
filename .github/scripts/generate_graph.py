@@ -7,35 +7,34 @@ from scipy.interpolate import make_interp_spline
 with open('install_counts.json') as f:
     data = json.load(f)
 
-dates = [entry['date'] for entry in data]
-install_counts = [entry['install_count'] for entry in data]
+# 提取日期、安装总量和检查更新数量
+dates = list(data.keys())
+installs = [data[date]['installs'] for date in dates]
+update_checks = [data[date]['update_checks'] for date in dates]
 
-# 将日期转换为数值
-date_nums = np.arange(len(dates))
+# 将日期转换为数字
+x = np.arange(len(dates))
 
-# 检查数据点数量
-if len(dates) >= 4:
-    # 平滑曲线
-    spl = make_interp_spline(date_nums, install_counts, k=3)  # k是平滑度，k=3是Cubic spline
-    date_nums_smooth = np.linspace(date_nums.min(), date_nums.max(), 500)
-    install_counts_smooth = spl(date_nums_smooth)
+# 创建平滑曲线
+if len(dates) > 3:  # 确保数据点足够多进行平滑处理
+    x_smooth = np.linspace(x.min(), x.max(), 300)
+    installs_smooth = make_interp_spline(x, installs)(x_smooth)
+    update_checks_smooth = make_interp_spline(x, update_checks)(x_smooth)
 else:
-    date_nums_smooth = date_nums
-    install_counts_smooth = install_counts
-
-# 计算标签间隔
-max_labels = 10  # 可以根据需要调整最大标签数
-label_interval = max(1, len(dates) // max_labels)
+    x_smooth = x
+    installs_smooth = installs
+    update_checks_smooth = update_checks
 
 # 绘制图表
 plt.figure(figsize=(10, 6))
-plt.plot(date_nums_smooth, install_counts_smooth, linestyle='-', label='Install Count')
-plt.scatter(date_nums, install_counts, label='Data Points')
-plt.xticks(ticks=date_nums[::label_interval], labels=[dates[i] for i in range(len(dates)) if i % label_interval == 0], rotation=45)
+plt.plot(x_smooth, installs_smooth, marker='o', linestyle='-', label='Installs')
+plt.plot(x_smooth, update_checks_smooth, marker='x', linestyle='--', label='Update Checks')
 plt.xlabel('Date')
-plt.ylabel('Install Count')
-plt.title('Install Count Over Time')
-# plt.legend()
+plt.ylabel('Count')
+plt.title('Daily Installs and Update Checks')
+plt.xticks(ticks=x, labels=dates, rotation=45)
+plt.legend()
+plt.grid(True)
 
 # 保存图表
 plt.savefig('install_count.png')
