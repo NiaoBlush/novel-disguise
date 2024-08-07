@@ -17,6 +17,7 @@
 // @match        https://www.3bqg.cc/book/*/*.html
 // @match        https://www.bigee.cc/book/*/*.html
 // @match        https://www.beqege.cc/*/*.html
+// @match        https://www.biqukun.com/*/*/*.html
 // @require      https://libs.baidu.com/jquery/2.0.3/jquery.min.js
 // @grant        GM_addStyle
 // ==/UserScript==
@@ -443,7 +444,7 @@
             border: none !important;
         }
         
-        .read-novel-link, #device, .con_top, .bookname, #test1{
+        .read-novel-link, #device, .con_top, .bookname>h1, #test1{
             display: none !important;
         }
         
@@ -458,6 +459,23 @@
         `);
         setWordContent($(".box_con"));
         setWordTitle($(".bookname>h1").text());
+    }
+
+    /**
+     * 笔书网
+     * biqukun.com
+     */
+    function www_biqukun_com() {
+        www_beqege_cc()
+        GM_addStyle(`
+        .lm {
+            display: none !important;
+        }
+        
+        .bookname {
+            border-bottom: none !important;
+        }
+        `);
     }
 
     // main
@@ -491,6 +509,9 @@
             break;
         case 'www.beqege.cc':
             www_beqege_cc();
+            break;
+        case 'www.biqukun.com':
+            www_biqukun_com();
             break;
     }
 })();
