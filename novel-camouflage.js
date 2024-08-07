@@ -15,6 +15,7 @@
 // @match        *://www.biquge.co/*/*.html
 // @match        *://www.52wx.com/*/*.html
 // @match        https://www.3bqg.cc/book/*/*.html
+// @match        https://www.bigee.cc/book/*/*.html
 // @require      https://libs.baidu.com/jquery/2.0.3/jquery.min.js
 // @grant        GM_addStyle
 // ==/UserScript==
@@ -423,6 +424,14 @@
         setWordTitle($(".content>h1").text());
     }
 
+    /**
+     * 笔趣阁
+     * www.bigee.cc
+     */
+    function www_bigee_cc() {
+        www_3bqg_cc();
+    }
+
     // main
     common();
     const currentHost = window.location.host;
@@ -448,6 +457,9 @@
             break;
         case 'www.3bqg.cc':
             www_3bqg_cc();
+            break;
+        case 'www.bigee.cc':
+            www_bigee_cc();
             break;
 
     }
