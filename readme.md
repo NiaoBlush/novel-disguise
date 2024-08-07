@@ -2,11 +2,14 @@
 
 ![logo](https://s21.ax1x.com/2024/08/06/pkxPf0S.png)
 
-将小说页面伪装成一个word文档，
+将小说页面伪装成一个Word文档，同时净化小说页面，去除不必要的元素。
+
+___
 
 适用于起点小说、番茄小说、部分笔趣阁(众所周知好多站都叫笔趣阁)等
 
-目前已适配：起点|番茄|biquge.net|xbiqugu.net|biquge.co|52wx.com|3bqg.cc|bigee.cc|beqege.cc|biqukun.com
+目前已适配：起点 | 番茄 | biquge.net | xbiqugu.net | biquge.co | 52wx.com | 3bqg.cc | bigee.cc | 
+beqege.cc | biqukun.com | biquge.tw
 
 ___
 
@@ -61,12 +64,12 @@ ___
 
 字体、登录等需要关闭脚本，在原版网页中完成修改等操作后再开启脚本。
 
-### 截图
+## 截图
 
 ![1.jpg](https://s21.ax1x.com/2024/07/05/pkRJ9nH.jpg)
 
 ![2.jpg](https://s21.ax1x.com/2024/07/05/pkRJYgU.jpg)
 
-### 安装数
+## 安装数
 
 ![install_count](https://github.com/NiaoBlush/novel-disguise/blob/master/install_count.png?raw=true)

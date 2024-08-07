@@ -18,6 +18,7 @@
 // @match        https://www.bigee.cc/book/*/*.html
 // @match        https://www.beqege.cc/*/*.html
 // @match        https://www.biqukun.com/*/*/*.html
+// @match        https://www.biquge.tw/book/*/*.html
 // @require      https://libs.baidu.com/jquery/2.0.3/jquery.min.js
 // @grant        GM_addStyle
 // ==/UserScript==
@@ -466,7 +467,7 @@
      * biqukun.com
      */
     function www_biqukun_com() {
-        www_beqege_cc()
+        www_beqege_cc();
         GM_addStyle(`
         .lm {
             display: none !important;
@@ -476,6 +477,29 @@
             border-bottom: none !important;
         }
         `);
+    }
+
+    /**
+     * 笔趣阁
+     * biquge.tw
+     */
+    function www_biquge_tw() {
+        GM_addStyle(`
+        #readSet, .book>h1, .chase-book-btn {
+            display: none !important;
+        }
+        
+        .read-page, .read-page a {
+            border-top: none !important;
+            border-bottom: none !important;
+            border-left: none !important;
+            border-right: none !important;
+        }
+        
+        `)
+
+        setWordTitle($(".book>h1").text());
+        setWordContent($(".book"))
     }
 
     // main
@@ -512,6 +536,9 @@
             break;
         case 'www.biqukun.com':
             www_biqukun_com();
+            break;
+        case 'www.biquge.tw':
+            www_biquge_tw();
             break;
     }
 })();
