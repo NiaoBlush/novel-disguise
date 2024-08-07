@@ -2,7 +2,6 @@ import json
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.interpolate import make_interp_spline
-import subprocess
 import matplotlib.font_manager as fm
 
 # 设置字体路径
@@ -11,23 +10,9 @@ font_prop = fm.FontProperties(fname=font_path)
 plt.rcParams['font.sans-serif'] = ['Noto Sans CJK JP']
 plt.rcParams['axes.unicode_minus'] = False  # 正常显示负号
 
-# 获取文件的最后提交日期
-def get_file_last_commit_date(file_path):
-    result = subprocess.run(
-        ['git', 'log', '-1', '--format=%cd', '--', file_path],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True
-    )
-    return result.stdout.strip()
-
-print(get_file_last_commit_date('install_counts.json'))
-
 # 加载数据
 with open('install_counts.json') as f:
     data = json.load(f)
-
-
 
 # 提取日期和数据
 dates = list(data.keys())
