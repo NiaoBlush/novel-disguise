@@ -16,6 +16,7 @@
 // @match        *://www.52wx.com/*/*.html
 // @match        https://www.3bqg.cc/book/*/*.html
 // @match        https://www.bigee.cc/book/*/*.html
+// @match        https://www.beqege.cc/*/*.html
 // @require      https://libs.baidu.com/jquery/2.0.3/jquery.min.js
 // @grant        GM_addStyle
 // ==/UserScript==
@@ -432,6 +433,33 @@
         www_3bqg_cc();
     }
 
+    /**
+     * 笔趣阁
+     * beqege.cc
+     */
+    function www_beqege_cc() {
+        GM_addStyle(`
+        .box_con {
+            border: none !important;
+        }
+        
+        .read-novel-link, #device, .con_top, .bookname, #test1{
+            display: none !important;
+        }
+        
+        .bottem1, .bottem2 {
+            border-top: none !important;
+            border-bottom: none !important;
+        }
+        
+        .bottem1 a, .bottem2 a {
+            color: ${link_text_color} !important;
+        }
+        `);
+        setWordContent($(".box_con"));
+        setWordTitle($(".bookname>h1").text());
+    }
+
     // main
     common();
     const currentHost = window.location.host;
@@ -461,6 +489,8 @@
         case 'www.bigee.cc':
             www_bigee_cc();
             break;
-
+        case 'www.beqege.cc':
+            www_beqege_cc();
+            break;
     }
 })();
