@@ -30,8 +30,8 @@ label_interval = max(1, len(dates) // max_labels)
 
 # 绘制图表
 plt.figure(figsize=(10, 6))
-plt.plot(x, cumulative_installs, marker='o', linestyle='-', label='累计安装量', fontproperties=font_prop)
-plt.plot(x, update_checks, marker='o', linestyle='-', label='检查更新次数', fontproperties=font_prop)
+plt.plot(x, cumulative_installs, marker='', linestyle='-', label='累计安装量')
+plt.plot(x, update_checks, marker='', linestyle='-', label='检查更新次数')
 plt.xlabel('日期', fontproperties=font_prop)
 plt.ylabel('数量', fontproperties=font_prop)
 plt.title('每日累计安装量和检查更新次数', fontproperties=font_prop)
