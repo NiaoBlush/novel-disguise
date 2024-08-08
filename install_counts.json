@@ -136,7 +136,11 @@
         "update_checks": 35
     },
     "2024-08-07": {
-        "installs": 7,
+        "installs": 9,
         "update_checks": 31
+    },
+    "2024-08-08": {
+        "installs": 5,
+        "update_checks": 43
     }
 }
