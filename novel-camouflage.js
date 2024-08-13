@@ -388,6 +388,10 @@
             color: ${link_text_color};
         }
         
+        .box_con > table {
+            display: none !important;
+        }
+        
         `);
 
 
@@ -494,6 +498,10 @@
         
         .bookname {
             border-bottom: none !important;
+        }
+        
+        .box_con > table {
+            display: none !important;
         }
         `);
     }
