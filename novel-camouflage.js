@@ -214,26 +214,45 @@
         .chapter-date {
             background: unset !important;
         }
+        button {
+            background-color: ${link_bg_color} !important;
+            color: ${link_text_color} !important;
+        }
+        button > span {
+            color: ${link_text_color} !important;
+        }
+        #page-ops {
+            // display: none !important;
+        }
       
         `);
 
-
         //内容
-        const targetNode = document.querySelector('main.content');
-        const config = {childList: true};
-        const callback = function (mutationsList, observer) {
-            for (let mutation of mutationsList) {
-                if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-                    setWordContent($(".chapter-wrapper"));
-                    setWordRightContent($("#right-container"));
-                    observeComments();
-                    observer.disconnect();
-                    break;
-                }
+        const scriptContent = $('#vite-plugin-ssr_pageContext').html();
+        if (scriptContent && scriptContent.includes('"freeStatus":0')) {
+            setWordContent($(".chapter-wrapper"));
+        } else {
+            if (!$('main.content').hasClass('lock-mask')) {
+
+                const targetNode = document.querySelector('main.content');
+                const config = {childList: true};
+                const callback = function (mutationsList, observer) {
+                    for (let mutation of mutationsList) {
+                        if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                            setWordContent($(".chapter-wrapper"));
+                            setWordRightContent($("#right-container"));
+                            observeComments();
+                            observer.disconnect();
+                            break;
+                        }
+                    }
+                };
+                const observer = new MutationObserver(callback);
+                observer.observe(targetNode, config);
+            } else {
+                setWordContent($(".chapter-wrapper"));
             }
-        };
-        const observer = new MutationObserver(callback);
-        observer.observe(targetNode, config);
+        }
 
 
         function observeComments() {
