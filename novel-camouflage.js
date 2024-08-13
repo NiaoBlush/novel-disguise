@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         小说页面伪装为Word|小说页面精简|起点页面伪装|番茄页面伪装|笔趣阁页面伪装|书香小说页面伪装
 // @namespace    https://github.com/NiaoBlush/novel-disguise
-// @version      1.4.0
+// @version      1.4.1
 // @description  将小说页面伪装成一个word文档，同时净化小说页面，去除不必要的元素。适用于起点小说、番茄小说、部分笔趣阁、书香小说
 // @author       NiaoBlush
 // @license      MIT
@@ -55,6 +55,7 @@
         
         html{
             overflow-y: hidden;
+            color-scheme: normal !important;
         }
         
         #word-page {
@@ -131,6 +132,10 @@
             width: 100%;
         }
         
+        #word-content p {
+            color: black;
+        }
+        
         #word-content div {
             background-color: #FFF !important;
         }
@@ -169,6 +174,10 @@
 
     function setWordContent($contentEl) {
         $contentEl.show().appendTo("#word-content");
+    }
+
+    function clearWordContent() {
+        $('#word-content').empty();
     }
 
     function setWordTitle(titleStr) {
@@ -236,6 +245,13 @@
         const scriptContent = $('#vite-plugin-ssr_pageContext').html();
         if (scriptContent && scriptContent.includes('"freeStatus":0')) {
             setWordContent($(".chapter-wrapper"));
+            setTimeout(function () {
+                clearWordContent();
+                setWordContent($(".chapter-wrapper"));
+                setWordRightContent($("#right-container"));
+                observeComments();
+                setInfo();
+            }, 2000);
         } else {
             if (!$('main.content').hasClass('lock-mask')) {
 
@@ -247,6 +263,7 @@
                             setWordContent($(".chapter-wrapper"));
                             setWordRightContent($("#right-container"));
                             observeComments();
+                            setInfo();
                             observer.disconnect();
                             break;
                         }
@@ -258,7 +275,7 @@
                 setWordContent($(".chapter-wrapper"));
             }
         }
-
+        setInfo();
 
         function observeComments() {
             //本章说
@@ -279,22 +296,28 @@
             observer2.observe(targetNode2, {childList: true});
         }
 
-        const titleEl = $('.chapter-wrapper h1.title');
-        setWordTitle(titleEl.children().remove().end().text());
-        titleEl.hide();
+        function setInfo() {
+            const titleEl = $('.chapter-wrapper h1.title');
+            setWordTitle(titleEl.children().remove().end().text());
+            titleEl.hide();
 
-        const infoEl = titleEl.next();
-        setWordDetail(infoEl.children());
-        infoEl.hide();
+            const infoEl = titleEl.next();
+            setWordDetail(infoEl.children());
+            infoEl.hide();
 
-        const downloadEl = $('#r-authorSay :contains("下载App")');
-        downloadEl.hide();
+            const downloadEl = $('#r-authorSay :contains("下载App")');
+            downloadEl.hide();
+        }
+
 
         setTimeout(function () {
             // 打赏按钮
             const admireBtnEl = $('._admireBtn_131ir_200');
             admireBtnEl.hide();
+
+            $('body').attr('data-theme', 'beige');
         }, 2000);
+
     }
 
     /**
@@ -523,10 +546,10 @@
             border-right: none !important;
         }
         
-        `)
+        `);
 
         setWordTitle($(".book>h1").text());
-        setWordContent($(".book"))
+        setWordContent($(".book"));
     }
 
     // main
