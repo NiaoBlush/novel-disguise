@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         小说页面伪装为Word|小说页面精简|起点页面伪装|番茄页面伪装|笔趣阁页面伪装|书香小说页面伪装
 // @namespace    https://github.com/NiaoBlush/novel-disguise
-// @version      1.2.0
+// @version      1.3.0
 // @description  将小说页面伪装成一个word文档，同时净化小说页面，去除不必要的元素。适用于起点小说、番茄小说、部分笔趣阁、书香小说
 // @author       NiaoBlush
 // @license      MIT
@@ -14,6 +14,11 @@
 // @match        *://www.xbiqugu.net/*/*/*.html
 // @match        *://www.biquge.co/*/*.html
 // @match        *://www.52wx.com/*/*.html
+// @match        https://www.3bqg.cc/book/*/*.html
+// @match        https://www.bigee.cc/book/*/*.html
+// @match        https://www.beqege.cc/*/*.html
+// @match        https://www.biqukun.com/*/*/*.html
+// @match        https://www.biquge.tw/book/*/*.html
 // @require      https://libs.baidu.com/jquery/2.0.3/jquery.min.js
 // @grant        GM_addStyle
 // ==/UserScript==
@@ -417,6 +422,105 @@
         biquge_net();
     }
 
+    /**
+     * 笔趣阁
+     * www.3bqg.cc
+     */
+    function www_3bqg_cc() {
+        GM_addStyle(`
+        #chaptercontent {
+            border-top: none !important;
+            border-bottom: none !important;
+        }
+        
+        .content > h1, .content > .link, .readinline {
+            display: none !important;
+        }
+        
+        .Readpage a{
+            color: ${link_text_color} !important;
+            text-shadow: none !important;
+        }
+        `);
+        setWordContent($(".content"));
+        setWordTitle($(".content>h1").text());
+    }
+
+    /**
+     * 笔趣阁
+     * www.bigee.cc
+     */
+    function www_bigee_cc() {
+        www_3bqg_cc();
+    }
+
+    /**
+     * 笔趣阁
+     * beqege.cc
+     */
+    function www_beqege_cc() {
+        GM_addStyle(`
+        .box_con {
+            border: none !important;
+        }
+        
+        .read-novel-link, #device, .con_top, .bookname>h1, #test1{
+            display: none !important;
+        }
+        
+        .bottem1, .bottem2 {
+            border-top: none !important;
+            border-bottom: none !important;
+        }
+        
+        .bottem1 a, .bottem2 a {
+            color: ${link_text_color} !important;
+        }
+        `);
+        setWordContent($(".box_con"));
+        setWordTitle($(".bookname>h1").text());
+    }
+
+    /**
+     * 笔书网
+     * biqukun.com
+     */
+    function www_biqukun_com() {
+        www_beqege_cc();
+        GM_addStyle(`
+        .lm {
+            display: none !important;
+        }
+        
+        .bookname {
+            border-bottom: none !important;
+        }
+        `);
+    }
+
+    /**
+     * 笔趣阁
+     * biquge.tw
+     */
+    function www_biquge_tw() {
+        GM_addStyle(`
+        #readSet, .book>h1, .chase-book-btn {
+            display: none !important;
+        }
+        
+        .read-page, .read-page a {
+            border-top: none !important;
+            border-bottom: none !important;
+            border-left: none !important;
+            border-right: none !important;
+        }
+        
+        `)
+
+        setWordTitle($(".book>h1").text());
+        setWordContent($(".book"))
+    }
+
     // main
     common();
     const currentHost = window.location.host;
@@ -440,6 +544,20 @@
         case 'www.52wx.com':
             www_52wx_com();
             break;
-
+        case 'www.3bqg.cc':
+            www_3bqg_cc();
+            break;
+        case 'www.bigee.cc':
+            www_bigee_cc();
+            break;
+        case 'www.beqege.cc':
+            www_beqege_cc();
+            break;
+        case 'www.biqukun.com':
+            www_biqukun_com();
+            break;
+        case 'www.biquge.tw':
+            www_biquge_tw();
+            break;
     }
 })();

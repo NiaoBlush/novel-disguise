@@ -3,6 +3,9 @@ name: Scrape Install Count
 on:
   schedule:
     - cron: '30 14 * * *' # 每天北京时间22:30运行一次
+#  push:
+#    branches:
+#      - master
 
 jobs:
   scrape:
@@ -19,6 +22,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          sudo apt-get install -y fonts-noto-cjk
           python -m pip install --upgrade pip
           pip install requests beautifulsoup4 matplotlib numpy scipy
 

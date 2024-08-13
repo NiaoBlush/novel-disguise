@@ -1,26 +1,162 @@
-[
-    {
-        "date": "2024-07-31",
-        "install_count": 126
+{
+    "2024-07-04": {
+        "installs": 4,
+        "update_checks": 0
     },
-    {
-        "date": "2024-08-01",
-        "install_count": 137
+    "2024-07-05": {
+        "installs": 3,
+        "update_checks": 1
     },
-    {
-        "date": "2024-08-02",
-        "install_count": 140
+    "2024-07-06": {
+        "installs": 0,
+        "update_checks": 1
     },
-    {
-        "date": "2024-08-03",
-        "install_count": 148
+    "2024-07-07": {
+        "installs": 5,
+        "update_checks": 0
     },
-    {
-        "date": "2024-08-04",
-        "install_count": 150
+    "2024-07-08": {
+        "installs": 3,
+        "update_checks": 0
     },
-    {
-        "date": "2024-08-05",
-        "install_count": 167
+    "2024-07-09": {
+        "installs": 1,
+        "update_checks": 0
+    },
+    "2024-07-10": {
+        "installs": 3,
+        "update_checks": 3
+    },
+    "2024-07-11": {
+        "installs": 7,
+        "update_checks": 5
+    },
+    "2024-07-12": {
+        "installs": 11,
+        "update_checks": 8
+    },
+    "2024-07-13": {
+        "installs": 7,
+        "update_checks": 3
+    },
+    "2024-07-14": {
+        "installs": 2,
+        "update_checks": 2
+    },
+    "2024-07-15": {
+        "installs": 12,
+        "update_checks": 9
+    },
+    "2024-07-16": {
+        "installs": 6,
+        "update_checks": 12
+    },
+    "2024-07-17": {
+        "installs": 3,
+        "update_checks": 10
+    },
+    "2024-07-18": {
+        "installs": 8,
+        "update_checks": 9
+    },
+    "2024-07-19": {
+        "installs": 3,
+        "update_checks": 13
+    },
+    "2024-07-20": {
+        "installs": 5,
+        "update_checks": 7
+    },
+    "2024-07-21": {
+        "installs": 1,
+        "update_checks": 6
+    },
+    "2024-07-22": {
+        "installs": 3,
+        "update_checks": 17
+    },
+    "2024-07-23": {
+        "installs": 3,
+        "update_checks": 16
+    },
+    "2024-07-24": {
+        "installs": 5,
+        "update_checks": 16
+    },
+    "2024-07-25": {
+        "installs": 8,
+        "update_checks": 21
+    },
+    "2024-07-26": {
+        "installs": 6,
+        "update_checks": 23
+    },
+    "2024-07-27": {
+        "installs": 2,
+        "update_checks": 10
+    },
+    "2024-07-28": {
+        "installs": 3,
+        "update_checks": 8
+    },
+    "2024-07-29": {
+        "installs": 2,
+        "update_checks": 20
+    },
+    "2024-07-30": {
+        "installs": 5,
+        "update_checks": 23
+    },
+    "2024-07-31": {
+        "installs": 8,
+        "update_checks": 18
+    },
+    "2024-08-01": {
+        "installs": 9,
+        "update_checks": 29
+    },
+    "2024-08-02": {
+        "installs": 3,
+        "update_checks": 21
+    },
+    "2024-08-03": {
+        "installs": 7,
+        "update_checks": 14
+    },
+    "2024-08-04": {
+        "installs": 3,
+        "update_checks": 15
+    },
+    "2024-08-05": {
+        "installs": 17,
+        "update_checks": 27
+    },
+    "2024-08-06": {
+        "installs": 13,
+        "update_checks": 35
+    },
+    "2024-08-07": {
+        "installs": 9,
+        "update_checks": 31
+    },
+    "2024-08-08": {
+        "installs": 8,
+        "update_checks": 43
+    },
+    "2024-08-09": {
+        "installs": 4,
+        "update_checks": 31
+    },
+    "2024-08-10": {
+        "installs": 4,
+        "update_checks": 17
+    },
+    "2024-08-11": {
+        "installs": 2,
+        "update_checks": 13
+    },
+    "2024-08-12": {
+        "installs": 9,
+        "update_checks": 39
     }
-]
+}
