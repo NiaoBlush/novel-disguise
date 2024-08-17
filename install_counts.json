@@ -172,7 +172,11 @@
         "update_checks": 143
     },
     "2024-08-16": {
-        "installs": 18,
-        "update_checks": 162
+        "installs": 21,
+        "update_checks": 176
+    },
+    "2024-08-17": {
+        "installs": 10,
+        "update_checks": 93
     }
 }
