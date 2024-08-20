@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         小说页面伪装|小说页面精简|起点页面伪装|番茄页面伪装|笔趣阁页面伪装|书香小说页面伪装
 // @namespace    https://github.com/NiaoBlush/novel-disguise
-// @version      1.4.1
+// @version      1.5.0
 // @description  将小说页面伪装成一个word文档，同时净化小说页面，去除不必要的元素。适用于起点小说、番茄小说、部分笔趣阁、书香小说
 // @author       NiaoBlush
 // @license      MIT
@@ -19,6 +19,8 @@
 // @match        https://www.beqege.cc/*/*.html
 // @match        https://www.biqukun.com/*/*/*.html
 // @match        https://www.biquge.tw/book/*/*.html
+// @match        https://www.wenku8.net/novel/*/*/*.htm
+// @match        https://www.linovelib.com/novel/*/*.html
 // @require      https://libs.baidu.com/jquery/2.0.3/jquery.min.js
 // @grant        GM_addStyle
 // ==/UserScript==
@@ -552,6 +554,51 @@
         setWordContent($(".book"));
     }
 
+    /**
+     * 轻小说文库
+     * wenku8.net
+     */
+
+    function www_wenku8_net() {
+        GM_addStyle(`
+        #content {
+            padding: 20px;
+        }
+        
+        #foottext {
+            text-align: center;
+        }
+        
+        #foottext a {
+            color: ${link_text_color};
+        }
+        `)
+
+        setWordContent($("#content"))
+        setWordContent($("#foottext"))
+        setWordTitle($("#title").text())
+        $('#foottext a[href^="http"]').hide();
+    }
+
+    /**
+     * 哔哩轻小说
+     * www.bilinovel.com
+     * 小说阅读页面会跳转到 www.linovelib.com
+     */
+    function biilinovel_com(){
+        GM_addStyle(`
+        .mlfy_page {
+            width: 100%;
+            background: none !important;
+        }
+        `)
+
+        $("#mlfy_main_text>h1").hide();
+        setWordContent($("#mlfy_main_text"))
+        setWordTitle($("#mlfy_main_text>h1").text())
+        setWordContent($(".mlfy_page"))
+    }
+
     // main
     common();
     const currentHost = window.location.host;
@@ -589,6 +636,12 @@
             break;
         case 'www.biquge.tw':
             www_biquge_tw();
+            break;
+        case 'www.wenku8.net':
+            www_wenku8_net();
+            break;
+        case 'www.linovelib.com':
+            biilinovel_com();
             break;
     }
 })();
