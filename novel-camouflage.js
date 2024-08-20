@@ -19,6 +19,7 @@
 // @match        https://www.beqege.cc/*/*.html
 // @match        https://www.biqukun.com/*/*/*.html
 // @match        https://www.biquge.tw/book/*/*.html
+// @match        https://www.wenku8.net/novel/*/*/*.htm
 // @require      https://libs.baidu.com/jquery/2.0.3/jquery.min.js
 // @grant        GM_addStyle
 // ==/UserScript==
@@ -552,6 +553,26 @@
         setWordContent($(".book"));
     }
 
+    function www_wenku8_net() {
+        GM_addStyle(`
+        #content {
+            padding: 20px;
+        }
+        
+        #foottext {
+            text-align: center;
+        }
+        
+        #foottext a {
+            color: ${link_text_color};
+        }
+        `)
+
+        setWordContent($("#content"))
+        setWordContent($("#foottext"))
+        $('#foottext a[href^="http"]').hide();
+    }
+
     // main
     common();
     const currentHost = window.location.host;
@@ -590,5 +611,9 @@
         case 'www.biquge.tw':
             www_biquge_tw();
             break;
+        case 'www.wenku8.net':
+            www_wenku8_net();
+            break;
+
     }
 })();
