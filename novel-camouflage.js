@@ -570,6 +570,7 @@
 
         setWordContent($("#content"))
         setWordContent($("#foottext"))
+        setWordTitle($("#title").text())
         $('#foottext a[href^="http"]').hide();
     }
 
