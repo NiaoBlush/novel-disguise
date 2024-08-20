@@ -19,6 +19,7 @@
 // @match        https://www.beqege.cc/*/*.html
 // @match        https://www.biqukun.com/*/*/*.html
 // @match        https://www.biquge.tw/book/*/*.html
+// @match        https://weread.qq.com/web/reader/*
 // @require      https://libs.baidu.com/jquery/2.0.3/jquery.min.js
 // @grant        GM_addStyle
 // ==/UserScript==
@@ -42,6 +43,8 @@
     const link_text_color = "rgba(0,0,0,.7)";
     const link_bg_color = "#f6f6f6";
     const link_front_color = "rgba(0,0,0,.7)";
+
+    const originalTitle = document.title;
 
     function common() {
         document.title = "文档1";
@@ -130,6 +133,7 @@
             border-right-width: 1px;
             min-height: 100%;
             width: 100%;
+            padding-bottom: 10px;
         }
         
         #word-content p {
@@ -552,43 +556,161 @@
         setWordContent($(".book"));
     }
 
+    /**
+     * 微信读书
+     */
+    function weread() {
+
+
+        GM_addStyle(`
+            .wr_canvasContainer {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+        
+            .wr_canvasContainer canvas {
+                display: block !important;
+                position: unset !important;
+            }
+            
+            .renderTarget_pager {
+                display: flex;
+                justify-content: space-evenly;
+            }
+            
+            .renderTarget_pager_content {
+                display: flex;
+            }
+            
+            .renderTarget_pager_button {
+                height: 32px;
+                font-size: 13px;
+                font-weight: 500;
+                color: #b2b4b8;
+                border-radius: 100px;
+                border: 1px solid hsla(0, 0%, 100%, .1);
+                cursor: pointer;
+                z-index: 3;
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+                padding-left: 8px;
+                padding-right: 12px;
+            }
+            
+            .renderTarget_pager_button {
+                color: #5d646e;
+                border-color: rgba(0, 0, 0, .1);
+            }
+    
+            .renderTarget_pager_button:hover {
+                background-color: rgba(0, 0, 0, .03);
+            }
+            
+            .renderTarget_pager_indicator:hover {
+                background-color: rgba(0, 0, 0, .03);
+            }
+
+            .renderTarget_pager_indicator {
+                color: #858c96;
+                border-color: rgba(0, 0, 0, .1);
+            }
+
+            .renderTarget_pager_indicator {
+                margin-left: 4px;
+                margin-right: 4px;
+                font-family: DIN-Medium, PingFang SC, -apple-system, SF UI Text, Lucida Grande, STheiti, Microsoft YaHei, sans-serif;
+                font-weight: 500;
+                text-align: center;
+                font-size: 10px;
+                line-height: 14px;
+                border-radius: 9999px;
+                padding: 3px 6px;
+                color: #fff;
+                z-index: 5;
+                cursor: pointer;
+                color: #8a8c90;
+                border: 1px solid hsla(0, 0%, 100%, .1);
+            }
+
+        `);
+
+        const targetNode = document.querySelector('.wr_canvasContainer');
+        const callback = function (mutationsList, observer) {
+            for (let mutation of mutationsList) {
+                if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                    common();
+                    setWordTitle(originalTitle.replace(" - 微信读书", ""));
+                    // setWordContent($(".renderTargetContainer"));
+                    setWordContent($(".wr_canvasContainer"));
+                    setWordContent($(".renderTarget_pager"));
+                    setWordRightContent($(".top_reviews_panel"));
+                    $(document).on('click', '.renderTarget_pager_indicator', function () {
+                        $("#word-right-content").slideToggle();
+                    });
+                    observer.disconnect();
+                    break;
+                }
+            }
+        };
+        const observer = new MutationObserver(callback);
+        observer.observe(targetNode, {childList: true});
+
+    }
+
     // main
-    common();
     const currentHost = window.location.host;
     console.log('currentHost', currentHost);
     switch (currentHost) {
         case 'www.qidian.com':
+            common();
             qidian();
             break;
         case 'fanqienovel.com':
+            common();
             fanqie();
             break;
         case `www.biquge.net`:
+            common();
             biquge_net();
             break;
         case 'www.xbiqugu.net':
+            common();
             xbiqugu_net();
             break;
         case 'www.biquge.co':
+            common();
             biquge_co();
             break;
         case 'www.52wx.com':
+            common();
             www_52wx_com();
             break;
         case 'www.3bqg.cc':
+            common();
             www_3bqg_cc();
             break;
         case 'www.bigee.cc':
+            common();
             www_bigee_cc();
             break;
         case 'www.beqege.cc':
+            common();
             www_beqege_cc();
             break;
         case 'www.biqukun.com':
+            common();
             www_biqukun_com();
             break;
         case 'www.biquge.tw':
+            common();
             www_biquge_tw();
+            break;
+        case 'weread.qq.com':
+            weread();
             break;
     }
 })();
