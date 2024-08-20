@@ -20,6 +20,7 @@
 // @match        https://www.biqukun.com/*/*/*.html
 // @match        https://www.biquge.tw/book/*/*.html
 // @match        https://www.wenku8.net/novel/*/*/*.htm
+// @exclude      https://www.wenku8.net/novel/*/*/index.htm
 // @match        https://www.linovelib.com/novel/*/*.html
 // @require      https://libs.baidu.com/jquery/2.0.3/jquery.min.js
 // @grant        GM_addStyle
