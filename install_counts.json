@@ -189,6 +189,10 @@
     },
     "2024-08-20": {
         "installs": 14,
-        "update_checks": 214
+        "update_checks": 236
+    },
+    "2024-08-21": {
+        "installs": 9,
+        "update_checks": 234
     }
 }
