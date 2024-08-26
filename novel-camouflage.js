@@ -783,8 +783,22 @@ const resource = {
             text-shadow: none !important;
         }
         `);
+        if(currentMode===MODE.EXCEL){
+            GM_addStyle(`
+            .pagedown {
+                padding: 0;
+                margin-bottom: 0;
+                height: unset;
+                line-height: unset;
+                text-align: unset;
+            }
+            `)
+        }
+        $(".readinline").remove()
         setWordContent($(".content"));
         setDisguisedTitle($(".content>h1").text());
+        setExcelContent($("#chaptercontent"))
+        setExcelLines([$(".pagedown")], true)
     }
 
     /**
