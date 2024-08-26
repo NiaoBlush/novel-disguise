@@ -363,7 +363,7 @@ const resource = {
             }
             .excel-table tbody td {
                 border: 1px solid #DDDDDD;
-                padding: 2px 10px;
+                padding: 3px 10px;
             }
             .excel-table tbody tr:first-child td {
                 border-top: none;
@@ -427,7 +427,9 @@ const resource = {
 
         const $tbody = $(".excel-table tbody");
         lines.forEach(function (line, index) {
-            line = line.replace(/&nbsp;/g, '').trim();
+            if(typeof line === 'string') {
+                line = line.replace(/&nbsp;/g, '').trim();
+            }
             if (line !== '') {
                 const $tr = $('<tr></tr>');
                 const $td1 = $('<td></td>').text(++lastIndex);
@@ -448,42 +450,9 @@ const resource = {
             return;
         }
 
-        if (type === 'br1') {
+        if (type === 'br') {
             const lines = $contentEl.html().split('<br>');
-            // setExcelLines()
-            // lines.forEach(function (line, index) {
-            //
-            //     line = line.replace(/&nbsp;/g, '').trim();
-            //     if (line !== '') {
-            //
-            //         // 创建一行
-            //         var $tr = $('<tr></tr>');
-            //         // 创建第一列：编号，从1开始
-            //         var $td1 = $('<td></td>').text(index + 1);
-            //         // 创建第二列：文本
-            //         var $td2 = $('<td></td>').html(line);
-            //
-            //         // 将列添加到行
-            //         $tr.append($td1);
-            //         $tr.append($td2);
-            //         $tr.append($td2);
-            //         $tr.append($td2);
-            //         $tr.append($td2);
-            //         $tr.append($td2);
-            //         $tr.append($td2);
-            //         $tr.append($td2);
-            //         $tr.append($td2);
-            //         $tr.append($td2);
-            //
-            //         // 将行添加到表体
-            //         $tbody.append($tr);
-            //     }
-            //
-            // });
-
-// 将表体添加到表格
-            $table.append($tbody);
-            $("#disguised-content").append($table);
+            setExcelLines(lines);
         }
     }
 
@@ -726,6 +695,10 @@ const resource = {
         .bottem2 {
             border-top: none;
             color: ${link_text_color};
+            text-align: unset;
+            width: unset;
+            margin: 0;
+            padding: 0;
         }
         
         .bottem1>a, .bottem2>a {
@@ -738,11 +711,11 @@ const resource = {
         
         `);
 
-
+        $("#content>p").remove();
         setWordContent($(".box_con"));
         setExcelContent($("#content"));
+        setExcelLines([$(".bottem2")], true);
         setDisguisedTitle($(".bookname h1").text());
-
     }
 
     /**
