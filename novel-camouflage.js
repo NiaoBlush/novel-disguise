@@ -202,12 +202,6 @@ const resource = {
             font-size: 13px;
             color: #262626;
             
-            // display: flex;
-            // flex-direction: row;
-            // flex-wrap: nowrap;
-            // align-content: center;
-            // justify-content: flex-start;
-            // align-items: center;
             box-sizing: border-box;
             position: relative;
         }
@@ -314,7 +308,7 @@ const resource = {
             #disguised-content {
                 height: 100%;
                 overflow-x: hidden;
-                // overflow-y: scroll;
+                overflow-y: scroll;
             }
             
             table {
@@ -329,7 +323,6 @@ const resource = {
             }
             .excel-table {
                 border-collapse: collapse;
-                
             }
             
             .excel-table thead {
@@ -337,25 +330,37 @@ const resource = {
             }
             
             .excel-table thead th {
-                border-bottom: 1px solid #A0A0A0;
-                border-right: 1px solid #A0A0A0;
+                // border-bottom: 1px solid #A0A0A0;
+                // border-right: 1px solid #A0A0A0;
                 font-weight: normal;
                 background-color: #E6E6E6;
+                position: sticky;
+                top: 0;
+                outline: 1px solid;
+                outline-color: #A0A0A0;
             }
             
             .excel-table th {
                 min-width: 71px;
             }
+            .excel-table th:nth-child(1) {
+                width: auto;
+                min-width: unset;
+            }
             .excel-table th:nth-child(2) {
                 min-width: 800px;
             }
             .excel-table tbody {
-                overflow-y: scroll;
-                display: block;
+            }
+            .excel-table tbody td:nth-child(1) {
+                text-align: center;
+                background-color: #E6E6E6;
+                padding-left: 5px;
+                padding-right: 5px;
             }
             .excel-table tbody td {
                 border: 1px solid #DDDDDD;
-                padding: 2px 5px;
+                padding: 2px 10px;
             }
             `);
         }
