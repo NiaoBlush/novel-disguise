@@ -305,8 +305,8 @@ const resource = {
             document.title = "工作簿1";
             GM_addStyle(`
             #footer-content {
-                height: 50%;
-                line-height: 50%;
+                height: 45%;
+                line-height: 45%;
             }
             #disguised-body {
                 padding-left: 0;
@@ -369,6 +369,7 @@ const resource = {
                 background-color: #E6E6E6;
                 padding-left: 5px;
                 padding-right: 5px;
+                user-select: none;
             }
             .excel-table tbody td {
                 border: 1px solid #DDDDDD;
@@ -944,12 +945,20 @@ const resource = {
         #foottext a {
             color: ${link_text_color};
         }
-        `)
+        `);
 
-        setWordContent($("#content"))
-        setWordContent($("#foottext"))
-        setWordTitle($("#title").text())
-        $('#foottext a[href^="http"]').hide();
+        $('#foottext a[href^="http"]').remove();
+        $("ul[id='contentdp']").remove();
+        setWordContent($("#content"));
+        setWordContent($("#foottext"));
+        setDisguisedTitle($("#title").text());
+        setExcelContent($("#content"));
+        setExcelLines([$("#foottext").first()], true);
+        addExcelStyle(`
+            #foottext {
+                text-align: unset;
+            }
+        `)
     }
 
     /**
@@ -957,18 +966,18 @@ const resource = {
      * www.bilinovel.com
      * 小说阅读页面会跳转到 www.linovelib.com
      */
-    function biilinovel_com(){
+    function biilinovel_com() {
         GM_addStyle(`
         .mlfy_page {
             width: 100%;
             background: none !important;
         }
-        `)
+        `);
 
         $("#mlfy_main_text>h1").hide();
-        setWordContent($("#mlfy_main_text"))
-        setWordTitle($("#mlfy_main_text>h1").text())
-        setWordContent($(".mlfy_page"))
+        setWordContent($("#mlfy_main_text"));
+        setWordTitle($("#mlfy_main_text>h1").text());
+        setWordContent($(".mlfy_page"));
     }
 
     // main
