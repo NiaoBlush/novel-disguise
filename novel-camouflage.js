@@ -350,6 +350,7 @@ const resource = {
                 font-family: "SimSun", sans-serif;
                 padding: 0;
                 line-height: normal;
+                z-index: 9999;
             }
             
             .excel-table th {
@@ -676,6 +677,14 @@ const resource = {
             padding-top: 50px;
         }
         
+        .excel-table tbody td, .excel-table tbody td p {
+            font-family: unset;
+        }
+        
+        p {
+            margin: 0;
+        }
+        
         `);
 
         setWordContent($(".muye-reader-inner"));
@@ -683,11 +692,31 @@ const resource = {
         setDisguisedTitle(titleEl.text());
         titleEl.remove();
 
-        setExcelLines($(".muye-reader-content>div>p").toArray());
-
         const infoEl = $('.muye-reader-subtitle');
         setWordDetail(infoEl.children());
         infoEl.hide();
+
+        const $readerBox = $('.muye-reader-box');
+        const className = $readerBox.attr('class').split(' ').filter(function (cls) {
+            return cls.indexOf('font-') === 0;
+        })[0];
+        const styleAttr = $readerBox.attr('style');
+        const $table = $(".excel-table");
+        $table.addClass(className);
+        $table.attr('style', styleAttr);
+        setExcelLines($(".muye-reader-content>div>p").toArray());
+        setExcelLines([$(".muye-reader-btns")], true);
+        addExcelStyle(`
+            .muye-reader-btns button {
+                height: 20px !important;
+                line-height: 20px !important;
+            }
+        `);
+        $(".muye-reader-btns button").on("click", function () {
+            setTimeout(function () {
+                location.reload();
+            }, 200);
+        });
     }
 
     /**
