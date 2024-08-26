@@ -958,7 +958,7 @@ const resource = {
             #foottext {
                 text-align: unset;
             }
-        `)
+        `);
     }
 
     /**
@@ -976,8 +976,10 @@ const resource = {
 
         $("#mlfy_main_text>h1").hide();
         setWordContent($("#mlfy_main_text"));
-        setWordTitle($("#mlfy_main_text>h1").text());
+        setDisguisedTitle($("#mlfy_main_text>h1").text());
         setWordContent($(".mlfy_page"));
+        setExcelContent($("#TextContent"), "p");
+        setExcelLines([$(".mlfy_page")], true);
     }
 
     // main
