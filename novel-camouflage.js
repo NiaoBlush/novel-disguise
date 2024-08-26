@@ -456,10 +456,21 @@ const resource = {
             const lines = $contentEl.html().split('<br>');
             setExcelLines(lines);
         } else if (type === 'p') {
-            const pList = $contentEl.children('p').toArray();
+            let pList = $contentEl.children('p').toArray();
+            //去除空的p标签
+            pList = pList.filter(function (p) {
+                return $(p).text().trim() !== '';
+            });
+
             setExcelLines(pList);
         }
 
+    }
+
+    function addExcelStyle(styleText) {
+        if (currentMode === MODE.EXCEL) {
+            GM_addStyle(styleText);
+        }
     }
 
     function clearWordContent() {
@@ -759,7 +770,7 @@ const resource = {
         }
         `);
         biquge_net();
-        setExcelContent($("#content"))
+        setExcelContent($("#content"));
         setExcelLines([$(".section-opt").first()], true);
     }
 
@@ -783,8 +794,7 @@ const resource = {
             text-shadow: none !important;
         }
         `);
-        if(currentMode===MODE.EXCEL){
-            GM_addStyle(`
+        addExcelStyle(`
             .pagedown {
                 padding: 0;
                 margin-bottom: 0;
@@ -792,13 +802,12 @@ const resource = {
                 line-height: unset;
                 text-align: unset;
             }
-            `)
-        }
-        $(".readinline").remove()
+        `)
+        $(".readinline").remove();
         setWordContent($(".content"));
         setDisguisedTitle($(".content>h1").text());
-        setExcelContent($("#chaptercontent"))
-        setExcelLines([$(".pagedown")], true)
+        setExcelContent($("#chaptercontent"));
+        setExcelLines([$(".pagedown")], true);
     }
 
     /**
@@ -832,8 +841,17 @@ const resource = {
             color: ${link_text_color} !important;
         }
         `);
+        addExcelStyle(`
+            .bottem1 {
+                text-align: unset;
+                margin: 0;
+                padding-bottom: 0;
+            }
+        `)
         setWordContent($(".box_con"));
         setDisguisedTitle($(".bookname>h1").text());
+        setExcelContent($("#content"), "p");
+        setExcelLines([$(".bottem1")], true);
     }
 
     /**
