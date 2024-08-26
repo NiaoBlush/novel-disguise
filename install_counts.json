@@ -164,7 +164,51 @@
         "update_checks": 53
     },
     "2024-08-14": {
-        "installs": 48,
+        "installs": 51,
+        "update_checks": 110
+    },
+    "2024-08-15": {
+        "installs": 37,
+        "update_checks": 143
+    },
+    "2024-08-16": {
+        "installs": 21,
+        "update_checks": 176
+    },
+    "2024-08-17": {
+        "installs": 15,
+        "update_checks": 105
+    },
+    "2024-08-18": {
+        "installs": 9,
+        "update_checks": 89
+    },
+    "2024-08-19": {
+        "installs": 28,
+        "update_checks": 221
+    },
+    "2024-08-20": {
+        "installs": 14,
+        "update_checks": 236
+    },
+    "2024-08-21": {
+        "installs": 12,
+        "update_checks": 254
+    },
+    "2024-08-22": {
+        "installs": 16,
+        "update_checks": 241
+    },
+    "2024-08-23": {
+        "installs": 12,
+        "update_checks": 235
+    },
+    "2024-08-24": {
+        "installs": 10,
         "update_checks": 102
+    },
+    "2024-08-25": {
+        "installs": 6,
+        "update_checks": 87
     }
 }

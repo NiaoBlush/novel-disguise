@@ -19,6 +19,9 @@
 // @match        https://www.beqege.cc/*/*.html
 // @match        https://www.biqukun.com/*/*/*.html
 // @match        https://www.biquge.tw/book/*/*.html
+// @match        https://www.wenku8.net/novel/*/*/*.htm
+// @exclude      https://www.wenku8.net/novel/*/*/index.htm
+// @match        https://www.linovelib.com/novel/*/*.html
 // @require      https://libs.baidu.com/jquery/2.0.3/jquery.min.js
 // @grant        GM_addStyle
 // @grant        GM_registerMenuCommand
@@ -923,7 +926,52 @@ const resource = {
         setExcelLines([$(".read-page").first()], true);
     }
 
-// main
+    /**
+     * 轻小说文库
+     * wenku8.net
+     */
+
+    function www_wenku8_net() {
+        GM_addStyle(`
+        #content {
+            padding: 20px;
+        }
+        
+        #foottext {
+            text-align: center;
+        }
+        
+        #foottext a {
+            color: ${link_text_color};
+        }
+        `)
+
+        setWordContent($("#content"))
+        setWordContent($("#foottext"))
+        setWordTitle($("#title").text())
+        $('#foottext a[href^="http"]').hide();
+    }
+
+    /**
+     * 哔哩轻小说
+     * www.bilinovel.com
+     * 小说阅读页面会跳转到 www.linovelib.com
+     */
+    function biilinovel_com(){
+        GM_addStyle(`
+        .mlfy_page {
+            width: 100%;
+            background: none !important;
+        }
+        `)
+
+        $("#mlfy_main_text>h1").hide();
+        setWordContent($("#mlfy_main_text"))
+        setWordTitle($("#mlfy_main_text>h1").text())
+        setWordContent($(".mlfy_page"))
+    }
+
+    // main
     common();
     const currentHost = window.location.host;
     console.log('currentHost', currentHost);
@@ -960,6 +1008,12 @@ const resource = {
             break;
         case 'www.biquge.tw':
             www_biquge_tw();
+            break;
+        case 'www.wenku8.net':
+            www_wenku8_net();
+            break;
+        case 'www.linovelib.com':
+            biilinovel_com();
             break;
     }
 
