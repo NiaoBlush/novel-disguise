@@ -415,6 +415,10 @@ const resource = {
     }
 
     function setExcelLines(lines, append = false) {
+        if (currentMode !== MODE.EXCEL) {
+            return;
+        }
+
         let lastIndex;
         if (append) {
             lastIndex = Number.parseInt($(".excel-table tbody tr:last-child td:first-child").text());
@@ -425,7 +429,7 @@ const resource = {
 
         const $tbody = $(".excel-table tbody");
         lines.forEach(function (line, index) {
-            if(typeof line === 'string') {
+            if (typeof line === 'string') {
                 line = line.replace(/&nbsp;/g, '').trim();
             }
             if (line !== '') {
@@ -451,7 +455,11 @@ const resource = {
         if (type === 'br') {
             const lines = $contentEl.html().split('<br>');
             setExcelLines(lines);
+        } else if (type === 'p') {
+            const pList = $contentEl.children('p').toArray();
+            setExcelLines(pList);
         }
+
     }
 
     function clearWordContent() {
@@ -537,6 +545,7 @@ const resource = {
                 clearWordContent();
                 setWordContent($(".chapter-wrapper"));
                 setWordRightContent($("#right-container"));
+                setExcelLines($("main.content>p"));
                 observeComments();
                 setInfo();
             }, 2000);
@@ -550,6 +559,7 @@ const resource = {
                         if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
                             setWordContent($(".chapter-wrapper"));
                             setWordRightContent($("#right-container"));
+                            // setExcelLines($("main.content>p").toArray())
                             observeComments();
                             setInfo();
                             observer.disconnect();
@@ -637,6 +647,8 @@ const resource = {
         setDisguisedTitle(titleEl.text());
         titleEl.remove();
 
+        setExcelLines($(".muye-reader-content>div>p").toArray());
+
         const infoEl = $('.muye-reader-subtitle');
         setWordDetail(infoEl.children());
         infoEl.hide();
@@ -644,6 +656,7 @@ const resource = {
 
     /**
      * 笔趣阁
+     * biquge.net
      */
     function biquge_net() {
 
@@ -670,6 +683,8 @@ const resource = {
 
         setWordContent($(".reader-main"));
         setDisguisedTitle($(".title").text());
+        setExcelContent($("#content"), "p");
+        setExcelLines([$(".section-opt").first()], true);
     }
 
     /**
