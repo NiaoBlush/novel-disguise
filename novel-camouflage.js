@@ -333,8 +333,6 @@ const resource = {
             }
             
             .excel-table thead th {
-                // border-bottom: 1px solid #A0A0A0;
-                // border-right: 1px solid #A0A0A0;
                 font-weight: normal;
                 background-color: #E6E6E6;
                 position: sticky;
@@ -351,7 +349,7 @@ const resource = {
                 min-width: 20px;
             }
             .excel-table th:nth-child(2) {
-                min-width: 800px;
+                min-width: 50vw;
             }
             .excel-table tbody {
             }
@@ -679,6 +677,9 @@ const resource = {
      */
     function xbiqugu_net() {
         GM_addStyle(`
+        body {
+            background-color: #FFF;
+        }
         .con_top, #listtj, #content_tip, .bookname>h1, #bdshare, #content>p {
             display: none;
         }
