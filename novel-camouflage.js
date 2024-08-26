@@ -96,6 +96,8 @@ const resource = {
 
     let currentMode = GM_getValue(KEY_MODE, MODE.WORD);
 
+    const emptyCols = 20;
+
     function switchMode() {
         currentMode = currentMode === MODE.WORD ? MODE.EXCEL : MODE.WORD;
         GM_setValue(KEY_MODE, currentMode);
@@ -304,6 +306,7 @@ const resource = {
             #disguised-body {
                 padding-left: 0;
                 padding-right: 0;
+                overflow-y: hidden;
             }
             #disguised-content {
                 height: 100%;
@@ -345,7 +348,7 @@ const resource = {
             }
             .excel-table th:nth-child(1) {
                 width: auto;
-                min-width: unset;
+                min-width: 20px;
             }
             .excel-table th:nth-child(2) {
                 min-width: 800px;
@@ -362,7 +365,34 @@ const resource = {
                 border: 1px solid #DDDDDD;
                 padding: 2px 10px;
             }
+            .excel-table tbody tr:first-child td {
+                border-top: none;
+            }
             `);
+
+            //构建表格
+            const $table = $('<table class="excel-table"></table>');
+            const extraThead = (function () {
+                let output = '';
+                for (let i = 1; i <= emptyCols; i++) {
+                    const char = String.fromCharCode(64 + i);
+                    output += `<th>${char}</th>`;
+                }
+                return output;
+            })();
+            const $thead = $(`<thead><tr><th></th>${extraThead}</tr></thead>`);
+            const $tbody = $('<tbody></tbody>');
+            // 添加表头
+            $table.append($thead);
+            $table.append($tbody);
+            $("#disguised-content").append($table);
+
+            //占位行
+            const defaultLines = [];
+            for (let i = 0; i < 50; i++) {
+                defaultLines.push("\u200B");
+            }
+            setExcelLines(defaultLines);
         }
     }
 
@@ -374,6 +404,7 @@ const resource = {
 
     }
 
+
     function setWordContent($contentEl) {
         if (currentMode !== MODE.WORD) {
             return;
@@ -381,47 +412,74 @@ const resource = {
         $contentEl.show().appendTo("#disguised-content");
     }
 
+    function clearExcelContent() {
+        $(".excel-table tbody").empty();
+    }
+
+    function setExcelLines(lines, append = false) {
+        let lastIndex;
+        if (append) {
+            lastIndex = Number.parseInt($(".excel-table tbody tr:last-child td:first-child").text());
+        } else {
+            clearExcelContent();
+            lastIndex = 0;
+        }
+
+        const $tbody = $(".excel-table tbody");
+        lines.forEach(function (line, index) {
+            line = line.replace(/&nbsp;/g, '').trim();
+            if (line !== '') {
+                const $tr = $('<tr></tr>');
+                const $td1 = $('<td></td>').text(++lastIndex);
+                const $td2 = $('<td></td>').html(line);
+                $tr.append($td1);
+                $tr.append($td2);
+                for (let i = 0; i < emptyCols; i++) {
+                    $tr.append($('<td></td>'));
+                }
+                $tbody.append($tr);
+            }
+
+        });
+    }
+
     function setExcelContent($contentEl, type = 'br') {
         if (currentMode !== MODE.EXCEL) {
             return;
         }
 
-        if (type === 'br') {
+        if (type === 'br1') {
             const lines = $contentEl.html().split('<br>');
-            var $table = $('<table class="excel-table"></table>');
-            var $thead = $('<thead><tr><th></th><th>A</th><th>B</th><th>C</th><th>A</th><th>A</th><th>A</th><th>A</th><th>A</th><th>A</th><th>A</th><th>A</th><th>A</th><th>C</th><th>A</th><th>A</th><th>A</th></tr></thead>');
-            var $tbody = $('<tbody></tbody>');
-            // 添加表头
-            $table.append($thead);
-            lines.forEach(function (line, index) {
-
-                line = line.replace(/&nbsp;/g, '').trim();
-                if (line !== '') {
-
-                    // 创建一行
-                    var $tr = $('<tr></tr>');
-                    // 创建第一列：编号，从1开始
-                    var $td1 = $('<td></td>').text(index + 1);
-                    // 创建第二列：文本
-                    var $td2 = $('<td></td>').html(line);
-
-                    // 将列添加到行
-                    $tr.append($td1);
-                    $tr.append($td2);
-                    $tr.append($td2);
-                    $tr.append($td2);
-                    $tr.append($td2);
-                    $tr.append($td2);
-                    $tr.append($td2);
-                    $tr.append($td2);
-                    $tr.append($td2);
-                    $tr.append($td2);
-
-                    // 将行添加到表体
-                    $tbody.append($tr);
-                }
-
-            });
+            // setExcelLines()
+            // lines.forEach(function (line, index) {
+            //
+            //     line = line.replace(/&nbsp;/g, '').trim();
+            //     if (line !== '') {
+            //
+            //         // 创建一行
+            //         var $tr = $('<tr></tr>');
+            //         // 创建第一列：编号，从1开始
+            //         var $td1 = $('<td></td>').text(index + 1);
+            //         // 创建第二列：文本
+            //         var $td2 = $('<td></td>').html(line);
+            //
+            //         // 将列添加到行
+            //         $tr.append($td1);
+            //         $tr.append($td2);
+            //         $tr.append($td2);
+            //         $tr.append($td2);
+            //         $tr.append($td2);
+            //         $tr.append($td2);
+            //         $tr.append($td2);
+            //         $tr.append($td2);
+            //         $tr.append($td2);
+            //         $tr.append($td2);
+            //
+            //         // 将行添加到表体
+            //         $tbody.append($tr);
+            //     }
+            //
+            // });
 
 // 将表体添加到表格
             $table.append($tbody);
