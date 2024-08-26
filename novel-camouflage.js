@@ -154,8 +154,6 @@ const resource = {
 
         setResource();
 
-        document.title = "文档1";
-
         //公共样式
         GM_addStyle(`
         .img-fill-in {
@@ -296,8 +294,9 @@ const resource = {
            </div>`).appendTo("body");
 
         if (currentMode === MODE.WORD) {
-
+            document.title = "文档1";
         } else {
+            document.title = "工作簿1";
             GM_addStyle(`
             #footer-content {
                 height: 50%;
@@ -821,7 +820,7 @@ const resource = {
                 line-height: unset;
                 text-align: unset;
             }
-        `)
+        `);
         $(".readinline").remove();
         setWordContent($(".content"));
         setDisguisedTitle($(".content>h1").text());
@@ -866,7 +865,7 @@ const resource = {
                 margin: 0;
                 padding-bottom: 0;
             }
-        `)
+        `);
         setWordContent($(".box_con"));
         setDisguisedTitle($(".bookname>h1").text());
         setExcelContent($("#content"), "p");
@@ -917,7 +916,8 @@ const resource = {
 
         setDisguisedTitle($(".book>h1").text());
         setWordContent($(".book"));
-        setExcelContent($("#chaptercontent"), "p")
+        setExcelContent($("#chaptercontent"), "p");
+        setExcelLines([$(".read-page").first()], true)
     }
 
 // main
