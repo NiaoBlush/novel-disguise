@@ -334,11 +334,17 @@ const resource = {
             
             .excel-table thead th {
                 font-weight: normal;
+                font-size: 14px;
+                color: black !important;
                 background-color: #E6E6E6;
                 position: sticky;
                 top: 0;
                 outline: 1px solid;
                 outline-color: #A0A0A0;
+                text-align: center;
+                font-family: "SimSun", sans-serif;
+                padding: 0;
+                line-height: normal;
             }
             
             .excel-table th {
@@ -362,6 +368,14 @@ const resource = {
             .excel-table tbody td {
                 border: 1px solid #DDDDDD;
                 padding: 3px 10px;
+                line-height: normal;
+            }
+            .excel-table tbody td ,
+            .excel-table tbody td p {
+                font-size: 12px;
+                font-weight: normal;
+                color: black !important;
+                font-family: "Microsoft YaHei", "SimSun", sans-serif;
             }
             .excel-table tbody tr:first-child td {
                 border-top: none;
@@ -903,6 +917,7 @@ const resource = {
 
         setDisguisedTitle($(".book>h1").text());
         setWordContent($(".book"));
+        setExcelContent($("#chaptercontent"), "p")
     }
 
 // main
