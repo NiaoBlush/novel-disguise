@@ -689,6 +689,7 @@ const resource = {
 
     /**
      * 书香小说
+     * xbiqugu.net
      */
     function xbiqugu_net() {
         GM_addStyle(`
@@ -758,6 +759,8 @@ const resource = {
         }
         `);
         biquge_net();
+        setExcelContent($("#content"))
+        setExcelLines([$(".section-opt").first()], true);
     }
 
     /**
