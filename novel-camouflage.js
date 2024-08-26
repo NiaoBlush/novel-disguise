@@ -366,6 +366,11 @@ const resource = {
             .excel-table tbody tr:first-child td {
                 border-top: none;
             }
+            .excel-table tbody td > div {
+                margin: 0;
+                padding: 0;
+                text-align: unset;
+            }
             `);
 
             //构建表格
@@ -873,6 +878,8 @@ const resource = {
             display: none !important;
         }
         `);
+        setExcelContent($("#content"));
+        setExcelLines([$(".bottem2")], true);
     }
 
     /**
