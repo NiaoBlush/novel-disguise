@@ -229,7 +229,7 @@ const resource = {
         }
         
         #footer-content > * {
-            height: ${footerHeight}px;
+            height: 100%;
             line-height: 100%;
             margin-right: 10px;
             font-size: 13px;
@@ -641,6 +641,12 @@ const resource = {
             } else {
                 //未解锁
                 setWordContent($(".chapter-wrapper"));
+                setExcelLines($(".chapter-wrapper section:not(#r-recommends) > div:not(.download)").toArray());
+
+                // const $loginButton = $("button:contains('登录')");
+                // if ($loginButton.length > 0) {
+                //     setExcelLines([$loginButton], true);
+                // }
             }
         }
         setInfo();
@@ -652,6 +658,13 @@ const resource = {
             .nav-btn {
                 padding: 0;
             }
+            .excel-table button {
+                padding: 0;
+                font-size: unset;
+                line-height: unset;
+                height: 20px;
+            }
+            
         `);
 
         function observeComments() {
