@@ -272,6 +272,7 @@ const resource = {
             top: ${headerHeight}px;
             height: ${readerHeight}px;
             width: 400px;
+            z-index: 99999;
         }
         
         
@@ -437,7 +438,9 @@ const resource = {
     }
 
     function clearExcelContent() {
-        $(".excel-table tbody").empty();
+        if (currentMode === MODE.EXCEL) {
+            $(".excel-table tbody").empty();
+        }
     }
 
     function setExcelLines(lines, append = false) {
@@ -473,7 +476,7 @@ const resource = {
         });
     }
 
-    function setExcelContent($contentEl, type = 'br') {
+    function setExcelContent($contentEl, type = 'br', clone = false) {
         if (currentMode !== MODE.EXCEL) {
             return;
         }
@@ -482,12 +485,16 @@ const resource = {
             const lines = $contentEl.html().split('<br>');
             setExcelLines(lines);
         } else if (type === 'p') {
-            let pList = $contentEl.children('p').toArray();
+            let pList;
+            if (clone) {
+                pList = $contentEl.children('p').clone().toArray();
+            } else {
+                pList = $contentEl.children('p').toArray();
+            }
             //去除空的p标签
             pList = pList.filter(function (p) {
                 return $(p).text().trim() !== '';
             });
-
             setExcelLines(pList);
         }
 
@@ -500,7 +507,10 @@ const resource = {
     }
 
     function clearWordContent() {
-        $('#disguised-content').empty();
+        if (currentMode === MODE.WORD) {
+            $('#disguised-content').empty();
+        }
+
     }
 
     function setDisguisedTitle(titleStr) {
@@ -571,24 +581,39 @@ const resource = {
         #page-ops {
             // display: none !important;
         }
+        
+        .excel-table tbody td, .excel-table tbody td p {
+            font-family: unset;
+        }
+        .excel-table tbody td p {
+            margin-top: 0 !important;
+        }
       
         `);
+
+        const $mainContent = $("main.content");
+        const contentId = $mainContent.attr('id');
+        const dataType = $mainContent.attr('data-type');
+        const $tbody = $(".excel-table tbody");
 
         //内容
         const scriptContent = $('#vite-plugin-ssr_pageContext').html();
         if (scriptContent && scriptContent.includes('"freeStatus":0')) {
+            //免费
             setWordContent($(".chapter-wrapper"));
+            setExcelContent($("main.content"), 'p', true);
             setTimeout(function () {
                 clearWordContent();
                 setWordContent($(".chapter-wrapper"));
                 setWordRightContent($("#right-container"));
-                setExcelLines($("main.content>p"));
+                setExcelContent($("main.content"), 'p');
+                setExcelLines([$(".nav-btn-group")], true);
                 observeComments();
                 setInfo();
             }, 2000);
         } else {
             if (!$('main.content').hasClass('lock-mask')) {
-
+                //收费
                 const targetNode = document.querySelector('main.content');
                 const config = {childList: true};
                 const callback = function (mutationsList, observer) {
@@ -596,7 +621,14 @@ const resource = {
                         if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
                             setWordContent($(".chapter-wrapper"));
                             setWordRightContent($("#right-container"));
-                            // setExcelLines($("main.content>p").toArray())
+                            $tbody.attr("id", contentId);
+                            $tbody.attr("data-type", dataType);
+                            $tbody.addClass("content");
+                            setExcelContent($("main.content"), 'p', true);
+                            setTimeout(function () {
+                                setExcelContent($("main.content"), 'p');
+                                setExcelLines([$(".nav-btn-group")], true);
+                            }, 2000);
                             observeComments();
                             setInfo();
                             observer.disconnect();
@@ -607,10 +639,20 @@ const resource = {
                 const observer = new MutationObserver(callback);
                 observer.observe(targetNode, config);
             } else {
+                //未解锁
                 setWordContent($(".chapter-wrapper"));
             }
         }
         setInfo();
+
+        addExcelStyle(`
+             #disguised-page #disguised-body table.excel-table tbody:not(thead) tr .nav-btn-group a {
+                font-family: "Microsoft YaHei", "SimSun", sans-serif !important;
+            }
+            .nav-btn {
+                padding: 0;
+            }
+        `);
 
         function observeComments() {
             //本章说
