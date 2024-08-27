@@ -81,6 +81,12 @@ const resource = {
     'use strict';
     console.log("novel-disguise loaded");
 
+    const config = {
+        emptyCols: 20,
+        enableExcelRandomPopulate: true,
+        maxExcelRandomPopulateCol: 9
+    };
+
     const screenInfo = getScreenInfo();
     let disguised_header_img = null;
     let disguised_body_img = null;
@@ -101,12 +107,6 @@ const resource = {
     };
 
     let currentMode = GM_getValue(KEY_MODE, MODE.WORD);
-
-    const config = {
-        emptyCols: 20,
-        enableExcelRandomPopulate: true,
-        maxExcelRandomPopulateCol: 9
-    };
 
     function switchMode() {
         currentMode = currentMode === MODE.WORD ? MODE.EXCEL : MODE.WORD;
@@ -429,15 +429,6 @@ const resource = {
         }
     }
 
-    function applyWordMode() {
-
-    }
-
-    function applyExcelMode() {
-
-    }
-
-
     function setWordContent($contentEl) {
         if (currentMode !== MODE.WORD) {
             return;
@@ -743,6 +734,9 @@ const resource = {
 
         addExcelStyle(`
              #disguised-page #disguised-body table.excel-table tbody:not(thead) tr .nav-btn-group a {
+                font-family: "Microsoft YaHei", "SimSun", sans-serif !important;
+            }
+            #disguised-page #disguised-body table.excel-table tbody td:not(:nth-child(1)):not(:nth-child(2)) {
                 font-family: "Microsoft YaHei", "SimSun", sans-serif !important;
             }
             .nav-btn {
