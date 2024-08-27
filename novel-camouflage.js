@@ -102,7 +102,11 @@ const resource = {
 
     let currentMode = GM_getValue(KEY_MODE, MODE.WORD);
 
-    const emptyCols = 20;
+    const config = {
+        emptyCols: 20,
+        enableExcelRandomPopulate: true,
+        maxExcelRandomPopulateCol: 9
+    };
 
     function switchMode() {
         currentMode = currentMode === MODE.WORD ? MODE.EXCEL : MODE.WORD;
@@ -373,6 +377,10 @@ const resource = {
                 padding-right: 5px;
                 user-select: none;
             }
+            .excel-table tbody td:not(:nth-child(1)):not(:nth-child(2)) {
+                white-space: nowrap;
+                text-align: center;
+            }
             .excel-table tbody td {
                 border: 1px solid #DDDDDD;
                 padding: 3px 10px;
@@ -399,7 +407,7 @@ const resource = {
             const $table = $('<table class="excel-table"></table>');
             const extraThead = (function () {
                 let output = '';
-                for (let i = 1; i <= emptyCols; i++) {
+                for (let i = 1; i <= config.emptyCols; i++) {
                     const char = String.fromCharCode(64 + i);
                     output += `<th>${char}</th>`;
                 }
@@ -467,8 +475,12 @@ const resource = {
                 const $td2 = $('<td></td>').html(line);
                 $tr.append($td1);
                 $tr.append($td2);
-                for (let i = 0; i < emptyCols; i++) {
-                    $tr.append($('<td></td>'));
+                for (let i = 0; i < config.emptyCols; i++) {
+                    let tdContent = "";
+                    if (config.enableExcelRandomPopulate && i < config.maxExcelRandomPopulateCol) {
+                        tdContent = generateRandomContent(i);
+                    }
+                    $tr.append($(`<td>${tdContent}</td>`));
                 }
                 $tbody.append($tr);
             }
@@ -538,6 +550,84 @@ const resource = {
         const devicePixelRatio = window.devicePixelRatio || 1;
         const physicalWidth = screenWidth * devicePixelRatio;
         return {screenWidth, screenHeight, devicePixelRatio, physicalWidth};
+    }
+
+    function generateRandomContent(type = 1) {
+        type = (type % 6) + 1;
+
+        function generateRandomLetters(n, isUpperCase) {
+            const letters = isUpperCase ? 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' : 'abcdefghijklmnopqrstuvwxyz';
+            let result = '';
+            for (let i = 0; i < n; i++) {
+                result += letters.charAt(Math.floor(Math.random() * letters.length));
+            }
+            return result;
+        }
+
+        function getRandomInt(a, b) {
+            return Math.floor(Math.random() * (b - a + 1)) + a;
+        }
+
+        function getRandomPaddedInt(n) {
+            // 生成 n 位数范围内的随机数
+            const max = Math.pow(10, n) - 1;
+            const min = Math.pow(10, n - 1);
+            const randomInt = Math.floor(Math.random() * (max - min + 1)) + min;
+
+            // 返回左侧填充0的字符串
+            return randomInt.toString().padStart(n, '0');
+        }
+
+        function getRandomChineseCharacter() {
+            const min = 0x4E00;
+            const max = 0x4EFF;
+            return String.fromCharCode(Math.floor(Math.random() * (max - min + 1)) + min);
+        }
+
+        function getRandomChineseName() {
+            const surnames = ["赵", "钱", "孙", "李", "周", "刘", "王"];
+            const randomSurname = surnames[Math.floor(Math.random() * surnames.length)];
+            const nameLength = getRandomInt(1, 2); // 名字长度随机1到2个字
+            let name = '';
+
+            for (let i = 0; i < nameLength; i++) {
+                name += getRandomChineseCharacter();
+            }
+
+            return randomSurname + name;
+        }
+
+        function getRandomDateUsingRandomNumbers() {
+            const year = Math.floor(Math.random() * (2024 - 2020 + 1)) + 2020;
+            const month = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
+            const day = String(Math.floor(Math.random() * 28) + 1).padStart(2, '0'); // 简单处理，每月最多28天
+            return `${year}-${month}-${day}`;
+        }
+
+        function getYesNo() {
+            return Math.random() < 0.5 ? '是' : '否';
+        }
+
+        switch (type) {
+            case 1:
+                //编码
+                return `${generateRandomLetters(2, true)}-${generateRandomLetters(2, true)}-${generateRandomLetters(2, true)}${getRandomPaddedInt(6)}`;
+            case 2:
+                //人名
+                return getRandomChineseName();
+            case 3:
+                //日期
+                return getRandomDateUsingRandomNumbers();
+            case 4:
+                //随机数
+                return getRandomInt(1, 9999);
+            case 5:
+                //字母
+                return generateRandomLetters(1, true);
+            case 6:
+                //是否
+                return getYesNo();
+        }
     }
 
 
