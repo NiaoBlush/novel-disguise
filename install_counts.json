@@ -233,6 +233,10 @@
     },
     "2024-08-31": {
         "installs": 7,
-        "update_checks": 115
+        "update_checks": 140
+    },
+    "2024-09-01": {
+        "installs": 6,
+        "update_checks": 96
     }
 }
