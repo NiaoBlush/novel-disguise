@@ -22,6 +22,7 @@
 // @match        https://www.wenku8.net/novel/*/*/*.htm
 // @exclude      https://www.wenku8.net/novel/*/*/index.htm
 // @match        https://www.linovelib.com/novel/*/*.html
+// @match        https://www.qimao.com/shuku/*-*
 // @require      https://libs.baidu.com/jquery/2.0.3/jquery.min.js
 // @grant        GM_addStyle
 // @grant        GM_registerMenuCommand
@@ -506,6 +507,13 @@ const resource = {
     function addExcelStyle(styleText) {
         if (currentMode === MODE.EXCEL) {
             GM_addStyle(styleText);
+        }
+    }
+
+    function excelUnsupported() {
+        if (currentMode === MODE.EXCEL) {
+            alert("本站收费章节不支持Excel模式，将切换到Word模式");
+            switchMode();
         }
     }
 
@@ -1150,6 +1158,37 @@ const resource = {
         setExcelLines([$(".mlfy_page")], true);
     }
 
+    /**
+     * 七猫
+     * www.qimao.com
+     */
+    function qimao_com() {
+        GM_addStyle(`
+        .chapter-tips {
+            display: flex;
+        }
+        .chapter-tips dd, .chapter-tips dt {
+            display: flex;
+            align-items: center;
+        }
+        .chapter-tips dd {
+            margin-right: 10px;
+        }
+        .reader-footer {
+            padding: 0 !important;
+        }
+        .qm-btn {
+            background-image: none !important;
+            border: none !important;
+            font-weight: normal !important;
+        }
+        `);
+        setDisguisedTitle($(".chapter-title").text());
+        setWordDetail($(".chapter-tips"));
+        setWordContent($(".chapter-detail-wrap-content"));
+        excelUnsupported();
+    }
+
     // main
     common();
     const currentHost = window.location.host;
@@ -1193,6 +1232,9 @@ const resource = {
             break;
         case 'www.linovelib.com':
             biilinovel_com();
+            break;
+        case 'www.qimao.com':
+            qimao_com();
             break;
     }
 
