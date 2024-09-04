@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         小说页面伪装|小说页面精简|起点页面伪装|番茄页面伪装|笔趣阁页面伪装
 // @namespace    https://github.com/NiaoBlush/novel-disguise
-// @version      2.0.0
+// @version      2.1.0
 // @description  将小说页面伪装成一个Word文档或Excel表格，同时净化小说页面，去除不必要的元素。适用于起点小说、番茄小说、部分笔趣阁、书香小说等
 // @author       NiaoBlush
 // @license      MIT
