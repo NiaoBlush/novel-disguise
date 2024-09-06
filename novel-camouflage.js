@@ -23,6 +23,9 @@
 // @exclude      https://www.wenku8.net/novel/*/*/index.htm
 // @match        https://www.linovelib.com/novel/*/*.html
 // @match        https://www.qimao.com/shuku/*-*
+// @match        https://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
+// @match        https://my.jjwxc.net/onebook_vip.php?novelid=*&chapterid=*
+// @match        https://my.jjwxc.net/backend/buynovel.php?novelid=*&chapterid=*
 // @require      https://libs.baidu.com/jquery/2.0.3/jquery.min.js
 // @grant        GM_addStyle
 // @grant        GM_registerMenuCommand
@@ -1189,6 +1192,73 @@ const resource = {
         excelUnsupported();
     }
 
+    /**
+     * 晋江
+     * www.jjwxc.net
+     */
+    function jinjiang() {
+
+        GM_addStyle(`
+        .novel-pager {
+            border: none !important;
+            padding: 0 !important;
+        }
+        h2 {
+            display: none;
+        }
+        #note_danmu_wrapper {
+            display: none;
+        }
+        div[align='right'] {
+            display: none;
+        }
+        `);
+
+        const novelTitle = $("h1 span").text();
+        const chapterTitle = $("h2").text();
+        setDisguisedTitle(`${novelTitle} ${chapterTitle}`);
+
+        const $content = $(".novelbody").first().children("div");
+        const $pager = $(".noveltitle").eq(1).addClass("novel-pager");
+        setWordContent($pager.clone());
+        setWordContent($content);
+        setWordContent($pager.clone());
+        $content.children("div").first().remove();
+        $content.children("div").last().remove();
+
+        if (currentMode === MODE.EXCEL) {
+            $("h2").remove();
+            $("#note_danmu_wrapper").remove();
+            $("div[align='right']").remove();
+        }
+        addExcelStyle(`
+            
+        `);
+        setExcelContent($content);
+        setExcelLines([$pager], true);
+    }
+
+    /**
+     * 晋江
+     * 购买页面 及付费章节页面
+     * e.g. https://my.jjwxc.net/backend/buynovel.php?novelid=4104036&chapterid=21
+     * e.g. https://my.jjwxc.net/onebook_vip.php?novelid=4104036&chapterid=21
+     */
+    function jinjiangBuy() {
+        if (window.location.pathname.includes('/backend/buynovel')) {
+            const content = '关闭脚本以完成购买';
+            setDisguisedTitle(content);
+            setWordContent($(`
+                <div style="text-align: center;">${content}</div>
+            `));
+            setExcelLines([content]);
+        } else if (window.location.pathname.includes('/onebook_vip.php')) {
+            jinjiang()
+        }
+
+
+    }
+
     // main
     common();
     const currentHost = window.location.host;
@@ -1235,6 +1305,12 @@ const resource = {
             break;
         case 'www.qimao.com':
             qimao_com();
+            break;
+        case 'www.jjwxc.net':
+            jinjiang();
+            break;
+        case 'my.jjwxc.net':
+            jinjiangBuy();
             break;
     }
 
