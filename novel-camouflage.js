@@ -23,11 +23,14 @@
 // @exclude      https://www.wenku8.net/novel/*/*/index.htm
 // @match        https://www.linovelib.com/novel/*/*.html
 // @match        https://www.qimao.com/shuku/*-*
-// @require      https://libs.baidu.com/jquery/2.0.3/jquery.min.js
+// @match        https://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
+// @match        https://my.jjwxc.net/onebook_vip.php?novelid=*&chapterid=*
+// @match        https://my.jjwxc.net/backend/buynovel.php?novelid=*&chapterid=*
 // @grant        GM_addStyle
 // @grant        GM_registerMenuCommand
 // @grant        GM_getValue
 // @grant        GM_setValue
+// @require      https://libs.baidu.com/jquery/2.0.3/jquery.min.js
 // ==/UserScript==
 
 const resource = {
@@ -96,6 +99,8 @@ const resource = {
     let headerHeight = null;
     let footerHeight = null;
     let readerHeight = null;
+
+    const originalTitle = document.title;
 
     const link_text_color = "rgba(0,0,0,.7)";
     const link_bg_color = "#f6f6f6";
@@ -172,7 +177,7 @@ const resource = {
             background-size: 100% 100%;
         }
         
-        html{
+        html {
             overflow-y: hidden;
             color-scheme: normal !important;
         }
@@ -532,7 +537,7 @@ const resource = {
         const $footerEl = $('#footer-content');
         $footerEl.text("");
         if (typeof detail === "string") {
-            $footerEl.text(detailStr);
+            $footerEl.text(detail);
         } else {
             detail.appendTo($footerEl);
         }
@@ -1189,6 +1194,87 @@ const resource = {
         excelUnsupported();
     }
 
+    /**
+     * 晋江
+     * www.jjwxc.net
+     */
+    function jinjiang() {
+
+        GM_addStyle(`
+        .novel-pager {
+            border: none !important;
+            padding: 0 !important;
+        }
+        h2 {
+            display: none;
+        }
+        #note_danmu_wrapper {
+            display: none;
+        }
+        div[align='right'] {
+            display: none;
+        }
+        `);
+
+        const novelTitle = $("h1 span").text();
+        const chapterTitle = $("h2").text();
+        setDisguisedTitle(`${novelTitle} ${chapterTitle}`);
+
+        let $content = $(".novelbody").first().children("div");
+        const $pager = $(".noveltitle").eq(1).addClass("novel-pager");
+        setWordContent($pager.clone());
+        setWordContent($content);
+        setWordContent($pager.clone());
+        setWordDetail(originalTitle);
+        $content.children("div").first().remove();
+        $content.children("div").last().remove();
+
+        if (currentMode === MODE.EXCEL) {
+            $("h2").remove();
+            $("#note_danmu_wrapper").remove();
+            $("div[align='right']").remove();
+
+            if ($('.noveltext').length > 0) {
+                const fontFamily = $('.noveltext').css('font-family');
+                addExcelStyle(`
+                    .excel-table tbody td {
+                        font-family: ${fontFamily}
+                    }
+                `);
+            }
+
+        } else {
+            //这些文字删掉之后又会自动加回来。。
+            setTimeout(function () {
+                $content.html($content.html().replace(/@无限好文，尽在晋江文学城/g, ''));
+            }, 4000);
+        }
+
+        setExcelContent($content);
+        setExcelLines([$pager], true);
+    }
+
+    /**
+     * 晋江
+     * 购买页面 及付费章节页面
+     * e.g. https://my.jjwxc.net/backend/buynovel.php?novelid=4104036&chapterid=21
+     * e.g. https://my.jjwxc.net/onebook_vip.php?novelid=4104036&chapterid=21
+     */
+    function jinjiangBuy() {
+        if (window.location.pathname.includes('/backend/buynovel')) {
+            const content = '关闭脚本以完成购买';
+            setDisguisedTitle(content);
+            setWordContent($(`
+                <div style="text-align: center;">${content}</div>
+            `));
+            setExcelLines([content]);
+        } else if (window.location.pathname.includes('/onebook_vip.php')) {
+            jinjiang();
+        }
+
+
+    }
+
     // main
     common();
     const currentHost = window.location.host;
@@ -1235,6 +1321,12 @@ const resource = {
             break;
         case 'www.qimao.com':
             qimao_com();
+            break;
+        case 'www.jjwxc.net':
+            jinjiang();
+            break;
+        case 'my.jjwxc.net':
+            jinjiangBuy();
             break;
     }
 
