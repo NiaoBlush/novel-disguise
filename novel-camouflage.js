@@ -26,11 +26,11 @@
 // @match        https://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
 // @match        https://my.jjwxc.net/onebook_vip.php?novelid=*&chapterid=*
 // @match        https://my.jjwxc.net/backend/buynovel.php?novelid=*&chapterid=*
-// @require      https://libs.baidu.com/jquery/2.0.3/jquery.min.js
 // @grant        GM_addStyle
 // @grant        GM_registerMenuCommand
 // @grant        GM_getValue
 // @grant        GM_setValue
+// @require      https://libs.baidu.com/jquery/2.0.3/jquery.min.js
 // ==/UserScript==
 
 const resource = {
@@ -99,6 +99,8 @@ const resource = {
     let headerHeight = null;
     let footerHeight = null;
     let readerHeight = null;
+
+    const originalTitle = document.title;
 
     const link_text_color = "rgba(0,0,0,.7)";
     const link_bg_color = "#f6f6f6";
@@ -175,7 +177,7 @@ const resource = {
             background-size: 100% 100%;
         }
         
-        html{
+        html {
             overflow-y: hidden;
             color-scheme: normal !important;
         }
@@ -535,7 +537,7 @@ const resource = {
         const $footerEl = $('#footer-content');
         $footerEl.text("");
         if (typeof detail === "string") {
-            $footerEl.text(detailStr);
+            $footerEl.text(detail);
         } else {
             detail.appendTo($footerEl);
         }
@@ -1218,11 +1220,12 @@ const resource = {
         const chapterTitle = $("h2").text();
         setDisguisedTitle(`${novelTitle} ${chapterTitle}`);
 
-        const $content = $(".novelbody").first().children("div");
+        let $content = $(".novelbody").first().children("div");
         const $pager = $(".noveltitle").eq(1).addClass("novel-pager");
         setWordContent($pager.clone());
         setWordContent($content);
         setWordContent($pager.clone());
+        setWordDetail(originalTitle);
         $content.children("div").first().remove();
         $content.children("div").last().remove();
 
@@ -1230,10 +1233,23 @@ const resource = {
             $("h2").remove();
             $("#note_danmu_wrapper").remove();
             $("div[align='right']").remove();
+
+            if ($('.noveltext').length > 0) {
+                const fontFamily = $('.noveltext').css('font-family');
+                addExcelStyle(`
+                    .excel-table tbody td {
+                        font-family: ${fontFamily}
+                    }
+                `);
+            }
+
+        } else {
+            //这些文字删掉之后又会自动加回来。。
+            setTimeout(function () {
+                $content.html($content.html().replace(/@无限好文，尽在晋江文学城/g, ''));
+            }, 4000);
         }
-        addExcelStyle(`
-            
-        `);
+
         setExcelContent($content);
         setExcelLines([$pager], true);
     }
@@ -1253,7 +1269,7 @@ const resource = {
             `));
             setExcelLines([content]);
         } else if (window.location.pathname.includes('/onebook_vip.php')) {
-            jinjiang()
+            jinjiang();
         }
 
 

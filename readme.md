@@ -9,7 +9,7 @@ ___
 适用于起点小说、番茄小说、部分笔趣阁(众所周知好多站都叫笔趣阁)等
 
 目前已适配：起点 | 番茄 | biquge.net | xbiqugu.net | biquge.co | 52wx.com | 3bqg.cc | bigee.cc | 
-beqege.cc | biqukun.com | biquge.tw | wenku8.net | bilinovel.com | linovelib.com 
+beqege.cc | biqukun.com | biquge.tw | wenku8.net | bilinovel.com | linovelib.com | 晋江文学城
 
 部分适配：七猫(只支持word)
 
@@ -85,6 +85,10 @@ ___
 <details>
 
 <summary>版本说明</summary>
+
+### v2.2
+
++ 适配晋江
 
 ### v2.1
 
