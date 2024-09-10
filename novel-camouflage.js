@@ -2,7 +2,7 @@
 // @name         小说页面伪装|小说页面精简|起点页面伪装|番茄页面伪装|笔趣阁页面伪装
 // @namespace    https://github.com/NiaoBlush/novel-disguise
 // @version      2.2.0
-// @description  将小说页面伪装成一个Word文档或Excel表格，同时净化小说页面，去除不必要的元素。适用于起点、番茄、笔趣阁、晋江、部分轻小说站等
+// @description  将小说页面伪装成一个Word文档或Excel表格，同时净化小说页面，去除不必要的元素。适用于起点、番茄、笔趣阁、晋江、飞卢、部分轻小说站等
 // @author       NiaoBlush
 // @license      MIT
 // @homepageURL  https://github.com/NiaoBlush/novel-disguise
@@ -27,6 +27,8 @@
 // @match        https://my.jjwxc.net/onebook_vip.php?novelid=*&chapterid=*
 // @match        https://my.jjwxc.net/backend/buynovel.php?novelid=*&chapterid=*
 // @match        https://www.lightnovel.us/cn/detail/*
+// @match        https://b.faloo.com/*_*.html
+// @match        https://b.faloo.com/vip/*/*.html
 // @grant        GM_addStyle
 // @grant        GM_registerMenuCommand
 // @grant        GM_getValue
@@ -1344,6 +1346,52 @@ const resource = {
         });
     }
 
+    /**
+     * 飞卢小说
+     * faloo.com
+     */
+    function faloo_com() {
+        GM_addStyle(`
+        .noveContent {
+            padding: 15px;
+        }
+        #footer-content {
+            display: flex;
+        }
+        #footer-content span,  #footer-content a {
+            display: flex;
+            align-items: center;
+        }
+        #footer-content img {
+            display: none;
+        }
+        #footer-content div {
+            display: none;
+        }
+        #pageHtml {
+            display: flex;
+            font-size: 14px !important;
+        }
+        .next_page_btn {
+            font-size: 14px !important;
+        }
+        #pageHtml img {
+            display: none;
+        }
+        div.noveContent .con_img div:nth-child(2) {
+            width: 100% !important;
+        }
+        .con_img > div {
+            width: 100% !important;
+        }
+        `);
+        excelUnsupported();
+        setWordContent($(".noveContent"))
+        setWordContent($("#pageHtml"))
+        setDisguisedTitle($(".c_l_title").text())
+        setWordDetail($(".c_l_info").children())
+    }
+
     // main
     common();
     const currentHost = window.location.host;
@@ -1399,6 +1447,9 @@ const resource = {
             break;
         case 'www.lightnovel.us':
             lightnovel_us();
+            break;
+        case 'b.faloo.com':
+            faloo_com();
             break;
 
     }
