@@ -2,7 +2,7 @@
 // @name         小说页面伪装|小说页面精简|起点页面伪装|番茄页面伪装|笔趣阁页面伪装
 // @namespace    https://github.com/NiaoBlush/novel-disguise
 // @version      2.2.0
-// @description  将小说页面伪装成一个Word文档或Excel表格，同时净化小说页面，去除不必要的元素。适用于起点小说、番茄小说、部分笔趣阁、部分轻小说站等
+// @description  将小说页面伪装成一个Word文档或Excel表格，同时净化小说页面，去除不必要的元素。适用于起点、番茄、笔趣阁、晋江、部分轻小说站等
 // @author       NiaoBlush
 // @license      MIT
 // @homepageURL  https://github.com/NiaoBlush/novel-disguise
@@ -26,6 +26,7 @@
 // @match        https://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
 // @match        https://my.jjwxc.net/onebook_vip.php?novelid=*&chapterid=*
 // @match        https://my.jjwxc.net/backend/buynovel.php?novelid=*&chapterid=*
+// @match        https://www.lightnovel.us/cn/detail/*
 // @grant        GM_addStyle
 // @grant        GM_registerMenuCommand
 // @grant        GM_getValue
@@ -285,6 +286,25 @@ const resource = {
             z-index: 99999;
         }
         
+        #disguised-model {
+            position: fixed;
+            z-index: 99999;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 100vw;
+            max-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .disguised-img-indicator {
+            color: ${link_text_color};
+            text-decoration: underline;
+            cursor: pointer;
+        }
         
         `);
 
@@ -307,7 +327,7 @@ const resource = {
                         <span>简体中文（中国大陆）</span><span>辅助功能：一切就绪</span>
                     </div>
                 </div>
-               
+               <div id="disguised-model" style="display: none;"></div>
            </div>`).appendTo("body");
 
         if (currentMode === MODE.WORD) {
@@ -1275,6 +1295,55 @@ const resource = {
 
     }
 
+    /**
+     * 轻之国度
+     * lightnovel.us
+     */
+    function lightnovel_us() {
+
+        GM_addStyle(`
+        #footer-content>:not(span) {
+            display: none;
+        }
+        #footer-content {
+            display: flex;
+            align-items: center;
+        }
+        #footer-content span {
+            vertical-align: unset;
+            display: flex;
+            align-items: center;
+        }
+        #article-main-contents {
+            padding: 15px;
+        }
+        `);
+
+        $('#article-main-contents img').each(function () {
+            const imgSrc = $(this).attr('src');
+            const span = $('<span class="disguised-img-indicator"></span>')
+                .attr('data-src', imgSrc)
+                .text('点击显示图片');
+            $(this).replaceWith(span);
+        });
+        $('#disguised-model').on("click", function () {
+            $(this).hide();
+        });
+
+
+        setWordContent($(".article-content"));
+        setExcelContent($("#article-main-contents"));
+        setDisguisedTitle($(".article-title").text());
+        setWordDetail($(".article-infos").children());
+
+        $(".disguised-img-indicator").on('click', function () {
+            const src = $(this).attr('data-src');
+            const newImg = $('<img>').attr('src', src);
+            $('#disguised-model').html(newImg);
+            $("#disguised-model").show();
+        });
+    }
+
     // main
     common();
     const currentHost = window.location.host;
@@ -1328,6 +1397,10 @@ const resource = {
         case 'my.jjwxc.net':
             jinjiangBuy();
             break;
+        case 'www.lightnovel.us':
+            lightnovel_us();
+            break;
+
     }
 
     GM_registerMenuCommand("切换模式", switchMode);
