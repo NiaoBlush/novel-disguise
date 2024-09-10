@@ -6,12 +6,13 @@
 
 ___
 
-适用于起点小说、番茄小说、部分笔趣阁(众所周知好多站都叫笔趣阁)等
+适用于起点、番茄、笔趣阁、晋江、飞卢、部分轻小说站等
 
 目前已适配：起点 | 番茄 | biquge.net | xbiqugu.net | biquge.co | 52wx.com | 3bqg.cc | bigee.cc | 
-beqege.cc | biqukun.com | biquge.tw | wenku8.net | bilinovel.com | linovelib.com | 晋江文学城
+beqege.cc | biqukun.com | biquge.tw | wenku8.net | bilinovel.com | linovelib.com | 晋江文学城 | 
+轻之国度
 
-部分适配：七猫(只支持word)
+部分适配：七猫(只支持word) | 飞卢(只支持word)
 
 ___
 
@@ -85,6 +86,11 @@ ___
 <details>
 
 <summary>版本说明</summary>
+
+### v2.3
+
++ 适配轻之国度
++ 适配飞卢(word)
 
 ### v2.2
 
