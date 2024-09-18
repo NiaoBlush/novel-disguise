@@ -368,6 +368,7 @@ const resource = {
             left: 50%;
             transform: translate(-50%, -50%);
             border: 1px solid #707070;
+            background-color: #F0F0F0;
         }
         
         .disguised-modal-header {
@@ -382,6 +383,8 @@ const resource = {
             user-select: none;
             padding-left: 10px;
             color: black;
+            display: flex;
+            align-items: center;
         }
         
         .disguised-modal-header-close {
@@ -424,6 +427,10 @@ const resource = {
             background-color: #F0F0F0;
             min-height: 32px;
             font-size: 1em;
+        }
+        
+        .disguised-modal-wrapper * {
+            margin: unset;
         }
         
         `);
