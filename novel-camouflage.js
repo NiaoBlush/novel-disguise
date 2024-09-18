@@ -109,23 +109,21 @@ const resource = {
     const link_bg_color = "#f6f6f6";
     const link_front_color = "rgba(0,0,0,.7)";
 
+    //mode
     const KEY_MODE = 'key_mode';
-    const MODE = {
+    const DIC_MODE = {
         WORD: 'mode_word',
         EXCEL: 'mode_excel'
     };
+    let currentMode = GM_getValue(KEY_MODE, DIC_MODE.WORD);
 
-    let currentMode = GM_getValue(KEY_MODE, MODE.WORD);
-
-    function switchMode() {
-        currentMode = currentMode === MODE.WORD ? MODE.EXCEL : MODE.WORD;
-        GM_setValue(KEY_MODE, currentMode);
-        applyMode();
-    }
-
-    function applyMode() {
-        location.reload();
-    }
+    //margin type
+    const KEY_WORD_MARGIN_TYPE = 'key_word_margin_type';
+    const DIC_MARGIN_TYPE = {
+        NORMAL: 'normal_margin',
+        NONE: 'no_margin'
+    };
+    let currentMarginType = GM_getValue(KEY_WORD_MARGIN_TYPE, DIC_MARGIN_TYPE.NORMAL);
 
     function settings() {
         const $settings = $(`
@@ -133,8 +131,8 @@ const resource = {
                 <div class="nd-settings-form-group">
                     <label>模式: </label>
                     <select name="settings-mode">
-                        <option value="${MODE.WORD}">Word</option>
-                        <option value="${MODE.EXCEL}">Excel</option>
+                        <option value="${DIC_MODE.WORD}">Word</option>
+                        <option value="${DIC_MODE.EXCEL}">Excel</option>
                     </select>
                 </div>
                 <div class="nd-settings-form-group">
@@ -145,10 +143,11 @@ const resource = {
                     </select>
                 </div>
                 <div class="nd-settings-form-group">
-                    <label>页边距: </label>
-                    <label><input type="radio" name="margin-type" value="normal_margin" checked>正常</label>
-                    <label><input type="radio" name="margin-type" value="no_margin">无边距</label>
+                    <label>Word页边距: </label>
+                    <label><input type="radio" name="margin-type" value="${DIC_MARGIN_TYPE.NORMAL}">正常</label>
+                    <label><input type="radio" name="margin-type" value="${DIC_MARGIN_TYPE.NONE}">无边距</label>
                 </div>
+                <br>设置保存后，需要刷新页面生效
                 <div class="nd-settings-form-group">
                      <button type="submit">save</button>
                 </div>
@@ -156,20 +155,24 @@ const resource = {
            
         `);
 
-        //todo: default
+        //default
+        $settings.find("select[name=settings-mode]").val(currentMode);
+        $settings.find(`input[name=margin-type][value='${currentMarginType}']`).prop('checked', true);
+
+
+        const $modal = showModal($settings, {
+            title: "设置"
+        });
 
         //submit
         $settings.on('submit', function (event) {
             event.preventDefault();
 
             const formDataObj = new FormData(this);
-            console.log(formDataObj.get('settings-mode'));
-            alert(formDataObj.get('settings-mode'));
+            GM_setValue(KEY_MODE, formDataObj.get('settings-mode'));
+            GM_setValue(KEY_WORD_MARGIN_TYPE, formDataObj.get('margin-type'));
 
-            // 可以在这里添加其他操作，比如将数据发送到服务器等
-        });
-        showModal($settings, {
-            title: "设置"
+            $modal.remove();
         });
     }
 
@@ -184,7 +187,7 @@ const resource = {
         }
 
         console.log('screenInfo', screenInfo);
-        if (currentMode === MODE.WORD) {
+        if (currentMode === DIC_MODE.WORD) {
             if (screenInfo.physicalWidth >= 3840) {
                 disguised_header_img = resource.img.word_header_4k.url;
                 headerHeight = getActualHeight(resource.img.word_header_4k.height);
@@ -447,7 +450,7 @@ const resource = {
                <div id="disguised-model" style="display: none;"></div>
            </div>`).appendTo("body");
 
-        if (currentMode === MODE.WORD) {
+        if (currentMode === DIC_MODE.WORD) {
             document.title = "文档1";
         } else {
             document.title = "工作簿1";
@@ -573,20 +576,20 @@ const resource = {
     }
 
     function setWordContent($contentEl) {
-        if (currentMode !== MODE.WORD) {
+        if (currentMode !== DIC_MODE.WORD) {
             return;
         }
         $contentEl.show().appendTo("#disguised-content");
     }
 
     function clearExcelContent() {
-        if (currentMode === MODE.EXCEL) {
+        if (currentMode === DIC_MODE.EXCEL) {
             $(".excel-table tbody").empty();
         }
     }
 
     function setExcelLines(lines, append = false) {
-        if (currentMode !== MODE.EXCEL) {
+        if (currentMode !== DIC_MODE.EXCEL) {
             return;
         }
 
@@ -623,7 +626,7 @@ const resource = {
     }
 
     function setExcelContent($contentEl, type = 'br', clone = false) {
-        if (currentMode !== MODE.EXCEL) {
+        if (currentMode !== DIC_MODE.EXCEL) {
             return;
         }
 
@@ -647,20 +650,20 @@ const resource = {
     }
 
     function addExcelStyle(styleText) {
-        if (currentMode === MODE.EXCEL) {
+        if (currentMode === DIC_MODE.EXCEL) {
             GM_addStyle(styleText);
         }
     }
 
     function excelUnsupported() {
-        if (currentMode === MODE.EXCEL) {
+        if (currentMode === DIC_MODE.EXCEL) {
             alert("本站收费章节不支持Excel模式，将切换到Word模式");
             switchMode();
         }
     }
 
     function clearWordContent() {
-        if (currentMode === MODE.WORD) {
+        if (currentMode === DIC_MODE.WORD) {
             $('#disguised-content').empty();
         }
 
@@ -1393,7 +1396,7 @@ const resource = {
         $content.children("div").first().remove();
         $content.children("div").last().remove();
 
-        if (currentMode === MODE.EXCEL) {
+        if (currentMode === DIC_MODE.EXCEL) {
             $("h2").remove();
             $("#note_danmu_wrapper").remove();
             $("div[align='right']").remove();
@@ -1596,7 +1599,6 @@ const resource = {
 
     }
 
-    GM_registerMenuCommand("切换模式", switchMode);
     GM_registerMenuCommand("设置", settings);
 })
 ();
