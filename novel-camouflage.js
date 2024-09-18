@@ -127,6 +127,56 @@ const resource = {
         location.reload();
     }
 
+    function settings() {
+        const $settings = $(`
+            <form class="nd-settings-form">
+                <div class="nd-settings-form-group">
+                    <label>模式: </label>
+                    <select name="settings-mode">
+                        <option value="${MODE.WORD}">Word</option>
+                        <option value="${MODE.EXCEL}">Excel</option>
+                    </select>
+                </div>
+                <div class="nd-settings-form-group">
+                    <label for="settings-mode">主题: </label>
+                    <select id="settings-theme" name="settings-theme">
+                        <option value="theme_office">Office</option>
+                        <option value="theme_wps">Wps</option>
+                    </select>
+                </div>
+                <div class="nd-settings-form-group">
+                    <label>页边距: </label>
+                    <label><input type="radio" name="margin-type" value="normal_margin" checked>正常</label>
+                    <label><input type="radio" name="margin-type" value="no_margin">无边距</label>
+                </div>
+                <div class="nd-settings-form-group">
+                     <button type="submit">save</button>
+                </div>
+            </form>
+           
+        `);
+
+        //todo: default
+
+        //submit
+        $settings.on('submit', function (event) {
+            event.preventDefault();
+
+            const formDataObj = new FormData(this);
+            console.log(formDataObj.get('settings-mode'));
+            alert(formDataObj.get('settings-mode'));
+
+            // 可以在这里添加其他操作，比如将数据发送到服务器等
+        });
+        showModal($settings, {
+            title: "设置"
+        });
+    }
+
+    function saveSettings() {
+
+    }
+
     function setResource() {
 
         function getActualHeight(originalHeight) {
@@ -1547,5 +1597,6 @@ const resource = {
     }
 
     GM_registerMenuCommand("切换模式", switchMode);
+    GM_registerMenuCommand("设置", settings);
 })
 ();
