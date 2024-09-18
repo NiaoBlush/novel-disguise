@@ -308,6 +308,71 @@ const resource = {
             cursor: pointer;
         }
         
+        .disguised-modal-wrapper {
+            position: fixed;
+            z-index: 99999;
+            top: 35%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 1px solid #707070;
+        }
+        
+        .disguised-modal-header {
+            background-color: #FFF;
+            min-width: 200px;
+            height: 32px;
+            display: flex;
+        }
+        
+        .disguised-modal-title {
+            flex: 1;
+            user-select: none;
+            padding-left: 10px;
+            color: black;
+        }
+        
+        .disguised-modal-header-close {
+            position: relative;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            width: 36px;
+            height: 32px;
+            font-size: 1em;
+        }
+        .disguised-modal-header-close:hover {
+            background-color: #E81023;
+        }
+        .disguised-modal-header-close::before,
+        .disguised-modal-header-close::after {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 15px;
+          height: 1px;
+          background-color: black;
+          transform-origin: center;
+        }
+        .disguised-modal-header-close:hover::before,
+        .disguised-modal-header-close:hover::after {
+            background-color: #FFF;
+        }
+        .disguised-modal-header-close::before {
+          transform: translate(-50%, -50%) rotate(45deg);
+        }
+        .disguised-modal-header-close::after {
+          transform: translate(-50%, -50%) rotate(-45deg);
+        }
+        
+        .disguised-modal-body {
+            padding: 10px;
+            background-color: #F0F0F0;
+            min-height: 32px;
+            font-size: 1em;
+        }
+        
         `);
 
         // 图标
@@ -654,6 +719,33 @@ const resource = {
                 //是否
                 return getYesNo();
         }
+    }
+
+    function showModal(content, config = {}) {
+        const $modal = $(`
+        <div class="disguised-modal-wrapper">
+            <div class="disguised-modal-header">
+                <div class="disguised-modal-title">${config.title || ""}</div>
+                
+            </div>
+            <div class="disguised-modal-body"></div>
+        </div>
+        `);
+
+        const $headerClose = $(`<div class="disguised-modal-header-close"></div>`);
+        $headerClose.on("click", function () {
+            $modal.remove();
+        });
+        $modal.find(".disguised-modal-header").append($headerClose);
+
+        if (typeof content === "string") {
+            $modal.find(".disguised-modal-body").text(content);
+        } else {
+            content.appendTo($modal.find(".disguised-modal-body"));
+        }
+
+        $("#disguised-page").append($modal);
+        return $modal;
     }
 
 
@@ -1386,10 +1478,10 @@ const resource = {
         }
         `);
         excelUnsupported();
-        setWordContent($(".noveContent"))
-        setWordContent($("#pageHtml"))
-        setDisguisedTitle($(".c_l_title").text())
-        setWordDetail($(".c_l_info").children())
+        setWordContent($(".noveContent"));
+        setWordContent($("#pageHtml"));
+        setDisguisedTitle($(".c_l_title").text());
+        setWordDetail($(".c_l_info").children());
     }
 
     // main
