@@ -143,7 +143,7 @@ const resource = {
                     </select>
                 </div>
                 <div class="nd-settings-form-group">
-                    <label>Word页边距: </label>
+                    <label title="word半屏时采用无边距会看起来更加自然">Word页边距: </label>
                     <label><input type="radio" name="margin-type" value="${DIC_MARGIN_TYPE.NORMAL}">正常</label>
                     <label><input type="radio" name="margin-type" value="${DIC_MARGIN_TYPE.NONE}">无边距</label>
                 </div>
@@ -174,10 +174,6 @@ const resource = {
 
             $modal.remove();
         });
-    }
-
-    function saveSettings() {
-
     }
 
     function setResource() {
@@ -303,8 +299,8 @@ const resource = {
         
         #disguised-body {
             flex: 1;
-            padding-left: 25%;
-            padding-right: 25%;
+            padding-left: ${currentMarginType === DIC_MARGIN_TYPE.NORMAL ? '25%' : '0'};
+            padding-right: ${currentMarginType === DIC_MARGIN_TYPE.NORMAL ? '25%' : '0'};
             background-image: url(${disguised_body_img}) !important;
             background-repeat: repeat-y;
             background-size: 100% auto;
@@ -321,6 +317,11 @@ const resource = {
             border-right-width: 1px;
             min-height: 100%;
             width: 100%;
+        }
+        
+        #disguised-content > * {
+            width: 100%;
+            margin: unset;
         }
         
         #disguised-content p {
@@ -665,7 +666,8 @@ const resource = {
     function excelUnsupported() {
         if (currentMode === DIC_MODE.EXCEL) {
             alert("本站收费章节不支持Excel模式，将切换到Word模式");
-            switchMode();
+            GM_setValue(KEY_MODE, DIC_MODE.WORD);
+            location.reload();
         }
     }
 
