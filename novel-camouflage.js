@@ -182,13 +182,16 @@ const resource = {
                 </div>
                 <div class="nd-settings-form-group">
                     <label title="word半屏时采用无边距会看起来更加自然">Word页边距: </label>
-                    <label><input type="radio" name="margin-type" value="${DIC_MARGIN_TYPE.NORMAL}">正常</label>
+                    <label style="margin-right: 45px;"><input type="radio" name="margin-type" value="${DIC_MARGIN_TYPE.NORMAL}">正常</label>
                     <label><input type="radio" name="margin-type" value="${DIC_MARGIN_TYPE.NONE}">无边距</label>
                 </div>
-                <br>设置保存后，需要刷新页面生效
-                <div class="nd-settings-form-group">
-                    <button type="button" name="tip">好活，当赏</button>
-                    <button type="submit">save</button>
+                
+                <div class="nd-settings-form-group" style="margin-top: 20px;">
+                    <div class="nd-settings-btn-wrapper">
+                        <button type="button" name="tip">好活，当赏❤️</button>
+                        <button type="submit">保存设置</button>
+                    </div>
+                    
                 </div>
             </form>
            
@@ -221,15 +224,20 @@ const resource = {
         $settings.find("button[name=tip]").on("click", function () {
             const $tipContent = $(`
                 <div class="nd-tip-content">
-                    <p>感谢您使用本插件，如果您觉得本插件对您有帮助，请随意打赏，您的支持将鼓励我继续开发本插件</p>
+                    <p>感谢使用，如果觉得这个脚本用起来还算愉快，请随意打赏，一切随缘~</p>
+                    <p>祝各位摸鱼快乐~</p>
                     <br>
-                    <img src="${resource.img.tip_alipay.base64}" alt="支付宝">
-                    <img src="${resource.img.tip_wechat.base64}" alt="微信">
+                    <div class="tip-img-wrapper">
+                        <img src="${resource.img.tip_alipay.base64}" alt="支付宝">
+                        <img src="${resource.img.tip_wechat.base64}" alt="微信">
+                    </div>
+                    
                 </div>
             `);
 
             showModal($tipContent, {
-                title: "打赏"
+                title: "打赏",
+                width: 600
             });
         });
     }
@@ -440,7 +448,7 @@ const resource = {
         .disguised-modal-wrapper {
             position: fixed;
             z-index: 99999;
-            top: 35%;
+            top: 40%;
             left: 50%;
             transform: translate(-50%, -50%);
             border: 1px solid #707070;
@@ -478,24 +486,24 @@ const resource = {
         }
         .disguised-modal-header-close::before,
         .disguised-modal-header-close::after {
-          content: '';
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          width: 15px;
-          height: 1px;
-          background-color: black;
-          transform-origin: center;
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 15px;
+            height: 1px;
+            background-color: black;
+            transform-origin: center;
         }
         .disguised-modal-header-close:hover::before,
         .disguised-modal-header-close:hover::after {
             background-color: #FFF;
         }
         .disguised-modal-header-close::before {
-          transform: translate(-50%, -50%) rotate(45deg);
+            transform: translate(-50%, -50%) rotate(45deg);
         }
         .disguised-modal-header-close::after {
-          transform: translate(-50%, -50%) rotate(-45deg);
+            transform: translate(-50%, -50%) rotate(-45deg);
         }
         
         .disguised-modal-body {
@@ -509,8 +517,97 @@ const resource = {
             margin: unset;
         }
         
-        .nd-tip-content img {
+        .nd-settings-form {
+            font-family: 'Microsoft YaHei', sans-serif;
             width: 300px;
+            box-shadow: none;
+        }
+        
+        .nd-settings-form-group:not(:last-child) {
+            margin-bottom: 15px;
+        }
+        
+        .nd-settings-form-group label {
+            display: inline-block;
+            font-size: 13px;
+            color: #000;
+            margin-bottom: 5px;
+        }
+        
+        .nd-settings-form-group select,
+        .nd-settings-form-group input[type="radio"] {
+            font-size: 13px;
+            padding: 2px;
+            border: 1px solid #c0c0c0;
+            background-color: white;
+            width: auto;
+        }
+        
+        .nd-settings-form-group input[type="radio"] {
+            width: auto;
+            margin-right: 5px;
+        }
+        
+        .nd-settings-form-group button {
+            font-size: 13px;
+            padding: 5px 10px;
+            margin-right: 5px;
+            border: 1px solid #c0c0c0;
+            border-radius: 2px;
+            background-color: #e0e0e0;
+            cursor: pointer;
+        }
+        
+        .nd-settings-form-group button[type="submit"] {
+            background-color: #dcdcdc;
+        }
+        
+        .nd-settings-form-group button:hover {
+            background-color: #c0c0c0;
+        }
+        
+        .nd-settings-form-group button:active {
+            background-color: #a0a0a0;
+        }
+        
+        .nd-settings-form-group button:focus {
+            outline: 1px solid #606060;
+        }
+        
+        .nd-settings-form-group select {
+            margin-right: 5px;
+            width: 180px;
+        }
+        
+        .nd-settings-form-group select:focus-visible {
+            outline: none;
+        }
+        
+        .nd-settings-form-group label:first-child {
+            width: 100px;
+        }
+        
+        .nd-settings-form p {
+            margin-bottom: 10px;
+        }
+
+        .nd-settings-btn-wrapper {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        
+        .nd-tip-content {
+            font-size: 1.3em;
+        }
+        
+        .tip-img-wrapper {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .tip-img-wrapper img {
+            width: 48%;
         }
         
         .nd_msg{display:none;position:fixed;top:10px;left:50%;transform:translateX(-50%);color:#fff;text-align:center;z-index:99996;padding:10px 30px;font-size:16px;border-radius:10px;background-size:25px;background-repeat:no-repeat;background-position:15px}
@@ -883,6 +980,10 @@ const resource = {
             $modal.remove();
         });
         $modal.find(".disguised-modal-header").append($headerClose);
+
+        if (config.width && typeof config.width === "number") {
+            $modal.css("width", `${config.width}px`);
+        }
 
         if (typeof content === "string") {
             $modal.find(".disguised-modal-body").text(content);
@@ -1717,7 +1818,5 @@ const resource = {
 
     GM_registerMenuCommand("设置", settings);
 
-    //tmp
-    settings();
 })
 ();
