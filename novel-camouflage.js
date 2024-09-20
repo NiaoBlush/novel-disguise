@@ -448,8 +448,9 @@ const resource = {
         .disguised-modal-wrapper {
             position: fixed;
             z-index: 99999;
-            top: 40%;
+            top: 50%;
             left: 50%;
+            max-height: 100%;
             transform: translate(-50%, -50%);
             border: 1px solid #707070;
             background-color: #F0F0F0;
@@ -510,7 +511,10 @@ const resource = {
             padding: 10px;
             background-color: #F0F0F0;
             min-height: 32px;
+            max-height: calc(100vh - 32px);
             font-size: 1em;
+            line-height: normal;
+            overflow-y: auto;
         }
         
         .disguised-modal-wrapper * {
@@ -1484,6 +1488,11 @@ const resource = {
             border-right: none !important;
         }
         
+        @media (min-width: 768px) {
+            .book {
+                padding: unset;
+            }
+        }
         `);
 
         setDisguisedTitle($(".book>h1").text());
@@ -1702,9 +1711,11 @@ const resource = {
 
         $(".disguised-img-indicator").on('click', function () {
             const src = $(this).attr('data-src');
-            const newImg = $('<img>').attr('src', src);
-            $('#disguised-model').html(newImg);
-            $("#disguised-model").show();
+            const $newImg = $('<img>').attr('src', src);
+            const $modal = showModal($newImg);
+            $newImg.on('click', function () {
+                $modal.remove();
+            });
         });
     }
 
