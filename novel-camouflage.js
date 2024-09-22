@@ -405,6 +405,7 @@ const resource = {
         #disguised-content > * {
             width: 100%;
             margin: unset;
+            box-sizing: border-box;
         }
         
         #disguised-content p {
