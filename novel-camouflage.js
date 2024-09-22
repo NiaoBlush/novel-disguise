@@ -29,6 +29,7 @@
 // @match        https://www.lightnovel.us/cn/detail/*
 // @match        https://b.faloo.com/*_*.html
 // @match        https://b.faloo.com/vip/*/*.html
+// @match        https://69shuba.cx/txt/*/*
 // @grant        GM_addStyle
 // @grant        GM_registerMenuCommand
 // @grant        GM_getValue
@@ -400,6 +401,8 @@ const resource = {
             border-right-width: 1px;
             min-height: 100%;
             width: 100%;
+            padding: 10px 4px;
+            box-sizing: border-box;
         }
         
         #disguised-content > * {
@@ -624,7 +627,7 @@ const resource = {
 
         // 图标
         var link = $('<link rel="icon" type="image/x-icon">').attr('href', disguised_icon_img);
-        $('link[type="image/x-icon"]').remove();
+        $('link[rel*="icon"]').remove();
         $('head').append(link);
 
         $('body').children().hide();
@@ -1766,6 +1769,29 @@ const resource = {
         setWordDetail($(".c_l_info").children());
     }
 
+    /**
+     * 69书吧
+     * 69shuba.cx
+     * e.g. https://69shuba.cx/txt/56042/39089569
+     */
+    function _69shuba_cx() {
+        GM_addStyle(`
+        .page1 a{
+            line-height: normal;
+        }
+        `);
+
+        setDisguisedTitle($("h1").text());
+        setWordDetail($(".txtinfo").text());
+
+        $("h1").remove();
+        $(".txtinfo").remove();
+        setWordContent($(".txtnav"));
+        setWordContent($(".page1"));
+        setExcelContent($(".txtnav"), "p");
+        setExcelLines([$(".page1")], true);
+    }
+
     // main
     common();
     const currentHost = window.location.host;
@@ -1825,7 +1851,9 @@ const resource = {
         case 'b.faloo.com':
             faloo_com();
             break;
-
+        case '69shuba.cx':
+            _69shuba_cx();
+            break;
     }
 
     GM_registerMenuCommand("设置", settings);
