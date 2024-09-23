@@ -20,9 +20,17 @@ ___
 
 脚本安装地址[在这里](https://greasyfork.org/zh-CN/scripts/499657)
 
-需要**适配其他网站**欢迎在反馈区提出来 (⚠**同时需要提供站点网址**⚠)
+需要**适配其他网站**
+欢迎在[反馈区](https://greasyfork.org/zh-CN/scripts/499657-%E5%B0%8F%E8%AF%B4%E9%A1%B5%E9%9D%A2%E4%BC%AA%E8%A3%85-%E5%B0%8F%E8%AF%B4%E9%A1%B5%E9%9D%A2%E7%B2%BE%E7%AE%80-%E8%B5%B7%E7%82%B9%E9%A1%B5%E9%9D%A2%E4%BC%AA%E8%A3%85-%E7%95%AA%E8%8C%84%E9%A1%B5%E9%9D%A2%E4%BC%AA%E8%A3%85-%E7%AC%94%E8%B6%A3%E9%98%81%E9%A1%B5%E9%9D%A2%E4%BC%AA%E8%A3%85/feedback)
+或者[Issues](https://github.com/NiaoBlush/novel-disguise/issues)中提出来 (⚠**同时需要提供站点网址**⚠)
 
 觉得好用的话可以给个star或者给个好评~
+
+![1.jpg](https://s21.ax1x.com/2024/07/05/pkRJ9nH.jpg)
+
+![excel](https://s21.ax1x.com/2024/08/27/pAk5yxf.jpg)
+
+![2.jpg](https://s21.ax1x.com/2024/07/05/pkRJYgU.jpg)
 
 ## 安装
 
@@ -35,15 +43,12 @@ ___
 
 ---
 
-如果无法从Chrome官方商店安装，参考以下内容：
+如果无法从浏览器官方商店安装，参考以下内容：
 
-以下内容摘自[这里](https://github.com/XIU2/UserScript/blob/master/README.md)，使用者自行决定是否使用。
+以下内容摘自[这里](https://github.com/XIU2/UserScript/blob/master/README.md)，使用者自行决定是否使用。 (
+感谢XIU2大佬的文件及文档)
 
-> （[Chrome](https://pan.lanpw.com/b073l8d1e) /
-[Firefox](https://addons.mozilla.org/firefox/addon/tampermonkey/) /
-[Edge](https://microsoftedge.microsoft.com/addons/detail/tampermonkey/iikmkjmpaadaobahmlepeloendndfphd?hl=zh-CN)）。
-> - 点击表格 **\[安装\]** 进入 GreasyFork 网页，点击 **\[安装脚本\]** 后弹出扩展提示，再点击 **\[安装\]** 即可。
-> - 如果 GreasyFork 访问速度太慢，可以选择点击 **\[备用\]** 后弹出扩展提示，再去点击 **\[安装\]** 即可。
+> （[Chrome](https://pan.lanpw.com/b073l8d1e))
 > - _其他基于 **Chromium** 内核的浏览器（如国内套皮浏览器）一般都可以使用 Chrome 扩展。_
 > - _请确保使用 **Tampermonkey 正式版** 扩展，其他的用户脚本管理器可能导致**无法正常使用**脚本。_
 > - _如果要重装脚本，请记得在 Tampermonkey 扩展的**回收站中彻底删除**脚本后再去重新安装脚本。_
@@ -55,14 +60,31 @@ ___
 
 开箱即用, 如果觉得浏览器的标题栏与地址栏比较显眼可以使用`F11`进入全屏模式
 
-点击浏览器右上角油猴拓展，再点击脚本下的`切换模式`按钮，即可切换为Word模式或Excel模式:
-![如何切换模式](https://s21.ax1x.com/2024/08/27/pAk5Qa9.jpg)
+章节名放置于上方标题栏，
+
+字数，发布时间等信息在左下角（如果有）。
 
 ___
 
-章节放置于上方标题栏，
+点击浏览器右上角油猴拓展，再点击脚本下的`设置`按钮，即可打开设置菜单:
 
-字数，发布时间等信息在左下角（如果有）。
+改动任何设置并点击`保存设置`按钮后，需要刷新页面以使设置生效。
+
+![设置菜单1](https://s21.ax1x.com/2024/09/23/pAQpUUK.jpg)
+
+![菜单界面](https://s21.ax1x.com/2024/09/23/pAQpNE6.jpg)
+
+### 模式切换
+
+默认为**Word模式**，可切换为**Excel模式**。
+
+### 主题切换
+
+默认为**Office主题**，可切换为**Wps主题**。
+
+### Word页边距模式
+
+可切换Word模式下页边距的显隐，半屏时采用无边距会更加自然。
 
 ### 字体
 
@@ -70,18 +92,12 @@ ___
 
 字体、登录等需要关闭脚本，在原版网页中完成修改等操作后再开启脚本。
 
-## 截图
+## 其他说明
 
-![1.jpg](https://s21.ax1x.com/2024/07/05/pkRJ9nH.jpg)
-
-![excel](https://s21.ax1x.com/2024/08/27/pAk5yxf.jpg)
-
-![2.jpg](https://s21.ax1x.com/2024/07/05/pkRJYgU.jpg)
-
-## 说明
-
-微信读书好复杂，暂时没做支持。 
+微信读书好复杂，暂时没做支持。
 ~~谁没事把文字画在Canvas上啊~~
+
+~~原来还真不少放在Canvas里作为防盗版手段, 甚至还有放在图片里直接展示的, 开了眼了~~
 
 <details>
 
@@ -118,13 +134,14 @@ ___
 </details>
 
 ## 免责声明
+
 本脚本为独立项目，与其应用的网站无任何关联或官方联系。网站提供的内容完全由各自的内容提供者负责。
 
 本脚本仅修改内容的外观和样式，以方便用户使用，并不更改或干扰内容本身。使用本脚本时，用户仍需遵守各个网站的使用条款和版权规定。对网站内容的复制、转载、下载等操作，必须遵循内容提供方的版权要求和相关法律规定。
 
 脚本作者不对使用本脚本后的网站内容或功能的任何变化负责，也不承担因违反网站规定或法律引起的任何责任。
 
-`Excel模式`下部分伪装内容为随机生成，在机缘巧合下生成的具有特定含义的随机内容并非作者本意。
+`Excel模式`下部分伪装内容为随机生成，在机缘巧合下生成的或许具有特定含义的随机内容并非作者本意。
 
 ## 安装数
 
