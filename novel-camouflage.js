@@ -1797,42 +1797,67 @@ const resource = {
      * 微信读书
      * e.g. https://weread.qq.com/web/reader/2853228053816e28595e6f0k341323f021e34173cb3824c
      *
-     * 这个站真的是。。。🙂
+     * 这个站真的是。。。一言难尽🙂
      */
     function weread() {
         setDisguisedTitle($(".readerCatalog_list_item_selected .readerCatalog_list_item_title_text").text());
         //check if .isHorizontalReader exists
         const $changeDir = $("button.isHorizontalReader");
-        if ($changeDir.length > 0) {
-            //trigger click of $("button.isHorizontalReader")
-            console.log("inside");
-            console.log($changeDir);
-            setTimeout(function () {
-                $changeDir.trigger("click");
-                // $("button.isHorizontalReader")[0].click();
-            }, 5000);
+        // if ($changeDir.length > 0) {
+        //     //trigger click of $("button.isHorizontalReader")
+        //     console.log("inside");
+        //     console.log($changeDir);
+        //     setTimeout(function () {
+        //         $changeDir.trigger("click");
+        //         // $("button.isHorizontalReader")[0].click();
+        //     }, 5000);
+        //
+        // }
+        // console.log($(".renderTargetContainer"));
+        // console.log($(".readerChapterContent"));
+        // console.log($(".wr_canvasContainer"));
+        // setTimeout(function () {
+        //     console.log("start");
+        //
+        //     // common();
+        //     // setWordContent($(".readerHeaderButton"))
+        //     // setWordContent($(".renderTargetContainer"))
+        //     // setWordContent($(".readerFooter_button"))
+        // }, 10000);
 
-        }
-        console.log($(".renderTargetContainer"));
-        console.log($(".readerChapterContent"));
-        console.log($(".wr_canvasContainer"));
-        setTimeout(function () {
-            console.log("start");
-            // common();
-            // setWordContent($(".readerHeaderButton"))
-            // setWordContent($(".renderTargetContainer"))
-            // setWordContent($(".readerFooter_button"))
-        }, 10000);
+        //light
+        // $(".readerControls_item.white").trigger("click");
+
+        // $("button.readerHeaderButton").bind("click", function () {
+        //     alert(1);
+        // });
+
+
 
         const targetNode = document.querySelector('.wr_canvasContainer');
-        const config = {childList: true};
+        const config = {childList: true, attributes: true, subtree: true, attributeFilter: ['data-random']};
         const callback = function (mutationsList, observer) {
             for (let mutation of mutationsList) {
                 if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                    // alert(1);
                     common();
+                    // $("body").addClass("wr_whiteTheme");
+                    const $btn=$(`<button>123</button>`)
+                    $btn.on("click",function(){
+                        console.log("click")
+                        // $("button.readerHeaderButton")[0].click()
+                        // $("button.readerHeaderButton").each(function() {
+                        //     console.log(this)
+                        //     this.click();
+                        // });
+                        $("button.readerHeaderButton").trigger('mousedown');
+                    })
+                    setWordContent($btn)
                     setWordContent($(".readerHeaderButton"));
                     setWordContent($(".renderTargetContainer"));
                     setWordContent($(".readerFooter_button"));
+                } else if (mutation.type === 'childList' && mutation.removedNodes.length > 0) {
+                    alert("removed");
                 }
             }
         };
