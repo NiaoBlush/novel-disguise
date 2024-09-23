@@ -30,6 +30,7 @@
 // @match        https://b.faloo.com/*_*.html
 // @match        https://b.faloo.com/vip/*/*.html
 // @match        https://69shuba.cx/txt/*/*
+// @match        https://weread.qq.com/web/reader/*
 // @grant        GM_addStyle
 // @grant        GM_registerMenuCommand
 // @grant        GM_getValue
@@ -1792,67 +1793,136 @@ const resource = {
         setExcelLines([$(".page1")], true);
     }
 
+    /**
+     * 微信读书
+     * e.g. https://weread.qq.com/web/reader/2853228053816e28595e6f0k341323f021e34173cb3824c
+     *
+     * 这个站真的是。。。🙂
+     */
+    function weread() {
+        setDisguisedTitle($(".readerCatalog_list_item_selected .readerCatalog_list_item_title_text").text());
+        //check if .isHorizontalReader exists
+        const $changeDir = $("button.isHorizontalReader");
+        if ($changeDir.length > 0) {
+            //trigger click of $("button.isHorizontalReader")
+            console.log("inside");
+            console.log($changeDir);
+            setTimeout(function () {
+                $changeDir.trigger("click");
+                // $("button.isHorizontalReader")[0].click();
+            }, 5000);
+
+        }
+        console.log($(".renderTargetContainer"));
+        console.log($(".readerChapterContent"));
+        console.log($(".wr_canvasContainer"));
+        setTimeout(function () {
+            console.log("start");
+            // common();
+            // setWordContent($(".readerHeaderButton"))
+            // setWordContent($(".renderTargetContainer"))
+            // setWordContent($(".readerFooter_button"))
+        }, 10000);
+
+        const targetNode = document.querySelector('.wr_canvasContainer');
+        const config = {childList: true};
+        const callback = function (mutationsList, observer) {
+            for (let mutation of mutationsList) {
+                if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
+                    common();
+                    setWordContent($(".readerHeaderButton"));
+                    setWordContent($(".renderTargetContainer"));
+                    setWordContent($(".readerFooter_button"));
+                }
+            }
+        };
+        const observer = new MutationObserver(callback);
+        observer.observe(targetNode, config);
+    }
+
     // main
-    common();
+    // common();
     const currentHost = window.location.host;
     console.log('currentHost', currentHost);
     switch (currentHost) {
         case 'www.qidian.com':
+            common();
             qidian();
             break;
         case 'fanqienovel.com':
+            common();
             fanqie();
             break;
         case `www.biquge.net`:
+            common();
             biquge_net();
             break;
         case 'www.xbiqugu.net':
+            common();
             xbiqugu_net();
             break;
         case 'www.biquge.co':
+            common();
             biquge_co();
             break;
         case 'www.52wx.com':
+            common();
             www_52wx_com();
             break;
         case 'www.3bqg.cc':
+            common();
             www_3bqg_cc();
             break;
         case 'www.bigee.cc':
+            common();
             www_bigee_cc();
             break;
         case 'www.beqege.cc':
+            common();
             www_beqege_cc();
             break;
         case 'www.biqukun.com':
+            common();
             www_biqukun_com();
             break;
         case 'www.biquge.tw':
+            common();
             www_biquge_tw();
             break;
         case 'www.wenku8.net':
+            common();
             www_wenku8_net();
             break;
         case 'www.linovelib.com':
+            common();
             biilinovel_com();
             break;
         case 'www.qimao.com':
+            common();
             qimao_com();
             break;
         case 'www.jjwxc.net':
+            common();
             jinjiang();
             break;
         case 'my.jjwxc.net':
+            common();
             jinjiangBuy();
             break;
         case 'www.lightnovel.us':
+            common();
             lightnovel_us();
             break;
         case 'b.faloo.com':
+            common();
             faloo_com();
             break;
         case '69shuba.cx':
+            common();
             _69shuba_cx();
+            break;
+        case 'weread.qq.com':
+            weread();
             break;
     }
 
