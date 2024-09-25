@@ -328,7 +328,11 @@
         "update_checks": 328
     },
     "2024-09-24": {
-        "installs": 11,
-        "update_checks": 300
+        "installs": 13,
+        "update_checks": 320
+    },
+    "2024-09-25": {
+        "installs": 9,
+        "update_checks": 292
     }
 }
