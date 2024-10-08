@@ -380,7 +380,11 @@
         "update_checks": 133
     },
     "2024-10-07": {
-        "installs": 4,
-        "update_checks": 128
+        "installs": 5,
+        "update_checks": 153
+    },
+    "2024-10-08": {
+        "installs": 14,
+        "update_checks": 326
     }
 }
