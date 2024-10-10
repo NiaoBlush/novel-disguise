@@ -22,7 +22,7 @@ ___
 
 需要**适配其他网站**
 欢迎在[反馈区](https://greasyfork.org/zh-CN/scripts/499657-%E5%B0%8F%E8%AF%B4%E9%A1%B5%E9%9D%A2%E4%BC%AA%E8%A3%85-%E5%B0%8F%E8%AF%B4%E9%A1%B5%E9%9D%A2%E7%B2%BE%E7%AE%80-%E8%B5%B7%E7%82%B9%E9%A1%B5%E9%9D%A2%E4%BC%AA%E8%A3%85-%E7%95%AA%E8%8C%84%E9%A1%B5%E9%9D%A2%E4%BC%AA%E8%A3%85-%E7%AC%94%E8%B6%A3%E9%98%81%E9%A1%B5%E9%9D%A2%E4%BC%AA%E8%A3%85/feedback)
-或者[Issues](https://github.com/NiaoBlush/novel-disguise/issues)中提出来 (⚠**同时需要提供站点网址**⚠)
+或者[Issues](https://github.com/NiaoBlush/novel-disguise/issues/new)中提出来 (⚠**同时需要提供站点网址**⚠)
 
 觉得好用的话可以给个star或者给个好评~
 
