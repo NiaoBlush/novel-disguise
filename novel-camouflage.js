@@ -30,6 +30,7 @@
 // @match        https://b.faloo.com/*_*.html
 // @match        https://b.faloo.com/vip/*/*.html
 // @match        https://69shuba.cx/txt/*/*
+// @match        https://www.owlook.com.cn/owllook_content*
 // @grant        GM_addStyle
 // @grant        GM_registerMenuCommand
 // @grant        GM_getValue
@@ -401,7 +402,6 @@ const resource = {
             border-right-width: 1px;
             min-height: 100%;
             width: 100%;
-            padding: 10px 4px;
             box-sizing: border-box;
         }
         
@@ -649,6 +649,11 @@ const resource = {
 
         if (currentMode === DIC_MODE.WORD) {
             document.title = "文档1";
+            GM_addStyle(`
+            #disguised-content {
+                padding: 10px 10px;
+            }
+            `);
         } else {
             document.title = "工作簿1";
             GM_addStyle(`
@@ -844,6 +849,16 @@ const resource = {
             setExcelLines(pList);
         }
 
+    }
+
+    function addGlobalStyle(styleText) {
+        GM_addStyle(styleText);
+    }
+
+    function addWordStyle(styleText) {
+        if (currentMode === DIC_MODE.WORD) {
+            GM_addStyle(styleText);
+        }
     }
 
     function addExcelStyle(styleText) {
@@ -1792,6 +1807,40 @@ const resource = {
         setExcelLines([$(".page1")], true);
     }
 
+    /**
+     * owlook
+     * 基于开源项目owllook搭建的
+     * e.g. https://www.owlook.com.cn/owllook_content?url=https://www.bq99.cc/book/141046/42.html&name=%E7%AC%AC%E5%9B%9B%E5%8D%81%E4%B8%80%E7%AB%A0%20%E7%AD%91%E5%9F%BA%E5%8A%9F%E6%B3%95&chapter_url=https://www.bq99.cc/book/141046/&novels_name=%E4%BF%AE%E7%9C%9F%E8%81%8A%E5%A4%A9%E7%BE%A4
+     *
+     */
+    function www_owlook_com_cn() {
+        addGlobalStyle(`
+            .nd_owllook_pager a {
+                color: black;
+            }
+        `)
+        addWordStyle(`
+            .nd_owllook_pager {
+                text-align: center;
+            }
+        `)
+
+        $(".readinline").remove();
+        setDisguisedTitle($("#content_name").text());
+        setWordContent($(".show-content"));
+        setExcelContent($("#chaptercontent"));
+        const $originalPager = $(".pre_next");
+        const $pager = $(`
+            <div class="nd_owllook_pager">
+                <a href="${$originalPager.children().first().attr('href')}">上一章</a>
+                <a href="${$('.left-bar-list > div:first-child>a').attr('href')}">目录</a>
+                <a href="${$originalPager.children().last().attr('href')}">下一章</a>
+            </div>
+        `);
+        setWordContent($pager);
+        setExcelLines([$pager], true);
+    }
+
     // main
     common();
     const currentHost = window.location.host;
@@ -1853,6 +1902,9 @@ const resource = {
             break;
         case '69shuba.cx':
             _69shuba_cx();
+            break;
+        case 'www.owlook.com.cn':
+            www_owlook_com_cn();
             break;
     }
 
