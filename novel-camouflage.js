@@ -1828,7 +1828,7 @@ const resource = {
         $(".readinline").remove();
         setDisguisedTitle($("#content_name").text());
         setWordContent($(".show-content"));
-        setExcelContent($("#chaptercontent"));
+        setExcelContent($(".show-content"));
         const $originalPager = $(".pre_next");
         const $pager = $(`
             <div class="nd_owllook_pager">
