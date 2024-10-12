@@ -8,11 +8,23 @@ ___
 
 适用于起点、番茄、笔趣阁、晋江、飞卢、部分轻小说站等
 
-目前已适配：起点 | 番茄 | biquge.net | xbiqugu.net | biquge.co | 52wx.com | 3bqg.cc | bigee.cc | 
-beqege.cc | biqukun.com | biquge.tw | wenku8.net | bilinovel.com | linovelib.com | 晋江文学城 | 
-轻之国度 | 69书吧(69shuba.cx) | owlook.com.cn
+适配情况:
+(部分站点采用图片等形式展示文字, 无法支持Excel模式)
 
-部分适配：七猫(只支持word) | 飞卢(只支持word) | 刺猬猫(只支持word)
+| 站点            | Word模式 | Excel模式 |
+|---------------|--------|---------|
+| 起点            | ✔      | ✔       |
+| 番茄            | ✔      | ✔       |
+| 若干笔趣阁         | ✔      | ✔       |
+| bilinovel.com | ✔      | ✔       |
+| linovelib.com | ✔      | ✔       |
+| 晋江文学城         | ✔      | ✔       |
+| 轻之国度          | ✔      | ✔       |
+| 69书吧          | ✔      | ✔       |
+| owlook.com.cn | ✔      | ✔       |
+| 七猫            | ✔      | ❌       |
+| 飞卢            | ✔      | ❌       |
+| 刺猬猫           | ✔      | ❌       |
 
 ___
 
