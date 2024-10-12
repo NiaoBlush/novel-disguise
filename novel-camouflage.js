@@ -30,6 +30,8 @@
 // @match        https://b.faloo.com/*_*.html
 // @match        https://b.faloo.com/vip/*/*.html
 // @match        https://69shuba.cx/txt/*/*
+// @match        https://www.owlook.com.cn/owllook_content*
+// @match        https://www.ciweimao.com/chapter/*
 // @grant        GM_addStyle
 // @grant        GM_registerMenuCommand
 // @grant        GM_getValue
@@ -401,7 +403,6 @@ const resource = {
             border-right-width: 1px;
             min-height: 100%;
             width: 100%;
-            padding: 10px 4px;
             box-sizing: border-box;
         }
         
@@ -649,6 +650,11 @@ const resource = {
 
         if (currentMode === DIC_MODE.WORD) {
             document.title = "文档1";
+            GM_addStyle(`
+            #disguised-content {
+                padding: 10px 30px;
+            }
+            `);
         } else {
             document.title = "工作簿1";
             GM_addStyle(`
@@ -846,6 +852,16 @@ const resource = {
 
     }
 
+    function addGlobalStyle(styleText) {
+        GM_addStyle(styleText);
+    }
+
+    function addWordStyle(styleText) {
+        if (currentMode === DIC_MODE.WORD) {
+            GM_addStyle(styleText);
+        }
+    }
+
     function addExcelStyle(styleText) {
         if (currentMode === DIC_MODE.EXCEL) {
             GM_addStyle(styleText);
@@ -1026,6 +1042,40 @@ const resource = {
         }, type == 'ok' ? 2500 : 5500);
     }
 
+    /**
+     * 获取指定的cookie值
+     */
+    function getCookie(name) {
+        let cookieArr = document.cookie.split(";");
+
+        for (let i = 0; i < cookieArr.length; i++) {
+            let cookiePair = cookieArr[i].split("=");
+
+            // 取出cookie名称时去除前后空格
+            if (name === cookiePair[0].trim()) {
+                return decodeURIComponent(cookiePair[1]);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 设置cookie的值
+     */
+    function setCookie(name, value, days, domain = null) {
+        let expires = "";
+        if (days) {
+            let expireDate = new Date();
+            expireDate.setDate(expireDate.getDate() + days);
+            expires = "; expires=" + expireDate.toUTCString();
+        }
+
+        let domainStr = "";
+        if (domain) {
+            domainStr = "; domain=" + domain;
+        }
+        document.cookie = name + "=" + (value || "") + expires + domainStr + "; path=/";
+    }
 
 /////////////////////////////针对站点
 
@@ -1792,6 +1842,94 @@ const resource = {
         setExcelLines([$(".page1")], true);
     }
 
+    /**
+     * owlook
+     * 基于开源项目owllook搭建的
+     * e.g. https://www.owlook.com.cn/owllook_content?url=https://www.bq99.cc/book/141046/42.html&name=%E7%AC%AC%E5%9B%9B%E5%8D%81%E4%B8%80%E7%AB%A0%20%E7%AD%91%E5%9F%BA%E5%8A%9F%E6%B3%95&chapter_url=https://www.bq99.cc/book/141046/&novels_name=%E4%BF%AE%E7%9C%9F%E8%81%8A%E5%A4%A9%E7%BE%A4
+     *
+     */
+    function www_owlook_com_cn() {
+        addGlobalStyle(`
+            .nd_owllook_pager a {
+                color: black;
+            }
+        `);
+        addWordStyle(`
+            .nd_owllook_pager {
+                text-align: center;
+            }
+        `);
+
+        $(".readinline").remove();
+        setDisguisedTitle($("#content_name").text());
+        setWordContent($(".show-content"));
+        setExcelContent($(".show-content"));
+        const $originalPager = $(".pre_next");
+        const $pager = $(`
+            <div class="nd_owllook_pager">
+                <a href="${$originalPager.children().first().attr('href')}">上一章</a>
+                <a href="${$('.left-bar-list > div:first-child>a').attr('href')}">目录</a>
+                <a href="${$originalPager.children().last().attr('href')}">下一章</a>
+            </div>
+        `);
+        setWordContent($pager);
+        setExcelLines([$pager], true);
+    }
+
+    /**
+     * 刺猬猫阅读
+     * e.g. free https://www.ciweimao.com/chapter/112168341
+     * e.g. vip https://www.ciweimao.com/chapter/112171956
+     */
+    function ciweimao_com() {
+        excelUnsupported();
+
+        addGlobalStyle(`
+            #footer-content > p {
+                display: flex;
+                align-items: center;
+            }
+            #footer-content > p > span {
+                margin-right: 10px;
+            }
+            .book-read-page a {
+                background-color: unset;
+                border: none;
+            }
+            .book-read-page a:hover {
+                background-color: unset;
+                border: none;
+            }
+        `);
+
+        setTimeout(function () {
+
+            // 读取 bookReadTheme 的值
+            let bookReadTheme = getCookie('bookReadTheme');
+            if (bookReadTheme && !bookReadTheme.startsWith('white')) {
+                let commaIndex = bookReadTheme.indexOf(',');
+                if (commaIndex !== -1) {
+                    //改为白色主题
+                    let newBookReadTheme = 'white' + bookReadTheme.substring(commaIndex);
+                    // 更新cookie并重新加载页面
+                    setCookie('bookReadTheme', newBookReadTheme, 365, "." + window.location.hostname);
+                    location.reload(); // 重新加载页面
+                }
+            }
+
+            setDisguisedTitle($("h1.chapter").text());
+            setWordDetail($(".read-hd>p"));
+            $("#J_BookRead_WaterMark").remove();
+            $("#J_BookRead p span, #J_BookRead p i").remove();
+            $("#J_ImgRead i").remove();
+            setWordContent($("#J_BookRead"));
+            setWordContent($("#J_ImgRead"));
+            setWordContent($(".book-read-page"));
+        }, 500);
+
+
+    }
+
     // main
     common();
     const currentHost = window.location.host;
@@ -1853,6 +1991,12 @@ const resource = {
             break;
         case '69shuba.cx':
             _69shuba_cx();
+            break;
+        case 'www.owlook.com.cn':
+            www_owlook_com_cn();
+            break;
+        case 'www.ciweimao.com':
+            ciweimao_com();
             break;
     }
 
