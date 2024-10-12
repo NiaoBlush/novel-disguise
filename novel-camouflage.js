@@ -1905,15 +1905,19 @@ const resource = {
         setTimeout(function () {
 
             // 读取 bookReadTheme 的值
-            let bookReadTheme = getCookie('bookReadTheme');
-            if (bookReadTheme && !bookReadTheme.startsWith('white')) {
+            const cookieKey = 'bookReadTheme';
+            let bookReadTheme = getCookie(cookieKey);
+            if (!bookReadTheme) {
+                setCookie(cookieKey, 'white%2C3%2C18%2Cundefined%2Ctsu-right%2C0', 365, "." + window.location.hostname);
+                location.reload();
+            } else if (!bookReadTheme.startsWith('white')) {
                 let commaIndex = bookReadTheme.indexOf(',');
                 if (commaIndex !== -1) {
                     //改为白色主题
                     let newBookReadTheme = 'white' + bookReadTheme.substring(commaIndex);
                     // 更新cookie并重新加载页面
-                    setCookie('bookReadTheme', newBookReadTheme, 365, "." + window.location.hostname);
-                    location.reload(); // 重新加载页面
+                    setCookie(cookieKey, newBookReadTheme, 365, "." + window.location.hostname);
+                    location.reload();
                 }
             }
 
