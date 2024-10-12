@@ -10,9 +10,9 @@ ___
 
 目前已适配：起点 | 番茄 | biquge.net | xbiqugu.net | biquge.co | 52wx.com | 3bqg.cc | bigee.cc | 
 beqege.cc | biqukun.com | biquge.tw | wenku8.net | bilinovel.com | linovelib.com | 晋江文学城 | 
-轻之国度 | 69书吧(69shuba.cx)
+轻之国度 | 69书吧(69shuba.cx) | owlook.com.cn
 
-部分适配：七猫(只支持word) | 飞卢(只支持word)
+部分适配：七猫(只支持word) | 飞卢(只支持word) | 刺猬猫(只支持word)
 
 ___
 
