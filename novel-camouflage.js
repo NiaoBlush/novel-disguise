@@ -31,6 +31,7 @@
 // @match        https://b.faloo.com/vip/*/*.html
 // @match        https://69shuba.cx/txt/*/*
 // @match        https://www.owlook.com.cn/owllook_content*
+// @match        https://www.ciweimao.com/chapter/*
 // @grant        GM_addStyle
 // @grant        GM_registerMenuCommand
 // @grant        GM_getValue
@@ -651,7 +652,7 @@ const resource = {
             document.title = "文档1";
             GM_addStyle(`
             #disguised-content {
-                padding: 10px 10px;
+                padding: 10px 30px;
             }
             `);
         } else {
@@ -1041,6 +1042,40 @@ const resource = {
         }, type == 'ok' ? 2500 : 5500);
     }
 
+    /**
+     * 获取指定的cookie值
+     */
+    function getCookie(name) {
+        let cookieArr = document.cookie.split(";");
+
+        for (let i = 0; i < cookieArr.length; i++) {
+            let cookiePair = cookieArr[i].split("=");
+
+            // 取出cookie名称时去除前后空格
+            if (name === cookiePair[0].trim()) {
+                return decodeURIComponent(cookiePair[1]);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 设置cookie的值
+     */
+    function setCookie(name, value, days, domain = null) {
+        let expires = "";
+        if (days) {
+            let expireDate = new Date();
+            expireDate.setDate(expireDate.getDate() + days);
+            expires = "; expires=" + expireDate.toUTCString();
+        }
+
+        let domainStr = "";
+        if (domain) {
+            domainStr = "; domain=" + domain;
+        }
+        document.cookie = name + "=" + (value || "") + expires + domainStr + "; path=/";
+    }
 
 /////////////////////////////针对站点
 
@@ -1818,12 +1853,12 @@ const resource = {
             .nd_owllook_pager a {
                 color: black;
             }
-        `)
+        `);
         addWordStyle(`
             .nd_owllook_pager {
                 text-align: center;
             }
-        `)
+        `);
 
         $(".readinline").remove();
         setDisguisedTitle($("#content_name").text());
@@ -1839,6 +1874,60 @@ const resource = {
         `);
         setWordContent($pager);
         setExcelLines([$pager], true);
+    }
+
+    /**
+     * 刺猬猫阅读
+     * e.g. free https://www.ciweimao.com/chapter/112168341
+     * e.g. vip https://www.ciweimao.com/chapter/112171956
+     */
+    function ciweimao_com() {
+        excelUnsupported();
+
+        addGlobalStyle(`
+            #footer-content > p {
+                display: flex;
+                align-items: center;
+            }
+            #footer-content > p > span {
+                margin-right: 10px;
+            }
+            .book-read-page a {
+                background-color: unset;
+                border: none;
+            }
+            .book-read-page a:hover {
+                background-color: unset;
+                border: none;
+            }
+        `);
+
+        setTimeout(function () {
+
+            // 读取 bookReadTheme 的值
+            let bookReadTheme = getCookie('bookReadTheme');
+            if (bookReadTheme && !bookReadTheme.startsWith('white')) {
+                let commaIndex = bookReadTheme.indexOf(',');
+                if (commaIndex !== -1) {
+                    //改为白色主题
+                    let newBookReadTheme = 'white' + bookReadTheme.substring(commaIndex);
+                    // 更新cookie并重新加载页面
+                    setCookie('bookReadTheme', newBookReadTheme, 365, "." + window.location.hostname);
+                    location.reload(); // 重新加载页面
+                }
+            }
+
+            setDisguisedTitle($("h1.chapter").text());
+            setWordDetail($(".read-hd>p"));
+            $("#J_BookRead_WaterMark").remove();
+            $("#J_BookRead p span, #J_BookRead p i").remove();
+            $("#J_ImgRead i").remove();
+            setWordContent($("#J_BookRead"));
+            setWordContent($("#J_ImgRead"));
+            setWordContent($(".book-read-page"));
+        }, 500);
+
+
     }
 
     // main
@@ -1905,6 +1994,9 @@ const resource = {
             break;
         case 'www.owlook.com.cn':
             www_owlook_com_cn();
+            break;
+        case 'www.ciweimao.com':
+            ciweimao_com();
             break;
     }
 
