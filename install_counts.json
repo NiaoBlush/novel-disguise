@@ -400,7 +400,11 @@
         "update_checks": 386
     },
     "2024-10-12": {
-        "installs": 8,
-        "update_checks": 307
+        "installs": 12,
+        "update_checks": 341
+    },
+    "2024-10-13": {
+        "installs": 6,
+        "update_checks": 157
     }
 }
