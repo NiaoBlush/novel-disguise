@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         小说页面伪装|小说页面精简|起点页面伪装|番茄页面伪装|笔趣阁页面伪装
 // @namespace    https://github.com/NiaoBlush/novel-disguise
-// @version      2.5.0
+// @version      2.5.1
 // @description  将小说页面伪装成一个Word文档或Excel表格，同时净化小说页面，去除不必要的元素。适用于起点、番茄、笔趣阁、晋江、飞卢、69书吧、部分轻小说站等
 // @author       NiaoBlush
 // @license      MIT
@@ -254,12 +254,15 @@ const resource = {
         console.log('screenInfo', screenInfo);
 
         function getHeaderResource(currentMode, currentTheme, physicalWidth) {
+            const wThreshold2k = 2000;
+            const wThreshold4k = 3840;
+
             if (currentMode === DIC_MODE.WORD) {
-                if (physicalWidth >= 3840) {
+                if (physicalWidth >= wThreshold4k) {
                     return currentTheme === DIC_THEME.OFFICE
                         ? resource.img.word_office_header_4k
                         : resource.img.word_wps_header_4k;
-                } else if (physicalWidth >= 2560) {
+                } else if (physicalWidth >= wThreshold2k) {
                     return currentTheme === DIC_THEME.OFFICE
                         ? resource.img.word_office_header_2k
                         : resource.img.word_wps_header_2k;
@@ -269,11 +272,11 @@ const resource = {
                         : resource.img.word_wps_header_1k;
                 }
             } else {
-                if (physicalWidth >= 3840) {
+                if (physicalWidth >= wThreshold4k) {
                     return currentTheme === DIC_THEME.OFFICE
                         ? resource.img.excel_office_header_4k
                         : resource.img.excel_wps_header_4k;
-                } else if (physicalWidth >= 2560) {
+                } else if (physicalWidth >= wThreshold2k) {
                     return currentTheme === DIC_THEME.OFFICE
                         ? resource.img.excel_office_header_2k
                         : resource.img.excel_wps_header_2k;
