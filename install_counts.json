@@ -416,7 +416,11 @@
         "update_checks": 400
     },
     "2024-10-16": {
-        "installs": 17,
-        "update_checks": 373
+        "installs": 19,
+        "update_checks": 410
+    },
+    "2024-10-17": {
+        "installs": 13,
+        "update_checks": 399
     }
 }
