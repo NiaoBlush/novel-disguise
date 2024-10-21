@@ -433,6 +433,10 @@
     },
     "2024-10-20": {
         "installs": 4,
-        "update_checks": 151
+        "update_checks": 188
+    },
+    "2024-10-21": {
+        "installs": 10,
+        "update_checks": 418
     }
 }
