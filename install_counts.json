@@ -504,7 +504,11 @@
         "update_checks": 504
     },
     "2024-11-07": {
-        "installs": 7,
-        "update_checks": 448
+        "installs": 10,
+        "update_checks": 500
+    },
+    "2024-11-08": {
+        "installs": 10,
+        "update_checks": 436
     }
 }
