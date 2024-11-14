@@ -146,9 +146,25 @@ const resource = {
     const KEY_MODE = 'key_mode';
     const DIC_MODE = {
         WORD: 'mode_word',
-        EXCEL: 'mode_excel'
+        EXCEL: 'mode_excel',
+        ORIGINAL: 'mode_original'
     };
     let currentMode = GM_getValue(KEY_MODE, DIC_MODE.WORD);
+
+    const KEY_LAST_VISIBLE_MODE = 'key_last_visible_mode';
+    let lastVisibleMode;
+    if (currentMode !== DIC_MODE.ORIGINAL) {
+        GM_setValue(KEY_LAST_VISIBLE_MODE, currentMode);
+        lastVisibleMode = currentMode;
+    } else {
+        lastVisibleMode = GM_getValue(KEY_LAST_VISIBLE_MODE, DIC_MODE.WORD);
+    }
+
+    function applyMode(mode) {
+        console.log('准备切换到模式[${mode}]...');
+        GM_setValue(KEY_MODE, mode);
+        location.reload();
+    }
 
     //theme
     const KEY_THEME = 'key_theme';
@@ -215,7 +231,12 @@ const resource = {
             event.preventDefault();
 
             const formDataObj = new FormData(this);
-            GM_setValue(KEY_MODE, formDataObj.get('settings-mode'));
+            const newMode = formDataObj.get('settings-mode');
+            GM_setValue(KEY_MODE, newMode);
+            if (currentMode !== DIC_MODE.ORIGINAL) {
+                GM_setValue(KEY_LAST_VISIBLE_MODE, newMode);
+                lastVisibleMode = currentMode;
+            }
             GM_setValue(KEY_THEME, formDataObj.get('settings-theme'));
             GM_setValue(KEY_WORD_MARGIN_TYPE, formDataObj.get('margin-type'));
 
@@ -874,8 +895,7 @@ const resource = {
     function excelUnsupported() {
         if (currentMode === DIC_MODE.EXCEL) {
             alert("本站收费章节不支持Excel模式，将切换到Word模式");
-            GM_setValue(KEY_MODE, DIC_MODE.WORD);
-            location.reload();
+            applyMode(DIC_MODE.WORD);
         }
     }
 
@@ -1935,6 +1955,55 @@ const resource = {
         }, 500);
 
 
+    }
+
+    // 切换原版界面
+    document.addEventListener('keydown', function (event) {
+        // 判断是否按下 E 键
+        if (event.key === 'e' && !event.ctrlKey && !event.altKey && !event.metaKey) {
+            if (currentMode === DIC_MODE.ORIGINAL) {
+                applyMode(lastVisibleMode);
+            } else {
+                applyMode(DIC_MODE.ORIGINAL);
+
+            }
+        }
+    });
+
+    //如果是原始模式
+    if (currentMode === DIC_MODE.ORIGINAL) {
+        addGlobalStyle(`
+        .nd-switch-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            height: auto;
+            padding: 2rem;
+            border-radius: 1rem;
+            background: rgba(255, 255, 255, 0.6);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            color: black;
+            font-size: 14px;
+        }
+        
+        .nd-switch-key {
+            border: solid 1px black;
+            border-radius: 8px;
+            width: 1.5rem;
+            height: 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 5px;
+        }
+        `);
+        const $indicator = $(`<div class="nd-switch-indicator">按<div class="nd-switch-key">E</div>键开启伪装</div>`);
+        $indicator.appendTo(document.body);
+        return;
     }
 
     // main
