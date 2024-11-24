@@ -569,6 +569,10 @@
     },
     "2024-11-23": {
         "installs": 4,
-        "update_checks": 241
+        "update_checks": 309
+    },
+    "2024-11-24": {
+        "installs": 9,
+        "update_checks": 212
     }
 }
