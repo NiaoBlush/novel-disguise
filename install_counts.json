@@ -580,7 +580,11 @@
         "update_checks": 642
     },
     "2024-11-26": {
-        "installs": 11,
-        "update_checks": 522
+        "installs": 13,
+        "update_checks": 585
+    },
+    "2024-11-27": {
+        "installs": 15,
+        "update_checks": 541
     }
 }
