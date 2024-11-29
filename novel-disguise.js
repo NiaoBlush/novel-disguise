@@ -185,29 +185,29 @@ const resource = {
 
     function settings() {
         const $settings = $(`
-            <form class="nd-settings-form">
-                <div class="nd-settings-form-group">
+            <form class="disguised__settings-form">
+                <div class="disguised__settings-form-group">
                     <label>模式: </label>
                     <select name="settings-mode">
                         <option value="${DIC_MODE.WORD}">Word</option>
                         <option value="${DIC_MODE.EXCEL}">Excel</option>
                     </select>
                 </div>
-                <div class="nd-settings-form-group">
+                <div class="disguised__settings-form-group">
                     <label for="settings-mode">主题: </label>
                     <select id="settings-theme" name="settings-theme">
                         <option value="${DIC_THEME.OFFICE}">Office</option>
                         <option value="${DIC_THEME.WPS}">Wps</option>
                     </select>
                 </div>
-                <div class="nd-settings-form-group">
+                <div class="disguised__settings-form-group">
                     <label title="word半屏时采用无边距会看起来更加自然">Word页边距: </label>
                     <label style="margin-right: 45px;"><input type="radio" name="margin-type" value="${DIC_MARGIN_TYPE.NORMAL}">正常</label>
                     <label><input type="radio" name="margin-type" value="${DIC_MARGIN_TYPE.NONE}">无边距</label>
                 </div>
                 
-                <div class="nd-settings-form-group" style="margin-top: 20px;">
-                    <div class="nd-settings-btn-wrapper">
+                <div class="disguised__settings-form-group" style="margin-top: 20px;">
+                    <div class="disguised__settings-btn-wrapper">
                         <button type="button" name="tip">好活，当赏❤️</button>
                         <button type="submit">保存设置</button>
                     </div>
@@ -248,16 +248,7 @@ const resource = {
         //tip
         $settings.find("button[name=tip]").on("click", function () {
             const $tipContent = $(`
-                <div class="nd-tip-content">
-                    <p>感谢使用，如果觉得这个脚本用起来还算愉快，请随意打赏，一切随缘~</p>
-                    <p>祝各位摸鱼快乐~</p>
-                    <br>
-                    <div class="tip-img-wrapper">
-                        <img src="${resource.img.tip_alipay.base64}" alt="支付宝">
-                        <img src="${resource.img.tip_wechat.base64}" alt="微信">
-                    </div>
-                    
-                </div>
+                <div class="disguised__tip-content"><p>感谢使用，如果觉得这个脚本用起来还算愉快，请随意打赏，一切随缘~</p><p>祝各位摸鱼快乐~</p><br><div class="disguised__tip-img-wrapper"><img src="${resource.img.tip_alipay.base64}" alt="支付宝"><img src="${resource.img.tip_wechat.base64}" alt="微信"></div></div>
             `);
 
             showModal($tipContent, {
@@ -344,7 +335,7 @@ const resource = {
             color-scheme: normal !important;
         }
         
-        #disguised-page {
+        #disguised__page {
             position: fixed;
             top: 0;
             left: 0;
@@ -354,13 +345,13 @@ const resource = {
             flex-direction: column;
         }
         
-        #disguised-header {
+        #disguised__header {
             width: 100%;
             aspect-ratio: ${screenInfo.screenWidth / headerHeight};
             background-image: url(${disguised_header_img});
         }
         
-        #disguised-title {
+        #disguised__title {
             position: fixed;
             top: 5px;
             left: 0;
@@ -373,7 +364,7 @@ const resource = {
             user-select: none;
         }
         
-        #disguised-footer {
+        #disguised__footer {
             height: ${footerHeight}px;
             line-height: ${footerHeight}px;
             width: 100%;
@@ -385,7 +376,7 @@ const resource = {
             position: relative;
         }
         
-        #footer-content {
+        #disguised__footer-content {
             position: absolute;
             left: 0;
             bottom: 0;
@@ -401,14 +392,14 @@ const resource = {
             padding-left: 20px;
         }
         
-        #footer-content > * {
+        #disguised__footer-content > * {
             height: 100%;
             line-height: 100%;
             margin-right: 10px;
             font-size: 13px;
         }
         
-        #disguised-body {
+        #disguised__body {
             flex: 1;
             padding-left: ${currentMarginType === DIC_MARGIN_TYPE.NORMAL ? '25%' : '0'};
             padding-right: ${currentMarginType === DIC_MARGIN_TYPE.NORMAL ? '25%' : '0'};
@@ -420,7 +411,7 @@ const resource = {
             box-sizing: border-box;
         }
         
-        #disguised-content {
+        #disguised__content {
             background-color: #FFF;
             border-left-color: #c6c6c6;
             border-right-color: #c6c6c6;
@@ -431,21 +422,21 @@ const resource = {
             box-sizing: border-box;
         }
         
-        #disguised-content > * {
+        #disguised__content > * {
             width: 100%;
             margin: unset;
             box-sizing: border-box;
         }
         
-        #disguised-content p {
+        #disguised__content p {
             color: black;
         }
         
-        #disguised-content div {
+        #disguised__content div {
             background-color: #FFF !important;
         }
         
-        #disguised-right-content {
+        #disguised__right-content {
             display: none;
             position: fixed;
             right: 0;
@@ -455,7 +446,7 @@ const resource = {
             z-index: 99999;
         }
         
-        #disguised-model {
+        #disguised__model {
             position: fixed;
             z-index: 99999;
             top: 50%;
@@ -469,13 +460,13 @@ const resource = {
             align-items: center;
         }
         
-        .disguised-img-indicator {
+        .disguised__img-indicator {
             color: ${link_text_color};
             text-decoration: underline;
             cursor: pointer;
         }
         
-        .disguised-modal-wrapper {
+        .disguised__modal-wrapper {
             position: fixed;
             z-index: 99999;
             top: 50%;
@@ -486,14 +477,14 @@ const resource = {
             background-color: #F0F0F0;
         }
         
-        .disguised-modal-header {
+        .disguised__modal-header {
             background-color: #FFF;
             min-width: 200px;
             height: 32px;
             display: flex;
         }
         
-        .disguised-modal-title {
+        .disguised__modal-title {
             flex: 1;
             user-select: none;
             padding-left: 10px;
@@ -502,7 +493,7 @@ const resource = {
             align-items: center;
         }
         
-        .disguised-modal-header-close {
+        .disguised__modal-header-close {
             position: relative;
             background-color: transparent;
             border: none;
@@ -512,11 +503,11 @@ const resource = {
             height: 32px;
             font-size: 1em;
         }
-        .disguised-modal-header-close:hover {
+        .disguised__modal-header-close:hover {
             background-color: #E81023;
         }
-        .disguised-modal-header-close::before,
-        .disguised-modal-header-close::after {
+        .disguised__modal-header-close::before,
+        .disguised__modal-header-close::after {
             content: '';
             position: absolute;
             top: 50%;
@@ -526,18 +517,18 @@ const resource = {
             background-color: black;
             transform-origin: center;
         }
-        .disguised-modal-header-close:hover::before,
-        .disguised-modal-header-close:hover::after {
+        .disguised__modal-header-close:hover::before,
+        .disguised__modal-header-close:hover::after {
             background-color: #FFF;
         }
-        .disguised-modal-header-close::before {
+        .disguised__modal-header-close::before {
             transform: translate(-50%, -50%) rotate(45deg);
         }
-        .disguised-modal-header-close::after {
+        .disguised__modal-header-close::after {
             transform: translate(-50%, -50%) rotate(-45deg);
         }
         
-        .disguised-modal-body {
+        .disguised__modal-body {
             padding: 10px;
             background-color: #F0F0F0;
             min-height: 32px;
@@ -547,29 +538,29 @@ const resource = {
             overflow-y: auto;
         }
         
-        .disguised-modal-wrapper * {
+        .disguised__modal-wrapper * {
             margin: unset;
         }
         
-        .nd-settings-form {
+        .disguised__settings-form {
             font-family: 'Microsoft YaHei', sans-serif;
             width: 300px;
             box-shadow: none;
         }
         
-        .nd-settings-form-group:not(:last-child) {
+        .disguised__settings-form-group:not(:last-child) {
             margin-bottom: 15px;
         }
         
-        .nd-settings-form-group label {
+        .disguised__settings-form-group label {
             display: inline-block;
             font-size: 13px;
             color: #000;
             margin-bottom: 5px;
         }
         
-        .nd-settings-form-group select,
-        .nd-settings-form-group input[type="radio"] {
+        .disguised__settings-form-group select,
+        .disguised__settings-form-group input[type="radio"] {
             font-size: 13px;
             padding: 2px;
             border: 1px solid #c0c0c0;
@@ -577,12 +568,12 @@ const resource = {
             width: auto;
         }
         
-        .nd-settings-form-group input[type="radio"] {
+        .disguised__settings-form-group input[type="radio"] {
             width: auto;
             margin-right: 5px;
         }
         
-        .nd-settings-form-group button {
+        .disguised__settings-form-group button {
             font-size: 13px;
             padding: 5px 10px;
             margin-right: 5px;
@@ -592,55 +583,55 @@ const resource = {
             cursor: pointer;
         }
         
-        .nd-settings-form-group button[type="submit"] {
+        .disguised__settings-form-group button[type="submit"] {
             background-color: #dcdcdc;
         }
         
-        .nd-settings-form-group button:hover {
+        .disguised__settings-form-group button:hover {
             background-color: #c0c0c0;
         }
         
-        .nd-settings-form-group button:active {
+        .disguised__settings-form-group button:active {
             background-color: #a0a0a0;
         }
         
-        .nd-settings-form-group button:focus {
+        .disguised__settings-form-group button:focus {
             outline: 1px solid #606060;
         }
         
-        .nd-settings-form-group select {
+        .disguised__settings-form-group select {
             margin-right: 5px;
             width: 180px;
         }
         
-        .nd-settings-form-group select:focus-visible {
+        .disguised__settings-form-group select:focus-visible {
             outline: none;
         }
         
-        .nd-settings-form-group label:first-child {
+        .disguised__settings-form-group label:first-child {
             width: 100px;
         }
         
-        .nd-settings-form p {
+        .disguised__settings-form p {
             margin-bottom: 10px;
         }
 
-        .nd-settings-btn-wrapper {
+        .disguised__settings-btn-wrapper {
             display: flex;
             justify-content: space-between;
         }
 
         
-        .nd-tip-content {
+        .disguised__tip-content {
             font-size: 1.3em;
         }
         
-        .tip-img-wrapper {
+        .disguised__tip-img-wrapper {
             display: flex;
             justify-content: space-between;
         }
         
-        .tip-img-wrapper img {
+        .disguised__tip-img-wrapper img {
             width: 48%;
         }
         
@@ -658,41 +649,41 @@ const resource = {
 
         $('body').children().hide();
 
-        $(`<div id='disguised-page'>
-                <div id='disguised-title'></div>
-                <div id='disguised-header' class='img-fill-in'></div>
-                <div id='disguised-body'>
-                    <div id='disguised-content'></div> 
-                    <div id='disguised-right-content'></div>
+        $(`<div id='disguised__page'>
+                <div id='disguised__title'></div>
+                <div id='disguised__header' class='img-fill-in'></div>
+                <div id='disguised__body'>
+                    <div id='disguised__content'></div> 
+                    <div id='disguised__right-content'></div>
                 </div>
-                <div id='disguised-footer' class='img-fill-in'>
-                    <div id="footer-content">
+                <div id='disguised__footer' class='img-fill-in'>
+                    <div id="disguised__footer-content">
                         <span>简体中文（中国大陆）</span><span>辅助功能：一切就绪</span>
                     </div>
                 </div>
-               <div id="disguised-model" style="display: none;"></div>
+               <div id="disguised__model" style="display: none;"></div>
            </div>`).appendTo("body");
 
         if (currentMode === DIC_MODE.WORD) {
             document.title = "文档1";
             GM_addStyle(`
-            #disguised-content {
+            #disguised__content {
                 padding: 10px 30px;
             }
             `);
         } else {
             document.title = "工作簿1";
             GM_addStyle(`
-            #footer-content {
+            #disguised__footer-content {
                 height: 45%;
                 line-height: 45%;
             }
-            #disguised-body {
+            #disguised__body {
                 padding-left: 0;
                 padding-right: 0;
                 overflow-y: hidden;
             }
-            #disguised-content {
+            #disguised__content {
                 height: 100%;
                 overflow-x: hidden;
                 overflow-y: scroll;
@@ -701,22 +692,22 @@ const resource = {
             table {
                 margin: 0;
             }
-            .excel-table,
-            .excel-table th,
-            .excel-table td,
-            .excel-table thead,
-            .excel-table tbody {
+            .disguised__excel-table,
+            .disguised__excel-table th,
+            .disguised__excel-table td,
+            .disguised__excel-table thead,
+            .disguised__excel-table tbody {
                 border-spacing: 0;
             }
-            .excel-table {
+            .disguised__excel-table {
                 border-collapse: collapse;
             }
             
-            .excel-table thead {
+            .disguised__excel-table thead {
                 background-color: ${currentTheme === DIC_THEME.OFFICE ? '#E6E6E6' : '#EEEEEE'};
             }
             
-            .excel-table thead th {
+            .disguised__excel-table thead th {
                 font-weight: normal;
                 font-size: 14px;
                 color: black !important;
@@ -732,45 +723,45 @@ const resource = {
                 z-index: 9999;
             }
             
-            .excel-table th {
+            .disguised__excel-table th {
                 min-width: 71px;
             }
-            .excel-table th:nth-child(1) {
+            .disguised__excel-table th:nth-child(1) {
                 width: auto;
                 min-width: 20px;
             }
-            .excel-table th:nth-child(2) {
+            .disguised__excel-table th:nth-child(2) {
                 min-width: 50vw;
             }
-            .excel-table tbody {
+            .disguised__excel-table tbody {
             }
-            .excel-table tbody td:nth-child(1) {
+            .disguised__excel-table tbody td:nth-child(1) {
                 text-align: center;
                 background-color: #E6E6E6;
                 padding-left: 5px;
                 padding-right: 5px;
                 user-select: none;
             }
-            .excel-table tbody td:not(:nth-child(1)):not(:nth-child(2)) {
+            .disguised__excel-table tbody td:not(:nth-child(1)):not(:nth-child(2)) {
                 white-space: nowrap;
                 text-align: center;
             }
-            .excel-table tbody td {
+            .disguised__excel-table tbody td {
                 border: 1px solid #DDDDDD;
                 padding: 3px 10px;
                 line-height: normal;
             }
-            .excel-table tbody td ,
-            .excel-table tbody td p {
+            .disguised__excel-table tbody td ,
+            .disguised__excel-table tbody td p {
                 font-size: 12px;
                 font-weight: normal;
                 color: black !important;
                 font-family: "Microsoft YaHei", "SimSun", sans-serif;
             }
-            .excel-table tbody tr:first-child td {
+            .disguised__excel-table tbody tr:first-child td {
                 border-top: none;
             }
-            .excel-table tbody td > div {
+            .disguised__excel-table tbody td > div {
                 margin: 0;
                 padding: 0;
                 text-align: unset;
@@ -778,7 +769,7 @@ const resource = {
             `);
 
             //构建表格
-            const $table = $('<table class="excel-table"></table>');
+            const $table = $('<table class="disguised__excel-table"></table>');
             const extraThead = (function () {
                 let output = '';
                 for (let i = 1; i <= config.emptyCols; i++) {
@@ -792,7 +783,7 @@ const resource = {
             // 添加表头
             $table.append($thead);
             $table.append($tbody);
-            $("#disguised-content").append($table);
+            $("#disguised__content").append($table);
 
             //占位行
             const defaultLines = [];
@@ -807,12 +798,12 @@ const resource = {
         if (currentMode !== DIC_MODE.WORD) {
             return;
         }
-        $contentEl.show().appendTo("#disguised-content");
+        $contentEl.show().appendTo("#disguised__content");
     }
 
     function clearExcelContent() {
         if (currentMode === DIC_MODE.EXCEL) {
-            $(".excel-table tbody").empty();
+            $(".disguised__excel-table tbody").empty();
         }
     }
 
@@ -823,13 +814,13 @@ const resource = {
 
         let lastIndex;
         if (append) {
-            lastIndex = Number.parseInt($(".excel-table tbody tr:last-child td:first-child").text());
+            lastIndex = Number.parseInt($(".disguised__excel-table tbody tr:last-child td:first-child").text());
         } else {
             clearExcelContent();
             lastIndex = 0;
         }
 
-        const $tbody = $(".excel-table tbody");
+        const $tbody = $(".disguised__excel-table tbody");
         lines.forEach(function (line, index) {
             if (typeof line === 'string') {
                 line = line.replace(/&nbsp;/g, '').trim();
@@ -902,17 +893,17 @@ const resource = {
 
     function clearWordContent() {
         if (currentMode === DIC_MODE.WORD) {
-            $('#disguised-content').empty();
+            $('#disguised__content').empty();
         }
 
     }
 
     function setDisguisedTitle(titleStr) {
-        $('#disguised-title').text(titleStr);
+        $('#disguised__title').text(titleStr);
     }
 
     function setWordDetail(detail) {
-        const $footerEl = $('#footer-content');
+        const $footerEl = $('#disguised__footer-content');
         $footerEl.text("");
         if (typeof detail === "string") {
             $footerEl.text(detail);
@@ -923,7 +914,7 @@ const resource = {
     }
 
     function setWordRightContent($contentEl) {
-        $contentEl.appendTo($("#disguised-right-content"));
+        $contentEl.appendTo($("#disguised__right-content"));
     }
 
     function getScreenInfo() {
@@ -1014,32 +1005,32 @@ const resource = {
 
     function showModal(content, config = {}) {
         const $modal = $(`
-        <div class="disguised-modal-wrapper">
-            <div class="disguised-modal-header">
-                <div class="disguised-modal-title">${config.title || ""}</div>
+        <div class="disguised__modal-wrapper">
+            <div class="disguised__modal-header">
+                <div class="disguised__modal-title">${config.title || ""}</div>
                 
             </div>
-            <div class="disguised-modal-body"></div>
+            <div class="disguised__modal-body"></div>
         </div>
         `);
 
-        const $headerClose = $(`<div class="disguised-modal-header-close"></div>`);
+        const $headerClose = $(`<div class="disguised__modal-header-close"></div>`);
         $headerClose.on("click", function () {
             $modal.remove();
         });
-        $modal.find(".disguised-modal-header").append($headerClose);
+        $modal.find(".disguised__modal-header").append($headerClose);
 
         if (config.width && typeof config.width === "number") {
             $modal.css("width", `${config.width}px`);
         }
 
         if (typeof content === "string") {
-            $modal.find(".disguised-modal-body").text(content);
+            $modal.find(".disguised__modal-body").text(content);
         } else {
-            content.appendTo($modal.find(".disguised-modal-body"));
+            content.appendTo($modal.find(".disguised__modal-body"));
         }
 
-        $("#disguised-page").append($modal);
+        $("#disguised__page").append($modal);
         return $modal;
     }
 
@@ -1142,10 +1133,10 @@ const resource = {
             // display: none !important;
         }
         
-        .excel-table tbody td, .excel-table tbody td p {
+        .disguised__excel-table tbody td, .disguised__excel-table tbody td p {
             font-family: unset;
         }
-        .excel-table tbody td p {
+        .disguised__excel-table tbody td p {
             margin-top: 0 !important;
         }
       
@@ -1154,7 +1145,7 @@ const resource = {
         const $mainContent = $("main.content");
         const contentId = $mainContent.attr('id');
         const dataType = $mainContent.attr('data-type');
-        const $tbody = $(".excel-table tbody");
+        const $tbody = $(".disguised__excel-table tbody");
 
         //内容
         const scriptContent = $('#vite-plugin-ssr_pageContext').html();
@@ -1212,16 +1203,16 @@ const resource = {
         setInfo();
 
         addExcelStyle(`
-             #disguised-page #disguised-body table.excel-table tbody:not(thead) tr .nav-btn-group a {
+             #disguised__page #disguised__body table.disguised__excel-table tbody:not(thead) tr .nav-btn-group a {
                 font-family: "Microsoft YaHei", "SimSun", sans-serif !important;
             }
-            #disguised-page #disguised-body table.excel-table tbody td:not(:nth-child(1)):not(:nth-child(2)) {
+            #disguised__page #disguised__body table.disguised__excel-table tbody td:not(:nth-child(1)):not(:nth-child(2)) {
                 font-family: "Microsoft YaHei", "SimSun", sans-serif !important;
             }
             .nav-btn {
                 padding: 0;
             }
-            .excel-table button {
+            .disguised__excel-table button {
                 padding: 0;
                 font-size: unset;
                 line-height: unset;
@@ -1237,10 +1228,10 @@ const resource = {
                 for (let mutation of mutationsList) {
                     if (mutation.type === 'childList') {
                         if (mutation.addedNodes.length > 0) {
-                            $("#disguised-right-content").show();
+                            $("#disguised__right-content").show();
                         }
                         if (mutation.removedNodes.length > 0) {
-                            $("#disguised-right-content").hide();
+                            $("#disguised__right-content").hide();
                         }
                     }
                 }
@@ -1295,7 +1286,7 @@ const resource = {
             padding-top: 50px;
         }
         
-        .excel-table tbody td, .excel-table tbody td p {
+        .disguised__excel-table tbody td, .disguised__excel-table tbody td p {
             font-family: unset;
         }
         
@@ -1319,7 +1310,7 @@ const resource = {
             return cls.indexOf('font-') === 0;
         })[0];
         const styleAttr = $readerBox.attr('style');
-        const $table = $(".excel-table");
+        const $table = $(".disguised__excel-table");
         $table.addClass(className);
         $table.attr('style', styleAttr);
         setExcelLines($(".muye-reader-content>div>p").toArray());
@@ -1708,7 +1699,7 @@ const resource = {
             if ($('.noveltext').length > 0) {
                 const fontFamily = $('.noveltext').css('font-family');
                 addExcelStyle(`
-                    .excel-table tbody td {
+                    .disguised__excel-table tbody td {
                         font-family: ${fontFamily}
                     }
                 `);
@@ -1753,14 +1744,14 @@ const resource = {
     function lightnovel_us() {
 
         GM_addStyle(`
-        #footer-content>:not(span) {
+        #disguised__footer-content>:not(span) {
             display: none;
         }
-        #footer-content {
+        #disguised__footer-content {
             display: flex;
             align-items: center;
         }
-        #footer-content span {
+        #disguised__footer-content span {
             vertical-align: unset;
             display: flex;
             align-items: center;
@@ -1772,12 +1763,12 @@ const resource = {
 
         $('#article-main-contents img').each(function () {
             const imgSrc = $(this).attr('src');
-            const span = $('<span class="disguised-img-indicator"></span>')
+            const span = $('<span class="disguised__img-indicator"></span>')
                 .attr('data-src', imgSrc)
                 .text('点击显示图片');
             $(this).replaceWith(span);
         });
-        $('#disguised-model').on("click", function () {
+        $('#disguised__model').on("click", function () {
             $(this).hide();
         });
 
@@ -1787,7 +1778,7 @@ const resource = {
         setDisguisedTitle($(".article-title").text());
         setWordDetail($(".article-infos").children());
 
-        $(".disguised-img-indicator").on('click', function () {
+        $(".disguised__img-indicator").on('click', function () {
             const src = $(this).attr('data-src');
             const $newImg = $('<img>').attr('src', src);
             const $modal = showModal($newImg);
@@ -1806,17 +1797,17 @@ const resource = {
         .noveContent {
             padding: 15px;
         }
-        #footer-content {
+        #disguised__footer-content {
             display: flex;
         }
-        #footer-content span,  #footer-content a {
+        #disguised__footer-content span,  #disguised__footer-content a {
             display: flex;
             align-items: center;
         }
-        #footer-content img {
+        #disguised__footer-content img {
             display: none;
         }
-        #footer-content div {
+        #disguised__footer-content div {
             display: none;
         }
         #pageHtml {
@@ -1909,11 +1900,11 @@ const resource = {
         excelUnsupported();
 
         addGlobalStyle(`
-            #footer-content > p {
+            #disguised__footer-content > p {
                 display: flex;
                 align-items: center;
             }
-            #footer-content > p > span {
+            #disguised__footer-content > p > span {
                 margin-right: 10px;
             }
             .book-read-page a {
@@ -1974,7 +1965,7 @@ const resource = {
     //如果是原始模式
     if (currentMode === DIC_MODE.ORIGINAL) {
         addGlobalStyle(`
-        .nd-switch-indicator {
+        .disguised__switch-indicator {
             position: fixed;
             top: 10px;
             right: 10px;
@@ -1991,7 +1982,7 @@ const resource = {
             font-size: 14px;
         }
         
-        .nd-switch-key {
+        .disguised__switch-key {
             border: solid 1px black;
             border-radius: 8px;
             width: 1.5rem;
@@ -2002,7 +1993,7 @@ const resource = {
             margin: 0 5px;
         }
         `);
-        const $indicator = $(`<div class="nd-switch-indicator">按<div class="nd-switch-key">E</div>键开启伪装</div>`);
+        const $indicator = $(`<div class="disguised__switch-indicator">按<div class="disguised__switch-key">E</div>键开启伪装</div>`);
         $indicator.appendTo(document.body);
         return;
     }
