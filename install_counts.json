@@ -660,7 +660,11 @@
         "update_checks": 302
     },
     "2024-12-16": {
-        "installs": 11,
-        "update_checks": 686
+        "installs": 12,
+        "update_checks": 756
+    },
+    "2024-12-17": {
+        "installs": 12,
+        "update_checks": 634
     }
 }
