@@ -744,7 +744,11 @@
         "update_checks": 332
     },
     "2025-01-06": {
-        "installs": 5,
-        "update_checks": 721
+        "installs": 7,
+        "update_checks": 801
+    },
+    "2025-01-07": {
+        "installs": 7,
+        "update_checks": 674
     }
 }
