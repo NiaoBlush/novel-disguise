@@ -800,7 +800,11 @@
         "update_checks": 329
     },
     "2025-01-20": {
-        "installs": 8,
-        "update_checks": 654
+        "installs": 9,
+        "update_checks": 723
+    },
+    "2025-01-21": {
+        "installs": 7,
+        "update_checks": 618
     }
 }
