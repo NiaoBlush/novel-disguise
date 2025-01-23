@@ -808,7 +808,11 @@
         "update_checks": 680
     },
     "2025-01-22": {
-        "installs": 2,
-        "update_checks": 595
+        "installs": 3,
+        "update_checks": 657
+    },
+    "2025-01-23": {
+        "installs": 7,
+        "update_checks": 557
     }
 }
