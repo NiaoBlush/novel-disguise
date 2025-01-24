@@ -813,6 +813,10 @@
     },
     "2025-01-23": {
         "installs": 7,
-        "update_checks": 557
+        "update_checks": 619
+    },
+    "2025-01-24": {
+        "installs": 7,
+        "update_checks": 475
     }
 }
