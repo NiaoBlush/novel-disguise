@@ -865,6 +865,10 @@
     },
     "2025-02-05": {
         "installs": 2,
-        "update_checks": 567
+        "update_checks": 620
+    },
+    "2025-02-06": {
+        "installs": 2,
+        "update_checks": 184
     }
 }
