@@ -944,7 +944,11 @@
         "update_checks": 116
     },
     "2025-02-25": {
+        "installs": 2,
+        "update_checks": 141
+    },
+    "2025-02-26": {
         "installs": 1,
-        "update_checks": 113
+        "update_checks": 96
     }
 }
