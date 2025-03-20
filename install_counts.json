@@ -1032,7 +1032,11 @@
         "update_checks": 140
     },
     "2025-03-19": {
-        "installs": 2,
-        "update_checks": 119
+        "installs": 4,
+        "update_checks": 135
+    },
+    "2025-03-20": {
+        "installs": 1,
+        "update_checks": 130
     }
 }
