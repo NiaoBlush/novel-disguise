@@ -1053,6 +1053,10 @@
     },
     "2025-03-24": {
         "installs": 2,
-        "update_checks": 103
+        "update_checks": 118
+    },
+    "2025-03-25": {
+        "installs": 1,
+        "update_checks": 124
     }
 }
