@@ -1097,6 +1097,10 @@
     },
     "2025-04-04": {
         "installs": 1,
-        "update_checks": 54
+        "update_checks": 72
+    },
+    "2025-04-05": {
+        "installs": 0,
+        "update_checks": 48
     }
 }
