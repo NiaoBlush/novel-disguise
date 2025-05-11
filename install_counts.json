@@ -1233,6 +1233,18 @@
     },
     "2025-05-08": {
         "installs": 1,
-        "update_checks": 137
+        "update_checks": 160
+    },
+    "2025-05-09": {
+        "installs": 3,
+        "update_checks": 130
+    },
+    "2025-05-10": {
+        "installs": 0,
+        "update_checks": 104
+    },
+    "2025-05-11": {
+        "installs": 0,
+        "update_checks": 86
     }
 }
