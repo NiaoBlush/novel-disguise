@@ -1049,6 +1049,246 @@
     },
     "2025-03-23": {
         "installs": 2,
-        "update_checks": 52
+        "update_checks": 73
+    },
+    "2025-03-24": {
+        "installs": 2,
+        "update_checks": 118
+    },
+    "2025-03-25": {
+        "installs": 1,
+        "update_checks": 132
+    },
+    "2025-03-26": {
+        "installs": 1,
+        "update_checks": 147
+    },
+    "2025-03-27": {
+        "installs": 3,
+        "update_checks": 149
+    },
+    "2025-03-28": {
+        "installs": 1,
+        "update_checks": 124
+    },
+    "2025-03-29": {
+        "installs": 1,
+        "update_checks": 83
+    },
+    "2025-03-30": {
+        "installs": 0,
+        "update_checks": 64
+    },
+    "2025-03-31": {
+        "installs": 0,
+        "update_checks": 122
+    },
+    "2025-04-01": {
+        "installs": 0,
+        "update_checks": 124
+    },
+    "2025-04-02": {
+        "installs": 1,
+        "update_checks": 132
+    },
+    "2025-04-03": {
+        "installs": 2,
+        "update_checks": 118
+    },
+    "2025-04-04": {
+        "installs": 1,
+        "update_checks": 72
+    },
+    "2025-04-05": {
+        "installs": 0,
+        "update_checks": 64
+    },
+    "2025-04-06": {
+        "installs": 0,
+        "update_checks": 69
+    },
+    "2025-04-07": {
+        "installs": 4,
+        "update_checks": 128
+    },
+    "2025-04-08": {
+        "installs": 0,
+        "update_checks": 132
+    },
+    "2025-04-09": {
+        "installs": 0,
+        "update_checks": 134
+    },
+    "2025-04-10": {
+        "installs": 1,
+        "update_checks": 135
+    },
+    "2025-04-11": {
+        "installs": 1,
+        "update_checks": 135
+    },
+    "2025-04-12": {
+        "installs": 0,
+        "update_checks": 90
+    },
+    "2025-04-13": {
+        "installs": 0,
+        "update_checks": 97
+    },
+    "2025-04-14": {
+        "installs": 1,
+        "update_checks": 135
+    },
+    "2025-04-15": {
+        "installs": 2,
+        "update_checks": 165
+    },
+    "2025-04-16": {
+        "installs": 1,
+        "update_checks": 151
+    },
+    "2025-04-17": {
+        "installs": 0,
+        "update_checks": 159
+    },
+    "2025-04-18": {
+        "installs": 2,
+        "update_checks": 164
+    },
+    "2025-04-19": {
+        "installs": 0,
+        "update_checks": 110
+    },
+    "2025-04-20": {
+        "installs": 0,
+        "update_checks": 80
+    },
+    "2025-04-21": {
+        "installs": 2,
+        "update_checks": 139
+    },
+    "2025-04-22": {
+        "installs": 1,
+        "update_checks": 163
+    },
+    "2025-04-23": {
+        "installs": 0,
+        "update_checks": 154
+    },
+    "2025-04-24": {
+        "installs": 0,
+        "update_checks": 160
+    },
+    "2025-04-25": {
+        "installs": 1,
+        "update_checks": 155
+    },
+    "2025-04-26": {
+        "installs": 0,
+        "update_checks": 105
+    },
+    "2025-04-27": {
+        "installs": 0,
+        "update_checks": 147
+    },
+    "2025-04-28": {
+        "installs": 1,
+        "update_checks": 157
+    },
+    "2025-04-29": {
+        "installs": 1,
+        "update_checks": 167
+    },
+    "2025-04-30": {
+        "installs": 1,
+        "update_checks": 148
+    },
+    "2025-05-01": {
+        "installs": 1,
+        "update_checks": 70
+    },
+    "2025-05-02": {
+        "installs": 0,
+        "update_checks": 78
+    },
+    "2025-05-03": {
+        "installs": 0,
+        "update_checks": 70
+    },
+    "2025-05-04": {
+        "installs": 0,
+        "update_checks": 80
+    },
+    "2025-05-05": {
+        "installs": 1,
+        "update_checks": 84
+    },
+    "2025-05-06": {
+        "installs": 1,
+        "update_checks": 173
+    },
+    "2025-05-07": {
+        "installs": 0,
+        "update_checks": 148
+    },
+    "2025-05-08": {
+        "installs": 1,
+        "update_checks": 160
+    },
+    "2025-05-09": {
+        "installs": 3,
+        "update_checks": 130
+    },
+    "2025-05-10": {
+        "installs": 0,
+        "update_checks": 104
+    },
+    "2025-05-11": {
+        "installs": 0,
+        "update_checks": 102
+    },
+    "2025-05-12": {
+        "installs": 1,
+        "update_checks": 140
+    },
+    "2025-05-13": {
+        "installs": 0,
+        "update_checks": 165
+    },
+    "2025-05-14": {
+        "installs": 2,
+        "update_checks": 158
+    },
+    "2025-05-15": {
+        "installs": 1,
+        "update_checks": 142
+    },
+    "2025-05-16": {
+        "installs": 4,
+        "update_checks": 156
+    },
+    "2025-05-17": {
+        "installs": 0,
+        "update_checks": 97
+    },
+    "2025-05-18": {
+        "installs": 0,
+        "update_checks": 85
+    },
+    "2025-05-19": {
+        "installs": 1,
+        "update_checks": 143
+    },
+    "2025-05-20": {
+        "installs": 0,
+        "update_checks": 153
+    },
+    "2025-05-21": {
+        "installs": 2,
+        "update_checks": 144
+    },
+    "2025-05-22": {
+        "installs": 0,
+        "update_checks": 119
     }
 }
