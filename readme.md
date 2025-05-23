@@ -15,7 +15,7 @@ ___
 |---------------|--------|---------|
 | 起点            | ✔      | ✔       |
 | 番茄            | ✔      | ✔       |
-| 若干笔趣阁         | ✔      | ✔       |
+| 若干笔趣阁*        | ✔      | ✔       |
 | bilinovel.com | ✔      | ✔       |
 | linovelib.com | ✔      | ✔       |
 | 晋江文学城         | ✔      | ✔       |
@@ -26,6 +26,7 @@ ___
 | 飞卢            | ✔      | ❌       |
 | 刺猬猫           | ✔      | ❌       |
 
+*笔趣阁包含以下站: biquge.net, xbiqugu.net, biquge.co, 52wx.com, 3bqg.cc, bigee.cc, beqege.cc, biqukun.com, biquge.tw
 ___
 
 项目地址[在这里](https://github.com/NiaoBlush/novel-disguise)
