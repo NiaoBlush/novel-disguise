@@ -1622,6 +1622,7 @@ const resource = {
      * 哔哩轻小说
      * www.bilinovel.com
      * 小说阅读页面会跳转到 www.linovelib.com
+     * https://www.linovelib.com/novel/4666/275666_2.html, https://www.linovelib.com/novel/2025/251952_2.html 存在部分字体加密
      */
     function biilinovel_com() {
         GM_addStyle(`
@@ -1653,7 +1654,35 @@ const resource = {
         }
         `);
 
+        // 提取使用了字体加密的段落选择器
+        if (currentMode === DIC_MODE.EXCEL) {
+            window.addEventListener('load', () => {
+                // 如果浏览器支持 adoptedStyleSheets，就优先用它
+                const sheets = document.adoptedStyleSheets || [];
+                for (const sheet of sheets) {
+                    for (const rule of Array.from(sheet.cssRules)) {
+                        if (rule.style && rule.style.fontFamily && rule.style.fontFamily.includes('read')) {
+                            console.log('找到规则：', rule.selectorText);
+                            // 姑且先按 #TextContent p:nth-last-of-type(2) 的形式处理
+                            const encryptedIndex = ((sel) => {
+                                if (!sel) return null;
+                                const m = sel.match(/nth-last-of-type\((\d+)\)/);
+                                return m ? +m[1] : null;
+                            })(rule.selectorText);
+                            console.log('encryptedIndex', encryptedIndex);
+                            if (encryptedIndex) {
+                                addExcelStyle(`
+                                .excel-table tbody tr:nth-last-of-type(${encryptedIndex}) td:nth-child(2) p {
+                                    font-family: "read" !important;
+                                }
+                                `);
+                            }
 
+                        }
+                    }
+                }
+            });
+        }
     }
 
     /**
