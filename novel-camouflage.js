@@ -815,7 +815,7 @@ const resource = {
         }
     }
 
-    function setExcelLines(lines, append = false) {
+    function setExcelLines(lines, append = false, rowHandler) {
         if (currentMode !== DIC_MODE.EXCEL) {
             return;
         }
@@ -833,26 +833,32 @@ const resource = {
             if (typeof line === 'string') {
                 line = line.replace(/&nbsp;/g, '').trim();
             }
-            if (line !== '') {
-                const $tr = $('<tr></tr>');
-                const $td1 = $('<td></td>').text(++lastIndex);
-                const $td2 = $('<td></td>').html(line);
-                $tr.append($td1);
-                $tr.append($td2);
-                for (let i = 0; i < config.emptyCols; i++) {
-                    let tdContent = "";
-                    if (config.enableExcelRandomPopulate && i < config.maxExcelRandomPopulateCol) {
-                        tdContent = generateRandomContent(i);
-                    }
-                    $tr.append($(`<td>${tdContent}</td>`));
-                }
-                $tbody.append($tr);
+            if (line === '') return;
+
+            const $td2 = $('<td></td>');
+            if (typeof rowHandler === 'function') {
+                line = rowHandler(line, index, $td2);
             }
+
+            const $tr = $('<tr></tr>');
+            const $td1 = $('<td></td>').text(++lastIndex);
+            $td2.html(line);
+            $tr.append($td1);
+            $tr.append($td2);
+            for (let i = 0; i < config.emptyCols; i++) {
+                let tdContent = "";
+                if (config.enableExcelRandomPopulate && i < config.maxExcelRandomPopulateCol) {
+                    tdContent = generateRandomContent(i);
+                }
+                $tr.append($(`<td>${tdContent}</td>`));
+            }
+            $tbody.append($tr);
+
 
         });
     }
 
-    function setExcelContent($contentEl, type = 'br', clone = false) {
+    function setExcelContent($contentEl, type = 'br', clone = false, rowHandler) {
         if (currentMode !== DIC_MODE.EXCEL) {
             return;
         }
