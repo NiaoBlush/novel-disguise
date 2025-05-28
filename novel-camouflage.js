@@ -22,6 +22,7 @@
 // @match        https://www.wenku8.net/novel/*/*/*.htm
 // @exclude      https://www.wenku8.net/novel/*/*/index.htm
 // @match        https://www.linovelib.com/novel/*/*.html
+// @match        https://www.bilinovel.com/novel/*/*.html
 // @match        https://www.qimao.com/shuku/*-*
 // @match        https://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
 // @match        https://my.jjwxc.net/onebook_vip.php?novelid=*&chapterid=*
@@ -2100,6 +2101,7 @@ const resource = {
             www_wenku8_net();
             break;
         case 'www.linovelib.com':
+        case 'www.bilinovel.com':
             biilinovel_com();
             break;
         case 'www.qimao.com':
