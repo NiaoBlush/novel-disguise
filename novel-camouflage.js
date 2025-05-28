@@ -37,7 +37,7 @@
 // @grant        GM_registerMenuCommand
 // @grant        GM_getValue
 // @grant        GM_setValue
-// @require      https://cdn.bootcdn.net/ajax/libs/jquery/2.0.3/jquery.min.js
+// @require      https://libs.baidu.com/jquery/2.0.3/jquery.min.js
 // ==/UserScript==
 
 const resource = {
