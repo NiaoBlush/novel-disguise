@@ -22,6 +22,7 @@
 // @match        https://www.wenku8.net/novel/*/*/*.htm
 // @exclude      https://www.wenku8.net/novel/*/*/index.htm
 // @match        https://www.linovelib.com/novel/*/*.html
+// @match        https://www.bilinovel.com/novel/*/*.html
 // @match        https://www.qimao.com/shuku/*-*
 // @match        https://www.jjwxc.net/onebook.php?novelid=*&chapterid=*
 // @match        https://my.jjwxc.net/onebook_vip.php?novelid=*&chapterid=*
@@ -815,7 +816,7 @@ const resource = {
         }
     }
 
-    function setExcelLines(lines, append = false) {
+    function setExcelLines(lines, append = false, rowHandler) {
         if (currentMode !== DIC_MODE.EXCEL) {
             return;
         }
@@ -833,26 +834,32 @@ const resource = {
             if (typeof line === 'string') {
                 line = line.replace(/&nbsp;/g, '').trim();
             }
-            if (line !== '') {
-                const $tr = $('<tr></tr>');
-                const $td1 = $('<td></td>').text(++lastIndex);
-                const $td2 = $('<td></td>').html(line);
-                $tr.append($td1);
-                $tr.append($td2);
-                for (let i = 0; i < config.emptyCols; i++) {
-                    let tdContent = "";
-                    if (config.enableExcelRandomPopulate && i < config.maxExcelRandomPopulateCol) {
-                        tdContent = generateRandomContent(i);
-                    }
-                    $tr.append($(`<td>${tdContent}</td>`));
-                }
-                $tbody.append($tr);
+            if (line === '') return;
+
+            const $td2 = $('<td></td>');
+            if (typeof rowHandler === 'function') {
+                line = rowHandler(line, index, $td2);
             }
+
+            const $tr = $('<tr></tr>');
+            const $td1 = $('<td></td>').text(++lastIndex);
+            $td2.html(line);
+            $tr.append($td1);
+            $tr.append($td2);
+            for (let i = 0; i < config.emptyCols; i++) {
+                let tdContent = "";
+                if (config.enableExcelRandomPopulate && i < config.maxExcelRandomPopulateCol) {
+                    tdContent = generateRandomContent(i);
+                }
+                $tr.append($(`<td>${tdContent}</td>`));
+            }
+            $tbody.append($tr);
+
 
         });
     }
 
-    function setExcelContent($contentEl, type = 'br', clone = false) {
+    function setExcelContent($contentEl, type = 'br', clone = false, rowHandler) {
         if (currentMode !== DIC_MODE.EXCEL) {
             return;
         }
@@ -1616,6 +1623,7 @@ const resource = {
      * 哔哩轻小说
      * www.bilinovel.com
      * 小说阅读页面会跳转到 www.linovelib.com
+     * https://www.linovelib.com/novel/4666/275666_2.html, https://www.linovelib.com/novel/2025/251952_2.html 存在部分字体加密
      */
     function biilinovel_com() {
         GM_addStyle(`
@@ -1631,6 +1639,51 @@ const resource = {
         setWordContent($(".mlfy_page"));
         setExcelContent($("#TextContent"), "p");
         setExcelLines([$(".mlfy_page")], true);
+        addExcelStyle(`
+        .mlfy_page {
+            display: block !important;
+            height: unset !important;
+            line-height: unset !important;
+        }
+        .mlfy_page > a {
+            line-height: unset !important;
+            font-size: 12px;
+            width: 80px;
+        }
+        .mlfy_page > a:hover {
+            color: unset !important;
+        }
+        `);
+
+        // 提取使用了字体加密的段落选择器
+        if (currentMode === DIC_MODE.EXCEL) {
+            window.addEventListener('load', () => {
+                // 如果浏览器支持 adoptedStyleSheets，就优先用它
+                const sheets = document.adoptedStyleSheets || [];
+                for (const sheet of sheets) {
+                    for (const rule of Array.from(sheet.cssRules)) {
+                        if (rule.style && rule.style.fontFamily && rule.style.fontFamily.includes('read')) {
+                            console.log('找到规则：', rule.selectorText);
+                            // 姑且先按 #TextContent p:nth-last-of-type(2) 的形式处理
+                            const encryptedIndex = ((sel) => {
+                                if (!sel) return null;
+                                const m = sel.match(/nth-last-of-type\((\d+)\)/);
+                                return m ? +m[1] : null;
+                            })(rule.selectorText);
+                            console.log('encryptedIndex', encryptedIndex);
+                            if (encryptedIndex) {
+                                addExcelStyle(`
+                                .excel-table tbody tr:nth-last-of-type(${encryptedIndex}) td:nth-child(2) p {
+                                    font-family: "read" !important;
+                                }
+                                `);
+                            }
+
+                        }
+                    }
+                }
+            });
+        }
     }
 
     /**
@@ -2048,6 +2101,7 @@ const resource = {
             www_wenku8_net();
             break;
         case 'www.linovelib.com':
+        case 'www.bilinovel.com':
             biilinovel_com();
             break;
         case 'www.qimao.com':
