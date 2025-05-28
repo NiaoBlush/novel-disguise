@@ -1637,6 +1637,23 @@ const resource = {
         setWordContent($(".mlfy_page"));
         setExcelContent($("#TextContent"), "p");
         setExcelLines([$(".mlfy_page")], true);
+        addExcelStyle(`
+        .mlfy_page {
+            display: block !important;
+            height: unset !important;
+            line-height: unset !important;
+        }
+        .mlfy_page > a {
+            line-height: unset !important;
+            font-size: 12px;
+            width: 80px;
+        }
+        .mlfy_page > a:hover {
+            color: unset !important;
+        }
+        `);
+
+
     }
 
     /**
