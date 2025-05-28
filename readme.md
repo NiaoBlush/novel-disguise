@@ -26,7 +26,8 @@ ___
 | 飞卢            | ✔      | ❌       |
 | 刺猬猫           | ✔      | ❌       |
 
-*这里的笔趣阁包含以下站: biquge.net, xbiqugu.net, biquge.co, 52wx.com, 3bqg.cc, bigee.cc, beqege.cc, biqukun.com, biquge.tw
+*这里的笔趣阁包含以下站: biquge.net, xbiqugu.net, biquge.co, 52wx.com, 3bqg.cc, bigee.cc, beqege.cc, biqukun.com,
+biquge.tw
 
 **很多站都自称笔趣阁, 只适配了一些**
 ___
@@ -119,6 +120,17 @@ ___
 <details>
 
 <summary>版本说明</summary>
+
+### v2.5.3
+
++ 修复bilinovel中excel模式下的翻页问题
++ 修复bilinovel中excel模式下的字体加密问题
++ 尝试性修复bilinovel.com未跳转导致脚本未识别的问题
+
+### v2.5.0
+
++ 适配owlook.com.cn
++ 适配刺猬猫
 
 ### v2.4
 
