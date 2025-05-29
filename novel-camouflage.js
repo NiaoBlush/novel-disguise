@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         小说页面伪装|小说页面精简|起点页面伪装|番茄页面伪装|笔趣阁页面伪装
 // @namespace    https://github.com/NiaoBlush/novel-disguise
-// @version      2.5.3
+// @version      2.6.0
 // @description  将小说页面伪装成一个Word文档或Excel表格，同时净化小说页面，去除不必要的元素。适用于起点、番茄、笔趣阁、晋江、飞卢、69书吧、部分轻小说站等
 // @author       NiaoBlush
 // @license      MIT
@@ -1625,7 +1625,7 @@ const resource = {
      * 小说阅读页面会跳转到 www.linovelib.com
      * https://www.linovelib.com/novel/4666/275666_2.html, https://www.linovelib.com/novel/2025/251952_2.html 存在部分字体加密
      */
-    function biilinovel_com() {
+    function linovelib_com() {
         GM_addStyle(`
         .mlfy_page {
             width: 100%;
@@ -1655,7 +1655,7 @@ const resource = {
         }
         `);
 
-        // 提取使用了字体加密的段落选择器
+        // 处理字体加密
         if (currentMode === DIC_MODE.EXCEL) {
             window.addEventListener('load', () => {
                 // 如果浏览器支持 adoptedStyleSheets，就优先用它
@@ -1679,6 +1679,103 @@ const resource = {
                                 `);
                             }
 
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * bilinovel原站, mac不会跳转linovelib.com
+     * 存在字体加密 https://www.bilinovel.com/novel/2025/72668_2.html
+     */
+    function biilinovel_com() {
+        addGlobalStyle(`
+        html ins {
+            display: none !important;
+        }
+        `);
+        addExcelStyle(`
+         table {
+            table-layout: auto !important;
+            word-break: normal !important;
+         }
+         table th {
+            border-bottom: none !important;
+         }
+         table tr {
+            border-top: none !important;
+         }
+         .footlink {
+            border-top: none !important;
+            line-height: unset !important;
+            font-size: unset !important;
+         }
+         .footlink a {
+            display: unset !important;
+            margin-bottom: unset !important;
+            width: unset !important;
+            padding: unset !important;
+            margin: unset !important;
+            margin-right: 10px !important;
+            float: unset !important;
+        }
+        `);
+
+        const $content = $("#acontent");
+        const $footLink = $("#footlink");
+        setDisguisedTitle($("#atitle").text());
+        setWordDetail($(".atitle h3").text());
+
+        setWordContent($content);
+        setWordContent($footLink);
+
+        $footLink.css("display", "block");
+        setExcelContent($content, "p");
+        setExcelLines([$footLink], true);
+
+        // 处理字体加密
+        if (currentMode === DIC_MODE.EXCEL) {
+            window.addEventListener('load', () => {
+                // 如果浏览器支持 adoptedStyleSheets，就优先用它
+                const sheets = document.styleSheets || [];
+                console.log('sheets', sheets);
+                for (const sheet of sheets) {
+                    for (const rule of Array.from(sheet.cssRules)) {
+                        if (rule.style && rule.style.fontFamily && rule.style.fontFamily.includes('read')) {
+
+                            if (!rule.selectorText || rule.selectorText.includes(".excel-table")) continue;
+                            console.log('找到规则：', rule.selectorText);
+
+                            // 姑且先按 #TextContent p:nth-last-of-type(2) 的形式处理
+                            const encryptedIndex = ((sel) => {
+                                if (!sel) return null;
+                                const m = sel.match(/nth-last-of-type\((\d+)\)/);
+                                return m ? +m[1] : null;
+                            })(rule.selectorText);
+
+                            if (encryptedIndex) {
+                                console.log('encryptedIndex', encryptedIndex);
+                                addExcelStyle(`
+                                .excel-table tbody tr:nth-last-of-type(${encryptedIndex}) td:nth-child(2) p {
+                                    font-family: "read" !important;
+                                }
+                                `);
+                            }
+
+                            //如果有 p:last-of-type
+                            const isEncryptedLast = ((sel) => {
+                                if (!sel) return false;
+                                return /p:last-of-type/.test(sel);
+                            })(rule.selectorText);
+                            if (isEncryptedLast) {
+                                addExcelStyle(`
+                                .excel-table tbody tr:nth-last-of-type(2) td:nth-child(2) p {
+                                    font-family: "read" !important;
+                                }
+                                `);
+                            }
                         }
                     }
                 }
@@ -2101,6 +2198,8 @@ const resource = {
             www_wenku8_net();
             break;
         case 'www.linovelib.com':
+            linovelib_com();
+            break;
         case 'www.bilinovel.com':
             biilinovel_com();
             break;
