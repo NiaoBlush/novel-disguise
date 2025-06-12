@@ -1446,6 +1446,9 @@ const resource = {
         .hotcmd-box {
             display: none !important;
         }
+        #content {
+            color: black !important;
+        }
         `);
         biquge_net();
         setExcelContent($("#content"));
