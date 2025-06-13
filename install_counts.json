@@ -1373,6 +1373,10 @@
     },
     "2025-06-12": {
         "installs": 2,
-        "update_checks": 140
+        "update_checks": 167
+    },
+    "2025-06-13": {
+        "installs": 2,
+        "update_checks": 125
     }
 }
