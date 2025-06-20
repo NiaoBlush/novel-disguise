@@ -1400,7 +1400,11 @@
         "update_checks": 160
     },
     "2025-06-19": {
-        "installs": 3,
-        "update_checks": 135
+        "installs": 4,
+        "update_checks": 161
+    },
+    "2025-06-20": {
+        "installs": 0,
+        "update_checks": 138
     }
 }
