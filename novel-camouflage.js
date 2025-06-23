@@ -122,12 +122,6 @@ const resource = {
     'use strict';
     console.log("novel-disguise loaded");
 
-    const config = {
-        emptyCols: 20,
-        enableExcelRandomPopulate: true,
-        maxExcelRandomPopulateCol: 9
-    };
-
     const screenInfo = getScreenInfo();
     let disguised_header_img = null;
     let disguised_body_img = null;
@@ -143,45 +137,58 @@ const resource = {
     const link_bg_color = "#f6f6f6";
     const link_front_color = "rgba(0,0,0,.7)";
 
-    //mode
-    const KEY_MODE = 'key_mode';
-    const DIC_MODE = {
-        WORD: 'mode_word',
-        EXCEL: 'mode_excel',
-        ORIGINAL: 'mode_original'
+    const DICT = {
+        MODE: {
+            WORD: 'mode_word',
+            EXCEL: 'mode_excel',
+            ORIGINAL: 'mode_original'
+        },
+        THEME: {
+            OFFICE: 'theme_office',
+            WPS: 'theme_wps'
+        },
+        MARGIN_TYPE: {
+            NORMAL: 'normal_margin',
+            NONE: 'no_margin'
+        }
     };
-    let currentMode = GM_getValue(KEY_MODE, DIC_MODE.WORD);
 
-    const KEY_LAST_VISIBLE_MODE = 'key_last_visible_mode';
-    let lastVisibleMode;
-    if (currentMode !== DIC_MODE.ORIGINAL) {
-        GM_setValue(KEY_LAST_VISIBLE_MODE, currentMode);
-        lastVisibleMode = currentMode;
-    } else {
-        lastVisibleMode = GM_getValue(KEY_LAST_VISIBLE_MODE, DIC_MODE.WORD);
+    const KEY_CONFIG = "KEY_CONFIG";
+
+    function readConfig() {
+
+        const defaultConfig = {
+            mode: DICT.MODE.WORD,
+            lastVisibleMode: DICT.MODE.WORD,
+            theme: DICT.THEME.OFFICE,
+            marginType: DICT.MARGIN_TYPE.NORMAL,
+
+            emptyCols: 20,
+            enableExcelRandomPopulate: true,
+            maxExcelRandomPopulateCol: 9
+        };
+        const stored = GM_getValue(KEY_CONFIG, {});
+        debugger;
+        const config = Object.assign({}, defaultConfig, stored);
+        if (config.mode !== DICT.MODE.ORIGINAL) {
+            config.lastVisibleMode = config.mode;
+        }
+        console.debug("novel-disguise config loaded", config);
+        return config;
+    }
+
+    const config = readConfig();
+
+    function writeConfig() {
+        GM_setValue(KEY_CONFIG, config);
     }
 
     function applyMode(mode) {
         console.log('准备切换到模式[${mode}]...');
-        GM_setValue(KEY_MODE, mode);
+        config.mode = mode;
+        writeConfig();
         location.reload();
     }
-
-    //theme
-    const KEY_THEME = 'key_theme';
-    const DIC_THEME = {
-        OFFICE: 'theme_office',
-        WPS: 'theme_wps'
-    };
-    let currentTheme = GM_getValue(KEY_THEME, DIC_THEME.OFFICE);
-
-    //margin type
-    const KEY_WORD_MARGIN_TYPE = 'key_word_margin_type';
-    const DIC_MARGIN_TYPE = {
-        NORMAL: 'normal_margin',
-        NONE: 'no_margin'
-    };
-    let currentMarginType = GM_getValue(KEY_WORD_MARGIN_TYPE, DIC_MARGIN_TYPE.NORMAL);
 
     function settings() {
         const $settings = $(`
@@ -189,21 +196,21 @@ const resource = {
                 <div class="nd-settings-form-group">
                     <label>模式: </label>
                     <select name="settings-mode">
-                        <option value="${DIC_MODE.WORD}">Word</option>
-                        <option value="${DIC_MODE.EXCEL}">Excel</option>
+                        <option value="${DICT.MODE.WORD}">Word</option>
+                        <option value="${DICT.MODE.EXCEL}">Excel</option>
                     </select>
                 </div>
                 <div class="nd-settings-form-group">
                     <label for="settings-mode">主题: </label>
                     <select id="settings-theme" name="settings-theme">
-                        <option value="${DIC_THEME.OFFICE}">Office</option>
-                        <option value="${DIC_THEME.WPS}">Wps</option>
+                        <option value="${DICT.THEME.OFFICE}">Office</option>
+                        <option value="${DICT.THEME.WPS}">Wps</option>
                     </select>
                 </div>
                 <div class="nd-settings-form-group">
                     <label title="word半屏时采用无边距会看起来更加自然">Word页边距: </label>
-                    <label style="margin-right: 45px;"><input type="radio" name="margin-type" value="${DIC_MARGIN_TYPE.NORMAL}">正常</label>
-                    <label><input type="radio" name="margin-type" value="${DIC_MARGIN_TYPE.NONE}">无边距</label>
+                    <label style="margin-right: 45px;"><input type="radio" name="margin-type" value="${DICT.MARGIN_TYPE.NORMAL}">正常</label>
+                    <label><input type="radio" name="margin-type" value="${DICT.MARGIN_TYPE.NONE}">无边距</label>
                 </div>
                 
                 <div class="nd-settings-form-group" style="margin-top: 20px;">
@@ -218,9 +225,9 @@ const resource = {
         `);
 
         //default
-        $settings.find("select[name=settings-mode]").val(currentMode);
-        $settings.find("select[name=settings-theme]").val(currentTheme);
-        $settings.find(`input[name=margin-type][value='${currentMarginType}']`).prop('checked', true);
+        $settings.find("select[name=settings-mode]").val(config.mode);
+        $settings.find("select[name=settings-theme]").val(config.theme);
+        $settings.find(`input[name=margin-type][value='${config.marginType}']`).prop('checked', true);
 
 
         const $modal = showModal($settings, {
@@ -232,14 +239,12 @@ const resource = {
             event.preventDefault();
 
             const formDataObj = new FormData(this);
-            const newMode = formDataObj.get('settings-mode');
-            GM_setValue(KEY_MODE, newMode);
-            if (currentMode !== DIC_MODE.ORIGINAL) {
-                GM_setValue(KEY_LAST_VISIBLE_MODE, newMode);
-                lastVisibleMode = currentMode;
-            }
-            GM_setValue(KEY_THEME, formDataObj.get('settings-theme'));
-            GM_setValue(KEY_WORD_MARGIN_TYPE, formDataObj.get('margin-type'));
+
+            config.mode = formDataObj.get('settings-mode');
+            config.theme = formDataObj.get('settings-theme');
+            config.marginType = formDataObj.get('margin-type');
+            writeConfig();
+
 
             popMsg("设置已保存，刷新页面后生效");
             $modal.remove();
@@ -279,42 +284,42 @@ const resource = {
             const wThreshold2k = 2000;
             const wThreshold4k = 3840;
 
-            if (currentMode === DIC_MODE.WORD) {
+            if (currentMode === DICT.MODE.WORD) {
                 if (physicalWidth >= wThreshold4k) {
-                    return currentTheme === DIC_THEME.OFFICE
+                    return currentTheme === DICT.THEME.OFFICE
                         ? resource.img.word_office_header_4k
                         : resource.img.word_wps_header_4k;
                 } else if (physicalWidth >= wThreshold2k) {
-                    return currentTheme === DIC_THEME.OFFICE
+                    return currentTheme === DICT.THEME.OFFICE
                         ? resource.img.word_office_header_2k
                         : resource.img.word_wps_header_2k;
                 } else {
-                    return currentTheme === DIC_THEME.OFFICE
+                    return currentTheme === DICT.THEME.OFFICE
                         ? resource.img.word_office_header_1k
                         : resource.img.word_wps_header_1k;
                 }
             } else {
                 if (physicalWidth >= wThreshold4k) {
-                    return currentTheme === DIC_THEME.OFFICE
+                    return currentTheme === DICT.THEME.OFFICE
                         ? resource.img.excel_office_header_4k
                         : resource.img.excel_wps_header_4k;
                 } else if (physicalWidth >= wThreshold2k) {
-                    return currentTheme === DIC_THEME.OFFICE
+                    return currentTheme === DICT.THEME.OFFICE
                         ? resource.img.excel_office_header_2k
                         : resource.img.excel_wps_header_2k;
                 } else {
-                    return currentTheme === DIC_THEME.OFFICE
+                    return currentTheme === DICT.THEME.OFFICE
                         ? resource.img.excel_office_header_1k
                         : resource.img.excel_wps_header_1k;
                 }
             }
         }
 
-        const src = getHeaderResource(currentMode, currentTheme, screenInfo.physicalWidth);
+        const src = getHeaderResource(config.mode, config.theme, screenInfo.physicalWidth);
         disguised_header_img = src.url || src.base64;
         headerHeight = getActualHeight(src.height);
 
-        if (currentMode === DIC_MODE.WORD) {
+        if (config.mode === DICT.MODE.WORD) {
             disguised_body_img = resource.img.word_body_1k.base64;
             disguised_footer_img = resource.img.word_footer_1k.base64;
             footerHeight = resource.img.word_footer_1k.height;
@@ -367,7 +372,7 @@ const resource = {
             width: 100%;
             z-index: 9999;
             text-align: center;
-            color: ${currentTheme === DIC_THEME.OFFICE ? '#edffff' : '#232323'};
+            color: ${config.theme === DICT.THEME.OFFICE ? '#edffff' : '#232323'};
             font-size: 12px;
             line-height: 22px;
             user-select: none;
@@ -410,8 +415,8 @@ const resource = {
         
         #disguised-body {
             flex: 1;
-            padding-left: ${currentMarginType === DIC_MARGIN_TYPE.NORMAL ? '25%' : '0'};
-            padding-right: ${currentMarginType === DIC_MARGIN_TYPE.NORMAL ? '25%' : '0'};
+            padding-left: ${config.marginType === DICT.MARGIN_TYPE.NORMAL ? '25%' : '0'};
+            padding-right: ${config.marginType === DICT.MARGIN_TYPE.NORMAL ? '25%' : '0'};
             background-image: url(${disguised_body_img}) !important;
             background-repeat: repeat-y;
             background-size: 100% auto;
@@ -673,7 +678,7 @@ const resource = {
                <div id="disguised-model" style="display: none;"></div>
            </div>`).appendTo("body");
 
-        if (currentMode === DIC_MODE.WORD) {
+        if (config.mode === DICT.MODE.WORD) {
             document.title = "文档1";
             GM_addStyle(`
             #disguised-content {
@@ -713,14 +718,14 @@ const resource = {
             }
             
             .excel-table thead {
-                background-color: ${currentTheme === DIC_THEME.OFFICE ? '#E6E6E6' : '#EEEEEE'};
+                background-color: ${config.theme === DICT.THEME.OFFICE ? '#E6E6E6' : '#EEEEEE'};
             }
             
             .excel-table thead th {
                 font-weight: normal;
                 font-size: 14px;
                 color: black !important;
-                background-color: ${currentTheme === DIC_THEME.OFFICE ? '#E6E6E6' : '#EEEEEE'};
+                background-color: ${config.theme === DICT.THEME.OFFICE ? '#E6E6E6' : '#EEEEEE'};
                 position: sticky;
                 top: 0;
                 outline: 1px solid;
@@ -804,20 +809,20 @@ const resource = {
     }
 
     function setWordContent($contentEl) {
-        if (currentMode !== DIC_MODE.WORD) {
+        if (config.mode !== DICT.MODE.WORD) {
             return;
         }
         $contentEl.show().appendTo("#disguised-content");
     }
 
     function clearExcelContent() {
-        if (currentMode === DIC_MODE.EXCEL) {
+        if (config.mode === DICT.MODE.EXCEL) {
             $(".excel-table tbody").empty();
         }
     }
 
     function setExcelLines(lines, append = false, rowHandler) {
-        if (currentMode !== DIC_MODE.EXCEL) {
+        if (config.mode !== DICT.MODE.EXCEL) {
             return;
         }
 
@@ -860,7 +865,7 @@ const resource = {
     }
 
     function setExcelContent($contentEl, type = 'br', clone = false, rowHandler) {
-        if (currentMode !== DIC_MODE.EXCEL) {
+        if (config.mode !== DICT.MODE.EXCEL) {
             return;
         }
 
@@ -888,26 +893,26 @@ const resource = {
     }
 
     function addWordStyle(styleText) {
-        if (currentMode === DIC_MODE.WORD) {
+        if (config.mode === DICT.MODE.WORD) {
             GM_addStyle(styleText);
         }
     }
 
     function addExcelStyle(styleText) {
-        if (currentMode === DIC_MODE.EXCEL) {
+        if (config.mode === DICT.MODE.EXCEL) {
             GM_addStyle(styleText);
         }
     }
 
     function excelUnsupported() {
-        if (currentMode === DIC_MODE.EXCEL) {
+        if (config.mode === DICT.MODE.EXCEL) {
             alert("本站收费章节不支持Excel模式，将切换到Word模式");
-            applyMode(DIC_MODE.WORD);
+            applyMode(DICT.MODE.WORD);
         }
     }
 
     function clearWordContent() {
-        if (currentMode === DIC_MODE.WORD) {
+        if (config.mode === DICT.MODE.WORD) {
             $('#disguised-content').empty();
         }
 
@@ -1018,11 +1023,11 @@ const resource = {
         }
     }
 
-    function showModal(content, config = {}) {
+    function showModal(content, modalConfig = {}) {
         const $modal = $(`
         <div class="disguised-modal-wrapper">
             <div class="disguised-modal-header">
-                <div class="disguised-modal-title">${config.title || ""}</div>
+                <div class="disguised-modal-title">${modalConfig.title || ""}</div>
                 
             </div>
             <div class="disguised-modal-body"></div>
@@ -1035,8 +1040,8 @@ const resource = {
         });
         $modal.find(".disguised-modal-header").append($headerClose);
 
-        if (config.width && typeof config.width === "number") {
-            $modal.css("width", `${config.width}px`);
+        if (modalConfig.width && typeof modalConfig.width === "number") {
+            $modal.css("width", `${modalConfig.width}px`);
         }
 
         if (typeof content === "string") {
@@ -1659,7 +1664,7 @@ const resource = {
         `);
 
         // 处理字体加密
-        if (currentMode === DIC_MODE.EXCEL) {
+        if (config.mode === DICT.MODE.EXCEL) {
             window.addEventListener('load', () => {
                 // 如果浏览器支持 adoptedStyleSheets，就优先用它
                 const sheets = document.adoptedStyleSheets || [];
@@ -1739,7 +1744,7 @@ const resource = {
         setExcelLines([$footLink], true);
 
         // 处理字体加密
-        if (currentMode === DIC_MODE.EXCEL) {
+        if (config.mode === DICT.MODE.EXCEL) {
             window.addEventListener('load', () => {
                 // 如果浏览器支持 adoptedStyleSheets，就优先用它
                 const sheets = document.styleSheets || [];
@@ -1852,7 +1857,7 @@ const resource = {
         $content.children("div").first().remove();
         $content.children("div").last().remove();
 
-        if (currentMode === DIC_MODE.EXCEL) {
+        if (config.mode === DICT.MODE.EXCEL) {
             $("h2").remove();
             $("#note_danmu_wrapper").remove();
             $("div[align='right']").remove();
@@ -2114,17 +2119,17 @@ const resource = {
     document.addEventListener('keydown', function (event) {
         // 判断是否按下 E 键
         if (event.key === 'e' && !event.ctrlKey && !event.altKey && !event.metaKey) {
-            if (currentMode === DIC_MODE.ORIGINAL) {
-                applyMode(lastVisibleMode);
+            if (config.mode === DICT.MODE.ORIGINAL) {
+                applyMode(config.lastVisibleMode);
             } else {
-                applyMode(DIC_MODE.ORIGINAL);
+                applyMode(DICT.MODE.ORIGINAL);
 
             }
         }
     });
 
     //如果是原始模式
-    if (currentMode === DIC_MODE.ORIGINAL) {
+    if (config.mode === DICT.MODE.ORIGINAL) {
         addGlobalStyle(`
         .nd-switch-indicator {
             position: fixed;
