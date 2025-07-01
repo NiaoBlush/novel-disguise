@@ -121,6 +121,14 @@ ___
 
 <summary>版本说明</summary>
 
+### v2.6.1
+
++ 代码优化与脚本体积压缩
+
+### v2.6.0
+
++ 适配bilinovel原站 (mac会停留在原站而不是跳转到linovelib.com)
+
 ### v2.5.3
 
 + 修复bilinovel中excel模式下的翻页问题
