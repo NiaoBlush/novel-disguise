@@ -292,7 +292,7 @@ const resource = {
         console.log('screenInfo', screenInfo);
 
         function getHeaderResource(currentMode, currentTheme, physicalWidth) {
-            const wThreshold2k = 2000;
+            const wThreshold2k = 2560;
             const wThreshold4k = 3840;
 
             if (currentMode === DICT.MODE.WORD) {
