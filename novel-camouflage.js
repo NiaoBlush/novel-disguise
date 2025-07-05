@@ -33,6 +33,7 @@
 // @match        https://69shuba.cx/txt/*/*
 // @match        https://www.owlook.com.cn/owllook_content*
 // @match        https://www.ciweimao.com/chapter/*
+// @match        https://www.v2ex.com*
 // @grant        GM_addStyle
 // @grant        GM_registerMenuCommand
 // @grant        GM_getValue
@@ -2126,6 +2127,67 @@ const resource = {
 
     }
 
+    /**
+     * v站 主题
+     * e.g. https://www.v2ex.com/t/1142285
+     */
+    function v2ex_thread() {
+        setDisguisedTitle($("h1").text());
+        setWordDetail($("small"));
+        setWordContent($("#Main"));
+
+        if (config.mode === DICT.MODE.WORD) {
+            $("div.header").remove();
+            $("div[id^='r_'] tr td:first-child").remove();
+        }
+
+        addGlobalStyle(`
+        .topic_buttons {
+            background: none;
+        }
+        a.tag:link {
+            background-color: unset;
+        }
+        div.cell {
+            border-bottom: none;
+        }
+        div.ps_container {
+            background: none;
+        }
+        .button {
+            background-image: none !important;
+            padding: 0 !important;
+            border: none !important;
+        }
+        .page_normal:active, .page_normal:link, .page_normal:visited, .page_current {
+            box-shadow: none;
+            border: none;
+        }
+        .page_input {
+            box-shadow: none;
+            border: 1px solid #f1f1f1;
+        }
+        img[alt='Reply'] {
+            filter: brightness(140%) contrast(90%);
+        }
+        small, small a:link {
+            color: black !important;
+        }
+        `);
+        addWordStyle(`
+        div.subtle, div.outdated {
+           border-left: none;
+           border-bottom: none;
+        }
+        .box {
+            box-shadow: none;
+        }
+        `);
+
+    }
+
+///////////////////////////// 站点结束
+
     // 切换原版界面
     document.addEventListener('keydown', function (event) {
         // 判断是否按下 E 键
@@ -2178,7 +2240,9 @@ const resource = {
     // main
     common();
     const currentHost = window.location.host;
+    const currentPathName = window.location.pathname;
     console.log('currentHost', currentHost);
+
     switch (currentHost) {
         case 'www.qidian.com':
             qidian();
@@ -2245,6 +2309,11 @@ const resource = {
             break;
         case 'www.ciweimao.com':
             ciweimao_com();
+            break;
+        case 'www.v2ex.com':
+            if (currentPathName.startsWith('/t/')) {
+                v2ex_thread();
+            }
             break;
     }
 
