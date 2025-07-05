@@ -357,8 +357,9 @@ const resource = {
      *
      * @param selector css选择器
      * @param replaceParent 是否替换img的父元素(有些img会被a标签包裹)
+     * @param indicatorText 占位文字
      */
-    function hideImages({selector, replaceParent = false}) {
+    function hideImages({selector, replaceParent = false, indicatorText = '点击显示图片'}) {
         if (!config.hideImage) {
             return;
         }
@@ -367,7 +368,7 @@ const resource = {
             const imgSrc = $(this).attr('src');
             const span = $('<span class="disguised-img-indicator"></span>')
                 .attr('data-src', imgSrc)
-                .text('点击显示图片');
+                .text(indicatorText);
             if (replaceParent) {
                 $(this).parent().replaceWith(span);
             } else {
@@ -378,7 +379,9 @@ const resource = {
         $('#disguised-model').on("click", function () {
             $(this).hide();
         });
+    }
 
+    function registerImageIndicators() {
         $(".disguised-img-indicator").on('click', function () {
             const src = $(this).attr('data-src');
             const $newImg = $('<img>').attr('src', src);
@@ -534,6 +537,7 @@ const resource = {
             color: ${link_text_color};
             text-decoration: underline;
             cursor: pointer;
+            margin-right: 5px;
         }
         
         .disguised-modal-wrapper {
@@ -773,11 +777,11 @@ const resource = {
                 border-collapse: collapse;
             }
             
-            .excel-table thead {
+            .excel-table > thead {
                 background-color: ${config.theme === DICT.THEME.OFFICE ? '#E6E6E6' : '#EEEEEE'};
             }
             
-            .excel-table thead th {
+            .excel-table > thead > tr > th {
                 font-weight: normal;
                 font-size: 14px;
                 color: black !important;
@@ -805,7 +809,7 @@ const resource = {
             }
             .excel-table tbody {
             }
-            .excel-table tbody td:nth-child(1) {
+            .excel-table > tbody > tr > td:nth-child(1) {
                 text-align: center;
                 background-color: #E6E6E6;
                 padding-left: 5px;
@@ -816,19 +820,19 @@ const resource = {
                 white-space: nowrap;
                 text-align: center;
             }
-            .excel-table tbody td {
+            .excel-table > tbody > tr > td {
                 border: 1px solid #DDDDDD;
                 padding: 3px 10px;
                 line-height: normal;
             }
-            .excel-table tbody td ,
+            .excel-table > tbody > tr > td ,
             .excel-table tbody td p {
                 font-size: 12px;
                 font-weight: normal;
                 color: black !important;
                 font-family: "Microsoft YaHei", "SimSun", sans-serif;
             }
-            .excel-table tbody tr:first-child td {
+            .excel-table > tbody > tr:first-child > td {
                 border-top: none;
             }
             .excel-table tbody td > div {
@@ -856,11 +860,7 @@ const resource = {
             $("#disguised-content").append($table);
 
             //占位行
-            const defaultLines = [];
-            for (let i = 0; i < 50; i++) {
-                defaultLines.push("\u200B");
-            }
-            setExcelLines(defaultLines);
+            padExcelBlankLines();
         }
     }
 
@@ -877,6 +877,24 @@ const resource = {
         }
     }
 
+    function getExcelLastIndex() {
+        const $cell = $(".excel-table > tbody > tr:last-child > td:first-child");
+        const indexCellText = $.trim($cell.text());
+        return indexCellText ? parseInt(indexCellText) : 0;
+    }
+
+    /**
+     * 空行补齐
+     */
+    function padExcelBlankLines(max = 20) {
+        const lastIndex = getExcelLastIndex();
+        const emptyLines = [];
+        for (let i = lastIndex + 1; i <= max; i++) {
+            emptyLines.push("\u200B");
+        }
+        setExcelLines(emptyLines, true);
+    }
+
     function setExcelLines(lines, append = false, rowHandler) {
         if (config.mode !== DICT.MODE.EXCEL) {
             return;
@@ -884,18 +902,20 @@ const resource = {
 
         let lastIndex;
         if (append) {
-            lastIndex = Number.parseInt($(".excel-table tbody tr:last-child td:first-child").text());
+            lastIndex = getExcelLastIndex();
         } else {
             clearExcelContent();
             lastIndex = 0;
         }
 
-        const $tbody = $(".excel-table tbody");
+        const $tbody = $(".excel-table > tbody");
         lines.forEach(function (line, index) {
             if (typeof line === 'string') {
                 line = line.replace(/&nbsp;/g, '').trim();
             }
+
             if (line === '') return;
+            if (line instanceof $ && line.length === 0) return;
 
             const $td2 = $('<td></td>');
             if (typeof rowHandler === 'function') {
@@ -942,6 +962,10 @@ const resource = {
             setExcelLines(pList);
         }
 
+    }
+
+    function addEmptyExcelLines(num = 1) {
+        setExcelLines(new Array(num).fill("\u200B"), true);
     }
 
     function addGlobalStyle(styleText) {
@@ -1984,6 +2008,7 @@ const resource = {
         `);
 
         hideImages({selector: '#article-main-contents img'});
+        registerImageIndicators();
 
         setWordContent($(".article-content"));
         setExcelContent($("#article-main-contents"));
@@ -2164,6 +2189,75 @@ const resource = {
         hideImages({selector: ".topic_content img.embedded_image"});
         hideImages({selector: ".reply_content img.embedded_image", replaceParent: true});
 
+        if (config.mode === DICT.MODE.EXCEL) {
+            const $outdated = $(".outdated");
+            let outdatedText = $outdated.text();
+            if ($outdated.length > 0) {
+                outdatedText = `[ ${outdatedText} ]`;
+            }
+            setExcelLines([outdatedText], false);
+
+            const $markdownBody = $(".markdown_body");
+            if ($markdownBody.length > 0) {
+                setExcelLines(
+                    $markdownBody
+                        .children()
+                        .toArray()
+                        .flatMap(el => (el.tagName === 'UL' || el.tagName === 'OL' ? [...el.children] : [el]))
+                        .flatMap(el =>
+                            $(el).html()
+                                .split(/<br\s*\/?>/i)
+                                .map(s => s.trim())
+                        ), true);
+            } else {
+                setExcelLines(
+                    $(".topic_content")
+                        .toArray()
+                        .flatMap(el =>
+                            $(el).html()
+                                .split(/<br\s*\/?>/i)
+                                .map(s => s.trim())
+                        ), true);
+            }
+            setExcelLines(
+                $(".subtle")
+                    .toArray()
+                    .flatMap(el => {
+                            const arr = $(el).find(".topic_content").html()
+                                .split(/<br\s*\/?>/i);
+                            arr.unshift($(el).children().first().text());
+                            return arr;
+                        }
+                    ), true);
+            setExcelLines([$(".topic_buttons")], true);
+
+            const $replyBox = $("#Main :nth-child(2 of .box)");
+            const $paginator = $replyBox.find(".ps_container").first();
+            addEmptyExcelLines();
+            setExcelLines([$replyBox.children().first(), $paginator], true);
+            setExcelLines($("div[id^='r_']")
+                .toArray()
+                .flatMap(el => {
+                        const $reply = $(el).find("td").eq(2);
+                        const $name = $reply.find("strong");
+                        const $badges = $reply.find(".badges");
+                        const $ago = $reply.find("span.ago");
+                        const $feedback = $reply.find(".fr").first();
+                        $name.css("margin-right", "10px");
+                        $badges.css("margin-right", "10px");
+                        const $sender = $name.add($ago).add($feedback).add($badges).wrapAll("<span/>");
+                        const content = $reply.find(".reply_content").html().split(/<br\s*\/?>/i);
+                        return [$sender, ...content];
+                    }
+                ), true);
+            setExcelLines([$paginator.clone()], true);
+            setExcelLines([$("#reply-box")], true);
+
+            padExcelBlankLines();
+        }
+
+        registerImageIndicators();
+
         if (config.mode === DICT.MODE.WORD) {
             $("div.header").remove();
             $("div[id^='r_'] tr td:first-child").remove();
@@ -2208,16 +2302,25 @@ const resource = {
             color: #a0d9ff !important;
             border-color: #a0d9ff !important;
         }
-        .
+        .box {
+            box-shadow: none;
+            border-bottom: 1px solid #F1F1F1 !important;
+        }
         `);
         addWordStyle(`
         div.subtle, div.outdated {
            border-left: none;
            border-bottom: none;
         }
-        .box {
-            box-shadow: none;
-            border-bottom: 1px solid #F1F1F1 !important;
+        
+        `);
+        addExcelStyle(`
+        p {
+            margin-block-start: 0;
+            margin-block-end: 0;
+        }
+        .ps_container .page_input {
+            padding: 0;
         }
         `);
 
