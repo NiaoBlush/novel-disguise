@@ -33,7 +33,7 @@
 // @match        https://69shuba.cx/txt/*/*
 // @match        https://www.owlook.com.cn/owllook_content*
 // @match        https://www.ciweimao.com/chapter/*
-// @match        https://www.v2ex.com*
+// @match        https://www.v2ex.com/*
 // @grant        GM_addStyle
 // @grant        GM_registerMenuCommand
 // @grant        GM_getValue
@@ -175,6 +175,7 @@ const resource = {
             lastVisibleMode: DICT.MODE.WORD,
             theme: DICT.THEME.OFFICE,
             marginType: DICT.MARGIN_TYPE.NORMAL,
+            hideImage: true,
 
             emptyCols: 20,
             enableExcelRandomPopulate: true,
@@ -224,6 +225,11 @@ const resource = {
                     <label style="margin-right: 45px;"><input type="radio" name="margin-type" value="${DICT.MARGIN_TYPE.NORMAL}">正常</label>
                     <label><input type="radio" name="margin-type" value="${DICT.MARGIN_TYPE.NONE}">无边距</label>
                 </div>
+                <div class="nd-settings-form-group">
+                    <label>隐藏图片: </label>
+                    <label style="margin-right: 45px;"><input type="radio" name="settings-hide-image" value="true">是</label>
+                    <label><input type="radio" name="settings-hide-image" value="false">否</label>
+                </div>
                 
                 <div class="nd-settings-form-group" style="margin-top: 20px;">
                     <div class="nd-settings-btn-wrapper">
@@ -240,7 +246,7 @@ const resource = {
         $settings.find("select[name=settings-mode]").val(config.mode);
         $settings.find("select[name=settings-theme]").val(config.theme);
         $settings.find(`input[name=margin-type][value='${config.marginType}']`).prop('checked', true);
-
+        $settings.find(`input[name=settings-hide-image][value='${String(config.hideImage)}']`).prop('checked', true);
 
         const $modal = showModal($settings, {
             title: "设置"
@@ -255,6 +261,7 @@ const resource = {
             config.mode = formDataObj.get('settings-mode');
             config.theme = formDataObj.get('settings-theme');
             config.marginType = formDataObj.get('margin-type');
+            config.hideImage = formDataObj.get('settings-hide-image') === 'true';
             writeConfig();
 
 
@@ -344,6 +351,43 @@ const resource = {
         readerHeight = window.innerHeight - headerHeight - footerHeight;
     }
 
+    /**
+     * 将页面中的图片替换成indicator
+     * 受`config.hideImage`控制
+     *
+     * @param selector css选择器
+     * @param replaceParent 是否替换img的父元素(有些img会被a标签包裹)
+     */
+    function hideImages({selector, replaceParent = false}) {
+        if (!config.hideImage) {
+            return;
+        }
+
+        $(selector).each(function () {
+            const imgSrc = $(this).attr('src');
+            const span = $('<span class="disguised-img-indicator"></span>')
+                .attr('data-src', imgSrc)
+                .text('点击显示图片');
+            if (replaceParent) {
+                $(this).parent().replaceWith(span);
+            } else {
+                $(this).replaceWith(span);
+            }
+
+        });
+        $('#disguised-model').on("click", function () {
+            $(this).hide();
+        });
+
+        $(".disguised-img-indicator").on('click', function () {
+            const src = $(this).attr('data-src');
+            const $newImg = $('<img>').attr('src', src);
+            const $modal = showModal($newImg);
+            $newImg.on('click', function () {
+                $modal.remove();
+            });
+        });
+    }
 
     function common() {
 
@@ -1939,31 +1983,12 @@ const resource = {
         }
         `);
 
-        $('#article-main-contents img').each(function () {
-            const imgSrc = $(this).attr('src');
-            const span = $('<span class="disguised-img-indicator"></span>')
-                .attr('data-src', imgSrc)
-                .text('点击显示图片');
-            $(this).replaceWith(span);
-        });
-        $('#disguised-model').on("click", function () {
-            $(this).hide();
-        });
-
+        hideImages({selector: '#article-main-contents img'});
 
         setWordContent($(".article-content"));
         setExcelContent($("#article-main-contents"));
         setDisguisedTitle($(".article-title").text());
         setWordDetail($(".article-infos").children());
-
-        $(".disguised-img-indicator").on('click', function () {
-            const src = $(this).attr('data-src');
-            const $newImg = $('<img>').attr('src', src);
-            const $modal = showModal($newImg);
-            $newImg.on('click', function () {
-                $modal.remove();
-            });
-        });
     }
 
     /**
@@ -2136,6 +2161,9 @@ const resource = {
         setWordDetail($("small"));
         setWordContent($("#Main"));
 
+        hideImages({selector: ".topic_content img.embedded_image"});
+        hideImages({selector: ".reply_content img.embedded_image", replaceParent: true});
+
         if (config.mode === DICT.MODE.WORD) {
             $("div.header").remove();
             $("div[id^='r_'] tr td:first-child").remove();
@@ -2170,9 +2198,17 @@ const resource = {
         img[alt='Reply'] {
             filter: brightness(140%) contrast(90%);
         }
-        small, small a:link {
+        img[alt='❤️'] {
+            opacity: 0.2;
+        }
+        small, small a:link, small a:visited {
             color: black !important;
         }
+        .badge {
+            color: #a0d9ff !important;
+            border-color: #a0d9ff !important;
+        }
+        .
         `);
         addWordStyle(`
         div.subtle, div.outdated {
@@ -2181,6 +2217,7 @@ const resource = {
         }
         .box {
             box-shadow: none;
+            border-bottom: 1px solid #F1F1F1 !important;
         }
         `);
 
