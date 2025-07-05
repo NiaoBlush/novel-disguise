@@ -376,9 +376,6 @@ const resource = {
             }
 
         });
-        $('#disguised-model').on("click", function () {
-            $(this).hide();
-        });
     }
 
     function registerImageIndicators() {
@@ -386,6 +383,10 @@ const resource = {
             const src = $(this).attr('data-src');
             const $newImg = $('<img>').attr('src', src);
             const $modal = showModal($newImg);
+            $modal.find("img").css({
+                "max-width": "80vw",
+                "max-height": "80vh"
+            });
             $newImg.on('click', function () {
                 $modal.remove();
             });
@@ -519,21 +520,7 @@ const resource = {
             z-index: 99999;
         }
         
-        #disguised-model {
-            position: fixed;
-            z-index: 99999;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            max-width: 100vw;
-            max-height: 100vh;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .disguised-img-indicator {
+        .disguised-link, .disguised-img-indicator {
             color: ${link_text_color};
             text-decoration: underline;
             cursor: pointer;
@@ -546,6 +533,7 @@ const resource = {
             top: 50%;
             left: 50%;
             max-height: 100%;
+            max-width: 100%;
             transform: translate(-50%, -50%);
             border: 1px solid #707070;
             background-color: #F0F0F0;
@@ -735,7 +723,6 @@ const resource = {
                         <span>简体中文（中国大陆）</span><span>辅助功能：一切就绪</span>
                     </div>
                 </div>
-               <div id="disguised-model" style="display: none;"></div>
            </div>`).appendTo("body");
 
         if (config.mode === DICT.MODE.WORD) {
@@ -886,7 +873,7 @@ const resource = {
     /**
      * 空行补齐
      */
-    function padExcelBlankLines(max = 20) {
+    function padExcelBlankLines(max = 50) {
         const lastIndex = getExcelLastIndex();
         const emptyLines = [];
         for (let i = lastIndex + 1; i <= max; i++) {
@@ -2180,6 +2167,7 @@ const resource = {
     /**
      * v站 主题
      * e.g. https://www.v2ex.com/t/1142285
+     * e.g. https://www.v2ex.com/t/1143210
      */
     function v2ex_thread() {
         setDisguisedTitle($("h1").text());
@@ -2231,10 +2219,10 @@ const resource = {
                     ), true);
             setExcelLines([$(".topic_buttons")], true);
 
-            const $replyBox = $("#Main :nth-child(2 of .box)");
-            const $paginator = $replyBox.find(".ps_container").first();
+            const $replyArea = $("#Main :nth-child(2 of .box)");
+            const $paginator = $replyArea.find(".ps_container").first();
             addEmptyExcelLines();
-            setExcelLines([$replyBox.children().first(), $paginator], true);
+            setExcelLines([$replyArea.children().first(), $paginator], true);
             setExcelLines($("div[id^='r_']")
                 .toArray()
                 .flatMap(el => {
@@ -2242,16 +2230,27 @@ const resource = {
                         const $name = $reply.find("strong");
                         const $badges = $reply.find(".badges");
                         const $ago = $reply.find("span.ago");
+                        const $thanks = $reply.children('span').eq(1);
                         const $feedback = $reply.find(".fr").first();
                         $name.css("margin-right", "10px");
                         $badges.css("margin-right", "10px");
-                        const $sender = $name.add($ago).add($feedback).add($badges).wrapAll("<span/>");
+                        $ago.css("margin-right", "10px");
+                        const $sender = $name.add($ago).add($feedback).add($badges).add($thanks).wrapAll("<span/>");
                         const content = $reply.find(".reply_content").html().split(/<br\s*\/?>/i);
                         return [$sender, ...content];
                     }
                 ), true);
             setExcelLines([$paginator.clone()], true);
-            setExcelLines([$("#reply-box")], true);
+
+            const $replyBox = $("#reply-box");
+            $replyBox.hide();
+            setExcelLines([$replyBox], true);
+            const $showReplyBox = $('<span class="disguised-link">显示回复框</span>');
+            $showReplyBox.click(function () {
+                $replyBox.show();
+                $(this).hide();
+            });
+            $replyBox.before($showReplyBox);
 
             padExcelBlankLines();
         }
