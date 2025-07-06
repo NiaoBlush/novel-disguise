@@ -33,7 +33,11 @@
 // @match        https://69shuba.cx/txt/*/*
 // @match        https://www.owlook.com.cn/owllook_content*
 // @match        https://www.ciweimao.com/chapter/*
-// @match        https://www.v2ex.com/*
+// @match        https://www.v2ex.com
+// @match        https://www.v2ex.com/?*
+// @match        https://www.v2ex.com/go/*
+// @match        https://www.v2ex.com/t/*
+// @match        https://www.v2ex.com/recent*
 // @grant        GM_addStyle
 // @grant        GM_registerMenuCommand
 // @grant        GM_getValue
@@ -222,13 +226,13 @@ const resource = {
                 </div>
                 <div class="nd-settings-form-group">
                     <label title="word半屏时采用无边距会看起来更加自然">Word页边距: </label>
-                    <label style="margin-right: 45px;"><input type="radio" name="margin-type" value="${DICT.MARGIN_TYPE.NORMAL}">正常</label>
-                    <label><input type="radio" name="margin-type" value="${DICT.MARGIN_TYPE.NONE}">无边距</label>
+                    <label style="width: 30%;"><input type="radio" name="margin-type" value="${DICT.MARGIN_TYPE.NORMAL}">正常</label>
+                    <label style="width: 30%;"><input type="radio" name="margin-type" value="${DICT.MARGIN_TYPE.NONE}">无边距</label>
                 </div>
                 <div class="nd-settings-form-group">
                     <label>隐藏图片: </label>
-                    <label style="margin-right: 45px;"><input type="radio" name="settings-hide-image" value="true">是</label>
-                    <label><input type="radio" name="settings-hide-image" value="false">否</label>
+                    <label style="width: 30%;"><input type="radio" name="settings-hide-image" value="true">是</label>
+                    <label style="width: 30%;"><input type="radio" name="settings-hide-image" value="false">否</label>
                 </div>
                 
                 <div class="nd-settings-form-group" style="margin-top: 20px;">
@@ -2168,8 +2172,9 @@ const resource = {
      * v站 主题
      * e.g. https://www.v2ex.com/t/1142285
      * e.g. https://www.v2ex.com/t/1143210
+     * e.g. https://www.v2ex.com/t/803669?p=2
      */
-    function v2ex_thread() {
+    function v2exThread() {
         setDisguisedTitle($("h1").text());
         setWordDetail($("small"));
         setWordContent($("#Main"));
@@ -2191,6 +2196,15 @@ const resource = {
                     $markdownBody
                         .children()
                         .toArray()
+                        .flatMap(el => {
+                            // https://www.v2ex.com/t/803669
+                            const $kids = $markdownBody.children();
+                            if ($kids.length === 1 && $kids.eq(0).is('div')) {
+                                return $(el).children().get();
+                            } else {
+                                return [el];
+                            }
+                        })
                         .flatMap(el => (el.tagName === 'UL' || el.tagName === 'OL' ? [...el.children] : [el]))
                         .flatMap(el =>
                             $(el).html()
@@ -2277,8 +2291,6 @@ const resource = {
         }
         .button {
             background-image: none !important;
-            padding: 0 !important;
-            border: none !important;
         }
         .page_normal:active, .page_normal:link, .page_normal:visited, .page_current {
             box-shadow: none;
@@ -2311,7 +2323,9 @@ const resource = {
            border-left: none;
            border-bottom: none;
         }
-        
+        .button {
+            padding: 1px !important;
+        }
         `);
         addExcelStyle(`
         p {
@@ -2321,8 +2335,112 @@ const resource = {
         .ps_container .page_input {
             padding: 0;
         }
+        .button {
+            padding: 0 !important;
+        }
         `);
 
+    }
+
+    /**
+     * v站-列表
+     *
+     * e.g. https://www.v2ex.com/recent?p=1
+     * e.g. https://www.v2ex.com/?tab=creative
+     * e.g. https://www.v2ex.com/
+     * e.g. https://www.v2ex.com/go/ipad?p=1
+     */
+    function v2exList() {
+        setDisguisedTitle(originalTitle);
+        setWordContent($("#Main"));
+
+        setExcelLines([
+            $(".node-breadcrumb"),
+            $(".topic-count"),
+            $(".intro"),
+            $(".header"),
+            $(".cell_ops"),
+            $(".ps_container").first(),
+            $("#Tabs"),
+            $("#SecondaryTabs")
+        ]);
+        setExcelLines($(".cell.item").get(), true);
+        setExcelLines($("#TopicsNode").children().get(), true);
+        setExcelLines([
+            $(".ps_container").first(),
+            $("#Main").children(".box").eq(0).children().last().filter(".inner"),
+            $("#Main .cell.flex-one-row"),
+            $(".cell>form"),
+        ], true);
+        setExcelLines($("strong:contains('V2EX')").parent().parent().parent().children().get(), true);
+
+
+        $("div.cell.item tr td:nth-child(-n+2)").remove();
+        $("div[class*=' t_'] tr td:nth-child(-n+2)").remove();
+
+
+        addGlobalStyle(`
+        div.cell {
+            border-bottom: none;
+        }
+        div.ps_container {
+            background: none;
+        }
+        .button {
+            background-image: none !important;
+        }
+        .page_normal:active, .page_normal:link, .page_normal:visited, .page_current {
+            box-shadow: none;
+            border: none;
+        }
+        .page_input {
+            box-shadow: none;
+            border: 1px solid #f1f1f1;
+        }
+        .badge {
+            color: #a0d9ff !important;
+            border-color: #a0d9ff !important;
+        }
+        .box {
+            box-shadow: none;
+            border-bottom: 1px solid #F1F1F1 !important;
+        }
+        .cell_ops {
+            box-shadow: none;
+        }
+        a.count_livid:link {
+            background-color: #e5e5e5;
+        }
+        .page-content-header > img {
+            display: none;
+        }
+        div.intro {
+            color: black;
+        }
+        `);
+        addWordStyle(`
+        .button {
+            padding: 1px !important;
+        }
+        `)
+        addExcelStyle(`
+        .ps_container .page_input {
+            padding: 0;
+        }
+        .node-breadcrumb a {
+            color: black;
+        }
+        .header {
+            overflow: hidden;
+            border: none;
+        }
+        #SecondaryTabs {
+            padding: 0;
+        }
+        .button {
+            padding: 0 !important;
+        }
+        `);
     }
 
 ///////////////////////////// 站点结束
@@ -2451,7 +2569,9 @@ const resource = {
             break;
         case 'www.v2ex.com':
             if (currentPathName.startsWith('/t/')) {
-                v2ex_thread();
+                v2exThread();
+            } else if (currentPathName.startsWith('/go/') || currentPathName.startsWith('/recent') || currentPathName === '/') {
+                v2exList();
             }
             break;
     }
