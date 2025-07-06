@@ -1042,23 +1042,24 @@ const resource = {
             return randomInt.toString().padStart(n, '0');
         }
 
-        function getRandomChineseCharacter() {
-            const min = 0x4E00;
-            const max = 0x4EFF;
-            return String.fromCharCode(Math.floor(Math.random() * (max - min + 1)) + min);
+        function getRandomItem(list) {
+            return list[Math.floor(Math.random() * list.length)];
         }
 
         function getRandomChineseName() {
             const surnames = ["赵", "钱", "孙", "李", "周", "刘", "王"];
-            const randomSurname = surnames[Math.floor(Math.random() * surnames.length)];
-            const nameLength = getRandomInt(1, 2); // 名字长度随机1到2个字
-            let name = '';
+            const commonGivenChars = [
+                "伟", "秀", "敏", "静", "丽", "强", "磊", "军", "洋", "杰", "婷", "浩", "婷", "欣",
+                "佳", "琪", "婧", "思", "鑫", "博", "宇", "轩", "涵", "宁", "瑶", "晨", "泽", "瑞"
+            ];
 
-            for (let i = 0; i < nameLength; i++) {
-                name += getRandomChineseCharacter();
+            const surname = getRandomItem(surnames);
+            const len = Math.random() < 0.5 ? 1 : 2;   // 50% 概率取单名或双名
+            let given = "";
+            for (let i = 0; i < len; i++) {
+                given += getRandomItem(commonGivenChars);
             }
-
-            return randomSurname + name;
+            return surname + given;
         }
 
         function getRandomDateUsingRandomNumbers() {
@@ -2422,7 +2423,7 @@ const resource = {
         .button {
             padding: 1px !important;
         }
-        `)
+        `);
         addExcelStyle(`
         .ps_container .page_input {
             padding: 0;
