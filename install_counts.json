@@ -1513,6 +1513,10 @@
     },
     "2025-07-17": {
         "installs": 0,
-        "update_checks": 216
+        "update_checks": 250
+    },
+    "2025-07-18": {
+        "installs": 2,
+        "update_checks": 193
     }
 }
