@@ -39,6 +39,7 @@
 // @match        https://www.v2ex.com/go/*
 // @match        https://www.v2ex.com/t/*
 // @match        https://www.v2ex.com/recent*
+// @match        https://www.kelexs.com/book/*-*.html
 // @grant        GM_addStyle
 // @grant        GM_registerMenuCommand
 // @grant        GM_getValue
@@ -2445,6 +2446,41 @@ const resource = {
         `);
     }
 
+    /**
+     * 可乐小说
+     * e.g. https://www.kelexs.com/book/DBIFGD-15.html
+     */
+    function www_kelexs_com() {
+        $("#ad-container").remove();
+        addGlobalStyle(`
+        html, body {
+            text-align: unset;
+        }
+        .btnW .btnBlack {
+            display: unset;
+            border: none;
+            background-color: ${link_bg_color};
+            color: ${link_text_color};
+        }
+        `);
+        addWordStyle(`
+        p {
+            margin: 16px;
+        }
+        `);
+        addExcelStyle(`
+        .btnBlack {
+            line-height: unset;
+        }
+        `)
+        setDisguisedTitle($("h1.title").text());
+        setWordDetail($("div.about").text())
+        setWordContent($("div.content"));
+        setWordContent($(".conBox .btnW"));
+        setExcelContent($("div.content"), "p");
+        setExcelLines([$(".conBox .btnW")], true);
+    }
+
 ///////////////////////////// 站点结束
 
     // 切换原版界面
@@ -2576,6 +2612,9 @@ const resource = {
             } else if (currentPathName.startsWith('/go/') || currentPathName.startsWith('/recent') || currentPathName === '/') {
                 v2exList();
             }
+            break;
+        case 'www.kelexs.com':
+            www_kelexs_com();
             break;
     }
 
