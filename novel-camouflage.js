@@ -32,6 +32,7 @@
 // @match        https://b.faloo.com/vip/*/*.html
 // @match        https://69shuba.cx/txt/*/*
 // @match        https://www.owlook.com.cn/owllook_content*
+// @match        https://owlook.com.cn/owllook_content*
 // @match        https://www.ciweimao.com/chapter/*
 // @grant        GM_addStyle
 // @grant        GM_registerMenuCommand
@@ -2229,6 +2230,7 @@ const resource = {
             _69shuba_cx();
             break;
         case 'www.owlook.com.cn':
+        case 'owlook.com.cn':
             www_owlook_com_cn();
             break;
         case 'www.ciweimao.com':
