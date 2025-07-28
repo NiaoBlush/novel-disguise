@@ -121,6 +121,13 @@ ___
 
 <summary>版本说明</summary>
 
+### v2.8.0
+
++ 适配可乐小说 www.kelexs.com
++ 适配一个书香小说 http://www.xbiqugu.la/
++ 优化随机人名算法
++ 修复www.owlook.com.cn不加www没有被匹配的问题
+
 ### v2.7.0
 
 + 适配v站
