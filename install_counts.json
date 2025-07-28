@@ -1553,6 +1553,10 @@
     },
     "2025-07-27": {
         "installs": 5,
-        "update_checks": 109
+        "update_checks": 150
+    },
+    "2025-07-28": {
+        "installs": 7,
+        "update_checks": 240
     }
 }
