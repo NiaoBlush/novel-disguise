@@ -40,6 +40,7 @@
 // @match        https://www.v2ex.com/t/*
 // @match        https://www.v2ex.com/recent*
 // @match        https://www.kelexs.com/book/*-*.html
+// @match        http://www.xbiqugu.la/*/*/*.html
 // @grant        GM_addStyle
 // @grant        GM_registerMenuCommand
 // @grant        GM_getValue
@@ -2549,6 +2550,7 @@ const resource = {
             biquge_net();
             break;
         case 'www.xbiqugu.net':
+        case 'www.xbiqugu.la':
             xbiqugu_net();
             break;
         case 'www.biquge.co':
