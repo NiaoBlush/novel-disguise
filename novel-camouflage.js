@@ -901,7 +901,6 @@ const resource = {
             clearExcelContent();
             lastIndex = 0;
         }
-
         const $tbody = $(".excel-table > tbody");
         lines.forEach(function (line, index) {
             if (typeof line === 'string') {
@@ -2074,9 +2073,11 @@ const resource = {
 
         $("h1").remove();
         $(".txtinfo").remove();
-        setWordContent($(".txtnav"));
+        const $txt = $(".txtnav");
+        setWordContent($txt);
         setWordContent($(".page1"));
-        setExcelContent($(".txtnav"), "p");
+        $txt.find("script").remove();
+        setExcelContent($txt);
         setExcelLines([$(".page1")], true);
     }
 
@@ -2473,9 +2474,9 @@ const resource = {
         .btnBlack {
             line-height: unset;
         }
-        `)
+        `);
         setDisguisedTitle($("h1.title").text());
-        setWordDetail($("div.about").text())
+        setWordDetail($("div.about").text());
         setWordContent($("div.content"));
         setWordContent($(".conBox .btnW"));
         setExcelContent($("div.content"), "p");
@@ -2599,6 +2600,7 @@ const resource = {
             faloo_com();
             break;
         case '69shuba.cx':
+        case 'www.69shuba.com':
             _69shuba_cx();
             break;
         case 'www.owlook.com.cn':
