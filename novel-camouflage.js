@@ -31,6 +31,7 @@
 // @match        https://b.faloo.com/*_*.html
 // @match        https://b.faloo.com/vip/*/*.html
 // @match        https://69shuba.cx/txt/*/*
+// @match        https://www.69shuba.com/txt/*/*
 // @match        https://www.owlook.com.cn/owllook_content*
 // @match        https://owlook.com.cn/owllook_content*
 // @match        https://www.ciweimao.com/chapter/*
@@ -1360,6 +1361,8 @@ const resource = {
 
     /**
      * 番茄
+     * e.g. 免费章节 https://fanqienovel.com/reader/7159891022602830375?enter_from=reader
+     * e.g. vip章节 https://fanqienovel.com/reader/7226402549753250363?enter_from=reader
      */
     function fanqie() {
         GM_addStyle(`
