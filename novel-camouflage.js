@@ -35,7 +35,7 @@
 // @match        https://www.owlook.com.cn/owllook_content*
 // @match        https://owlook.com.cn/owllook_content*
 // @match        https://www.ciweimao.com/chapter/*
-// @match        https://www.v2ex.com
+// @match        https://www.v2ex.com/
 // @match        https://www.v2ex.com/?*
 // @match        https://www.v2ex.com/go/*
 // @match        https://www.v2ex.com/t/*
