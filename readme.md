@@ -121,6 +121,12 @@ ___
 
 <summary>版本说明</summary>
 
+### 2.8.1
+
++ v站首页采用更严格的url模式
++ 修复番茄excel模式加密字体显示问题
++ 修正69书吧新域名匹配 www.69shuba.com
+
 ### v2.8.0
 
 + 适配可乐小说 www.kelexs.com
