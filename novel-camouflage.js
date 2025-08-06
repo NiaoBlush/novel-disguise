@@ -1406,10 +1406,13 @@ const resource = {
         const className = $readerBox.attr('class').split(' ').filter(function (cls) {
             return cls.indexOf('font-') === 0;
         })[0];
-        const styleAttr = $readerBox.attr('style');
-        const $table = $(".excel-table");
-        $table.addClass(className);
-        $table.attr('style', styleAttr);
+        let styleAttr = $readerBox.attr('style');
+        addExcelStyle(`
+        .excel-table tbody td p {
+            ${styleAttr}
+        }
+        `)
+
         setExcelLines($(".muye-reader-content>div>p").toArray());
         setExcelLines([$(".muye-reader-btns")], true);
         addExcelStyle(`
