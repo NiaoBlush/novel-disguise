@@ -31,10 +31,11 @@
 // @match        https://b.faloo.com/*_*.html
 // @match        https://b.faloo.com/vip/*/*.html
 // @match        https://69shuba.cx/txt/*/*
+// @match        https://www.69shuba.com/txt/*/*
 // @match        https://www.owlook.com.cn/owllook_content*
 // @match        https://owlook.com.cn/owllook_content*
 // @match        https://www.ciweimao.com/chapter/*
-// @match        https://www.v2ex.com
+// @match        https://www.v2ex.com/
 // @match        https://www.v2ex.com/?*
 // @match        https://www.v2ex.com/go/*
 // @match        https://www.v2ex.com/t/*
@@ -901,7 +902,6 @@ const resource = {
             clearExcelContent();
             lastIndex = 0;
         }
-
         const $tbody = $(".excel-table > tbody");
         lines.forEach(function (line, index) {
             if (typeof line === 'string') {
@@ -1361,6 +1361,8 @@ const resource = {
 
     /**
      * 番茄
+     * e.g. 免费章节 https://fanqienovel.com/reader/7159891022602830375?enter_from=reader
+     * e.g. vip章节 https://fanqienovel.com/reader/7226402549753250363?enter_from=reader
      */
     function fanqie() {
         GM_addStyle(`
@@ -1404,10 +1406,13 @@ const resource = {
         const className = $readerBox.attr('class').split(' ').filter(function (cls) {
             return cls.indexOf('font-') === 0;
         })[0];
-        const styleAttr = $readerBox.attr('style');
-        const $table = $(".excel-table");
-        $table.addClass(className);
-        $table.attr('style', styleAttr);
+        let styleAttr = $readerBox.attr('style');
+        addExcelStyle(`
+        .excel-table tbody td p {
+            ${styleAttr}
+        }
+        `)
+
         setExcelLines($(".muye-reader-content>div>p").toArray());
         setExcelLines([$(".muye-reader-btns")], true);
         addExcelStyle(`
@@ -2074,9 +2079,11 @@ const resource = {
 
         $("h1").remove();
         $(".txtinfo").remove();
-        setWordContent($(".txtnav"));
+        const $txt = $(".txtnav");
+        setWordContent($txt);
         setWordContent($(".page1"));
-        setExcelContent($(".txtnav"), "p");
+        $txt.find("script").remove();
+        setExcelContent($txt);
         setExcelLines([$(".page1")], true);
     }
 
@@ -2473,9 +2480,9 @@ const resource = {
         .btnBlack {
             line-height: unset;
         }
-        `)
+        `);
         setDisguisedTitle($("h1.title").text());
-        setWordDetail($("div.about").text())
+        setWordDetail($("div.about").text());
         setWordContent($("div.content"));
         setWordContent($(".conBox .btnW"));
         setExcelContent($("div.content"), "p");
@@ -2599,6 +2606,7 @@ const resource = {
             faloo_com();
             break;
         case '69shuba.cx':
+        case 'www.69shuba.com':
             _69shuba_cx();
             break;
         case 'www.owlook.com.cn':
