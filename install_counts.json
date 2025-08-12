@@ -1613,6 +1613,10 @@
     },
     "2025-08-11": {
         "installs": 5,
+        "update_checks": 300
+    },
+    "2025-08-12": {
+        "installs": 4,
         "update_checks": 256
     }
 }
