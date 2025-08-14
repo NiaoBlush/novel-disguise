@@ -1620,7 +1620,11 @@
         "update_checks": 303
     },
     "2025-08-13": {
-        "installs": 4,
-        "update_checks": 261
+        "installs": 5,
+        "update_checks": 314
+    },
+    "2025-08-14": {
+        "installs": 1,
+        "update_checks": 245
     }
 }
