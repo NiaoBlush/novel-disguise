@@ -1332,6 +1332,68 @@ const resource = {
         };
     }
 
+    /**
+     * 把 source 的原生滚动 API 代理到 target：
+     * - source.scrollTop 读/写  -> target.scrollTop
+     * - source.scrollTo / scrollBy -> 调用 target 对应方法
+     * 注意：只代理这个实例，不会全局污染。
+     */
+    function patchNativeScrollProxy(source, target) {
+        const src = (typeof source === 'string') ? document.querySelector(source) : source;
+        const tgt = (typeof target === 'string') ? document.querySelector(target) : target;
+        if (!src || !tgt) return;
+
+        // 幂等
+        if (src.__nativeScrollProxiedTo === tgt) return;
+        src.__nativeScrollProxiedTo = tgt;
+
+        try {
+            // 代理 scrollTop getter/setter
+            const desc = Object.getOwnPropertyDescriptor(Element.prototype, 'scrollTop');
+            // 某些浏览器把 scrollTop 定义在 HTMLElement.prototype 上
+            const proto = desc ? Element.prototype : HTMLElement.prototype;
+            const current = Object.getOwnPropertyDescriptor(proto, 'scrollTop');
+
+            Object.defineProperty(src, 'scrollTop', {
+                configurable: true,
+                get() {
+                    return tgt.scrollTop;
+                },
+                set(v) {
+                    tgt.scrollTop = v;
+                },
+            });
+        } catch (e) {
+            // 某些环境不允许覆盖；忽略即可（scrollTo/By 仍然能代理）
+        }
+
+        // 代理 scrollTo
+        const origScrollTo = src.scrollTo?.bind(src);
+        src.scrollTo = function (a, b) {
+            if (typeof a === 'object' && a) {
+                // scrollTo({ top, left, behavior })
+                const top = 'top' in a ? a.top : tgt.scrollTop;
+                const left = 'left' in a ? a.left : tgt.scrollLeft;
+                tgt.scrollTo({top, left, behavior: a.behavior});
+            } else {
+                // scrollTo(x, y)
+                tgt.scrollTo(a || 0, b || 0);
+            }
+        };
+
+        // 代理 scrollBy
+        const origScrollBy = src.scrollBy?.bind(src);
+        src.scrollBy = function (a, b) {
+            if (typeof a === 'object' && a) {
+                const top = 'top' in a ? a.top : 0;
+                const left = 'left' in a ? a.left : 0;
+                tgt.scrollBy({top, left, behavior: a.behavior});
+            } else {
+                tgt.scrollBy(a || 0, b || 0);
+            }
+        };
+    }
+
 
 /////////////////////////////针对站点
 
@@ -2663,6 +2725,8 @@ const resource = {
                                 mirrorGlobal: false,
                                 syncNative: false
                             });
+
+                            patchNativeScrollProxy('#idrviewer', '#disguised-body');
                         }
                     });
                 }
