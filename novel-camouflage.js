@@ -1411,7 +1411,7 @@ const resource = {
         .excel-table tbody td p {
             ${styleAttr}
         }
-        `)
+        `);
 
         setExcelLines($(".muye-reader-content>div>p").toArray());
         setExcelLines([$(".muye-reader-btns")], true);
@@ -2489,6 +2489,98 @@ const resource = {
         setExcelLines([$(".conBox .btnW")], true);
     }
 
+    function z_library() {
+
+        addGlobalStyle(`
+        #contentContainer > .page {
+            width: unset !important;
+            box-shadow: none !important;
+        }
+        `);
+
+        const observer = new MutationObserver((mutationsList) => {
+            for (const mutation of mutationsList) {
+                if (mutation.type === 'childList') {
+                    mutation.addedNodes.forEach(node => {
+                        if (node.id === 'viewer-wrapper') {
+                            setWordContent($("#contentContainer"));
+                            setDisguisedTitle($("#bookTitle").text());
+                            setWordDetail($("#pageControls"));
+                            observer.disconnect();
+
+                            (function bridgeIdrviewerToDisguisedBody(){
+                                const idr = document.getElementById('idrviewer');       // 原站滚动容器（名义上）
+                                const root = document.getElementById('disguised-body'); // 实际滚动容器（你这边）
+
+                                if (!idr || !root) return; // 兜底校验
+
+                                // 0) 确保 root 是可滚动容器
+                                root.style.overflowY = root.style.overflowY || 'auto';
+
+                                // 1) 滚动事件镜像：root 滚动时，给 idr 也触发 scroll
+                                function throttle(fn, wait){ let t=0; return function(){ const n=Date.now(); if(n-t>wait){ t=n; fn(); } }; }
+                                root.addEventListener('scroll', throttle(()=>{
+                                    // 同步触发 #idrviewer 的 scroll 监听器
+                                    idr.dispatchEvent(new Event('scroll', {bubbles:false}));
+                                }, 50));
+
+                                // 2) jQuery 取值代理：把 $('#idrviewer').scrollTop()/height() 映射到 root
+                                if (window.jQuery) {
+                                    const $ = window.jQuery;
+                                    (function(){
+                                        const _scrollTop = $.fn.scrollTop;
+                                        $.fn.scrollTop = function(val){
+                                            const el = this[0];
+                                            if (el === idr) {
+                                                if (val === undefined) return $(root).scrollTop(); // 读
+                                                $(root).scrollTop(val);                             // 写
+                                                return this;
+                                            }
+                                            return _scrollTop.apply(this, arguments);
+                                        };
+                                        const _height = $.fn.height;
+                                        $.fn.height = function(){
+                                            const el = this[0];
+                                            if (el === idr) return root.clientHeight; // 把“视口高度”视为 root 的可视高度
+                                            return _height.apply(this, arguments);
+                                        };
+                                    })();
+
+                                    // 3) （可选）拦截 jQuery 的 .on：凡是对 #idrviewer 绑定 scroll，也给 root 绑同一回调
+                                    (function(){
+                                        const _on = $.fn.on;
+                                        $.fn.on = function(types, selector, data, fn /* ... */) {
+                                            const res = _on.apply(this, arguments);
+                                            try {
+                                                const el = this[0];
+                                                if (el === idr && typeof types === 'string' && /\bscroll\b/.test(types)) {
+                                                    // 推断最终的回调函数
+                                                    let handler = fn || data || selector;
+                                                    if (typeof handler === 'function') {
+                                                        $(root).on(types + '.mirror', handler);
+                                                    }
+                                                }
+                                            } catch(e){}
+                                            return res;
+                                        };
+                                    })();
+                                }
+
+                                // 4) 初始化时“假装滚动”一遍，促使原懒加载跑起来
+                                idr.dispatchEvent(new Event('scroll', {bubbles:false}));
+
+                                // 可选：同时触发一次 resize（有些逻辑在 resize 时也会测量）
+                                window.dispatchEvent(new Event('resize'));
+                            })();
+                        }
+                    });
+                }
+            }
+        });
+        observer.observe($("#idrviewer").get(0), {childList: true, subtree: false});
+
+    }
+
 ///////////////////////////// 站点结束
 
     // 切换原版界面
@@ -2626,6 +2718,8 @@ const resource = {
         case 'www.kelexs.com':
             www_kelexs_com();
             break;
+        case 'reader.z-library.sk':
+            z_library();
     }
 
     GM_registerMenuCommand("设置", settings);
