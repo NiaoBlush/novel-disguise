@@ -1187,6 +1187,214 @@ const resource = {
         document.cookie = name + "=" + (value || "") + expires + domainStr + "; path=/";
     }
 
+    /**
+     * 把 target 的滚动“伪装”为 source 的滚动：镜像事件 + jQuery 取值映射（可选）
+     * 单向桥接，避免回弹
+     * @param {Element|string} source 站内监听用的容器（如 #idrviewer）
+     * @param {Element|string} target 实际滚动容器（如 #disguised-body）
+     * @param {Object} [opts]
+     * @param {boolean} [opts.twoWay=false]  是否反向同步（一般不要开，开了可能回弹）
+     * @param {boolean} [opts.patchJQuery=true] 是否打 jQuery 补丁（映射 $(source).scrollTop/height & .on）
+     * @param {boolean} [opts.mirrorGlobal=false] 是否同时触发 window/document 的 scroll
+     * @param {boolean} [opts.syncNative=false] 是否把 source.scrollTop 原生属性也设置为 target 的值（可能引发回弹，默认关）
+     * @returns {{teardown: Function}}
+     */
+    function bridgeScrollContainers(source, target, opts = {}) {
+        const {
+            twoWay = false,
+            patchJQuery = true,
+            mirrorGlobal = false,
+            syncNative = false, // 关键：默认不改原生 scrollTop
+        } = opts;
+
+        const src = (typeof source === 'string') ? document.querySelector(source) : source;
+        const tgt = (typeof target === 'string') ? document.querySelector(target) : target;
+        if (!src || !tgt) {
+            console.warn('[bridgeScrollContainers] invalid', {source, target});
+            return {
+                teardown: () => {
+                }
+            };
+        }
+
+        // 幂等
+        if (src.__bridge_to === tgt && tgt.__bridge_from === src) return {
+            teardown: () => {
+            }
+        };
+        src.__bridge_to = tgt;
+        tgt.__bridge_from = src;
+
+        // 确保 target 可滚动
+        const cs = getComputedStyle(tgt);
+        if (!/(auto|scroll|overlay)/.test(cs.overflowY)) tgt.style.overflowY = 'auto';
+
+        let rafTickA = false;
+        let rafTickB = false;
+
+        // target -> source：镜像 scroll 事件（必要时同步原生 scrollTop，默认不做）
+        const onTargetScroll = () => {
+            if (rafTickA) return;
+            rafTickA = true;
+            requestAnimationFrame(() => {
+                rafTickA = false;
+                if (syncNative) {
+                    try {
+                        src.scrollTop = tgt.scrollTop;
+                    } catch (e) {
+                    }
+                }
+                // 触发 source 上的 scroll 监听器
+                src.dispatchEvent(new Event('scroll', {bubbles: false}));
+                if (mirrorGlobal) {
+                    window.dispatchEvent(new Event('scroll'));
+                    document.dispatchEvent(new Event('scroll'));
+                }
+            });
+        };
+        tgt.addEventListener('scroll', onTargetScroll, {passive: true});
+
+        // source -> target：反向同步（默认关闭；只有你非常确定站内不会写回 0 时才打开）
+        const onSourceScroll = () => {
+            if (!twoWay) return;
+            if (rafTickB) return;
+            rafTickB = true;
+            requestAnimationFrame(() => {
+                rafTickB = false;
+                try {
+                    tgt.scrollTop = src.scrollTop;
+                } catch (e) {
+                }
+                // 让依赖 target 的监听器也感知
+                tgt.dispatchEvent(new Event('scroll', {bubbles: false}));
+            });
+        };
+        if (twoWay) src.addEventListener('scroll', onSourceScroll, {passive: true});
+
+        // jQuery 兼容：把 $(source).scrollTop()/height() 映射到 target，并镜像后续 .on('scroll')
+        let unpatchJQ = () => {
+        };
+        if (patchJQuery && window.jQuery) {
+            const $ = window.jQuery;
+            const _scrollTop = $.fn.scrollTop;
+            const _height = $.fn.height;
+            const _on = $.fn.on;
+
+            $.fn.scrollTop = function (val) {
+                const el = this[0];
+                if (el === src) {
+                    if (val === undefined) return $(tgt).scrollTop();
+                    $(tgt).scrollTop(val);
+                    return this;
+                }
+                return _scrollTop.apply(this, arguments);
+            };
+            $.fn.height = function () {
+                const el = this[0];
+                if (el === src) return tgt.clientHeight;
+                return _height.apply(this, arguments);
+            };
+            $.fn.on = function (types, selector, data, fn) {
+                const res = _on.apply(this, arguments);
+                try {
+                    const el = this[0];
+                    if (el === src && typeof types === 'string' && /\bscroll\b/.test(types)) {
+                        const handler = fn || data || selector;
+                        if (typeof handler === 'function') $(tgt).on(types + '.mirror', handler);
+                    }
+                } catch (e) {
+                }
+                return res;
+            };
+
+            unpatchJQ = () => {
+                $.fn.scrollTop = _scrollTop;
+                $.fn.height = _height;
+                $.fn.on = _on;
+            };
+        }
+
+        // 初始化：触发一次站内 scroll 检查
+        src.dispatchEvent(new Event('scroll', {bubbles: false}));
+        window.dispatchEvent(new Event('resize'));
+
+        return {
+            teardown() {
+                try {
+                    tgt.removeEventListener('scroll', onTargetScroll);
+                    if (twoWay) src.removeEventListener('scroll', onSourceScroll);
+                    unpatchJQ();
+                } catch (e) {
+                }
+                delete src.__bridge_to;
+                delete tgt.__bridge_from;
+            }
+        };
+    }
+
+    /**
+     * 把 source 的原生滚动 API 代理到 target：
+     * - source.scrollTop 读/写  -> target.scrollTop
+     * - source.scrollTo / scrollBy -> 调用 target 对应方法
+     * 注意：只代理这个实例，不会全局污染。
+     */
+    function patchNativeScrollProxy(source, target) {
+        const src = (typeof source === 'string') ? document.querySelector(source) : source;
+        const tgt = (typeof target === 'string') ? document.querySelector(target) : target;
+        if (!src || !tgt) return;
+
+        // 幂等
+        if (src.__nativeScrollProxiedTo === tgt) return;
+        src.__nativeScrollProxiedTo = tgt;
+
+        try {
+            // 代理 scrollTop getter/setter
+            const desc = Object.getOwnPropertyDescriptor(Element.prototype, 'scrollTop');
+            // 某些浏览器把 scrollTop 定义在 HTMLElement.prototype 上
+            const proto = desc ? Element.prototype : HTMLElement.prototype;
+            const current = Object.getOwnPropertyDescriptor(proto, 'scrollTop');
+
+            Object.defineProperty(src, 'scrollTop', {
+                configurable: true,
+                get() {
+                    return tgt.scrollTop;
+                },
+                set(v) {
+                    tgt.scrollTop = v;
+                },
+            });
+        } catch (e) {
+            // 某些环境不允许覆盖；忽略即可（scrollTo/By 仍然能代理）
+        }
+
+        // 代理 scrollTo
+        const origScrollTo = src.scrollTo?.bind(src);
+        src.scrollTo = function (a, b) {
+            if (typeof a === 'object' && a) {
+                // scrollTo({ top, left, behavior })
+                const top = 'top' in a ? a.top : tgt.scrollTop;
+                const left = 'left' in a ? a.left : tgt.scrollLeft;
+                tgt.scrollTo({top, left, behavior: a.behavior});
+            } else {
+                // scrollTo(x, y)
+                tgt.scrollTo(a || 0, b || 0);
+            }
+        };
+
+        // 代理 scrollBy
+        const origScrollBy = src.scrollBy?.bind(src);
+        src.scrollBy = function (a, b) {
+            if (typeof a === 'object' && a) {
+                const top = 'top' in a ? a.top : 0;
+                const left = 'left' in a ? a.left : 0;
+                tgt.scrollBy({top, left, behavior: a.behavior});
+            } else {
+                tgt.scrollBy(a || 0, b || 0);
+            }
+        };
+    }
+
+
 /////////////////////////////针对站点
 
     /**
@@ -1411,7 +1619,7 @@ const resource = {
         .excel-table tbody td p {
             ${styleAttr}
         }
-        `)
+        `);
 
         setExcelLines($(".muye-reader-content>div>p").toArray());
         setExcelLines([$(".muye-reader-btns")], true);
@@ -2489,6 +2697,45 @@ const resource = {
         setExcelLines([$(".conBox .btnW")], true);
     }
 
+    function z_library() {
+
+        addGlobalStyle(`
+        #contentContainer > .page {
+            width: unset !important;
+            box-shadow: none !important;
+        }
+        .control-cell_big {
+            justify-content: unset;
+        }
+        `);
+
+        const observer = new MutationObserver((mutationsList) => {
+            for (const mutation of mutationsList) {
+                if (mutation.type === 'childList') {
+                    mutation.addedNodes.forEach(node => {
+                        if (node.id === 'viewer-wrapper') {
+                            setWordContent($("#contentContainer"));
+                            setDisguisedTitle($("#bookTitle").text());
+                            setWordDetail($("#pageControls"));
+                            observer.disconnect();
+
+                            const {teardown} = bridgeScrollContainers('#idrviewer', '#disguised-body', {
+                                twoWay: false,
+                                patchJQuery: true,
+                                mirrorGlobal: false,
+                                syncNative: false
+                            });
+
+                            patchNativeScrollProxy('#idrviewer', '#disguised-body');
+                        }
+                    });
+                }
+            }
+        });
+        observer.observe($("#idrviewer").get(0), {childList: true, subtree: false});
+
+    }
+
 ///////////////////////////// 站点结束
 
     // 切换原版界面
@@ -2626,6 +2873,8 @@ const resource = {
         case 'www.kelexs.com':
             www_kelexs_com();
             break;
+        case 'reader.z-library.sk':
+            z_library();
     }
 
     GM_registerMenuCommand("设置", settings);
