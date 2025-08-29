@@ -23,12 +23,16 @@ ___
 | 69书吧          | ✔      | ✔       |
 | owlook.com.cn | ✔      | ✔       |
 | V2EX          | ✔      | ✔       |
+| 可乐小说          | ✔      | ✔       |
 | 七猫            | ✔      | ❌       |
 | 飞卢            | ✔      | ❌       |
 | 刺猬猫           | ✔      | ❌       |
+| z-library*    | ✔      | ❌       |
 
 *这里的笔趣阁包含以下站: biquge.net, xbiqugu.net, biquge.co, 52wx.com, 3bqg.cc, bigee.cc, beqege.cc, biqukun.com,
 biquge.tw
+
+*z-library有多个域名, 目前适配了: z-library.sk
 
 **很多站都自称笔趣阁, 只适配了一些**
 ___
