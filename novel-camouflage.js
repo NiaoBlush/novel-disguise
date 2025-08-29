@@ -1187,6 +1187,152 @@ const resource = {
         document.cookie = name + "=" + (value || "") + expires + domainStr + "; path=/";
     }
 
+    /**
+     * 把 target 的滚动“伪装”为 source 的滚动：镜像事件 + jQuery 取值映射（可选）
+     * 单向桥接，避免回弹
+     * @param {Element|string} source 站内监听用的容器（如 #idrviewer）
+     * @param {Element|string} target 实际滚动容器（如 #disguised-body）
+     * @param {Object} [opts]
+     * @param {boolean} [opts.twoWay=false]  是否反向同步（一般不要开，开了可能回弹）
+     * @param {boolean} [opts.patchJQuery=true] 是否打 jQuery 补丁（映射 $(source).scrollTop/height & .on）
+     * @param {boolean} [opts.mirrorGlobal=false] 是否同时触发 window/document 的 scroll
+     * @param {boolean} [opts.syncNative=false] 是否把 source.scrollTop 原生属性也设置为 target 的值（可能引发回弹，默认关）
+     * @returns {{teardown: Function}}
+     */
+    function bridgeScrollContainers(source, target, opts = {}) {
+        const {
+            twoWay = false,
+            patchJQuery = true,
+            mirrorGlobal = false,
+            syncNative = false, // 关键：默认不改原生 scrollTop
+        } = opts;
+
+        const src = (typeof source === 'string') ? document.querySelector(source) : source;
+        const tgt = (typeof target === 'string') ? document.querySelector(target) : target;
+        if (!src || !tgt) {
+            console.warn('[bridgeScrollContainers] invalid', {source, target});
+            return {
+                teardown: () => {
+                }
+            };
+        }
+
+        // 幂等
+        if (src.__bridge_to === tgt && tgt.__bridge_from === src) return {
+            teardown: () => {
+            }
+        };
+        src.__bridge_to = tgt;
+        tgt.__bridge_from = src;
+
+        // 确保 target 可滚动
+        const cs = getComputedStyle(tgt);
+        if (!/(auto|scroll|overlay)/.test(cs.overflowY)) tgt.style.overflowY = 'auto';
+
+        let rafTickA = false;
+        let rafTickB = false;
+
+        // target -> source：镜像 scroll 事件（必要时同步原生 scrollTop，默认不做）
+        const onTargetScroll = () => {
+            if (rafTickA) return;
+            rafTickA = true;
+            requestAnimationFrame(() => {
+                rafTickA = false;
+                if (syncNative) {
+                    try {
+                        src.scrollTop = tgt.scrollTop;
+                    } catch (e) {
+                    }
+                }
+                // 触发 source 上的 scroll 监听器
+                src.dispatchEvent(new Event('scroll', {bubbles: false}));
+                if (mirrorGlobal) {
+                    window.dispatchEvent(new Event('scroll'));
+                    document.dispatchEvent(new Event('scroll'));
+                }
+            });
+        };
+        tgt.addEventListener('scroll', onTargetScroll, {passive: true});
+
+        // source -> target：反向同步（默认关闭；只有你非常确定站内不会写回 0 时才打开）
+        const onSourceScroll = () => {
+            if (!twoWay) return;
+            if (rafTickB) return;
+            rafTickB = true;
+            requestAnimationFrame(() => {
+                rafTickB = false;
+                try {
+                    tgt.scrollTop = src.scrollTop;
+                } catch (e) {
+                }
+                // 让依赖 target 的监听器也感知
+                tgt.dispatchEvent(new Event('scroll', {bubbles: false}));
+            });
+        };
+        if (twoWay) src.addEventListener('scroll', onSourceScroll, {passive: true});
+
+        // jQuery 兼容：把 $(source).scrollTop()/height() 映射到 target，并镜像后续 .on('scroll')
+        let unpatchJQ = () => {
+        };
+        if (patchJQuery && window.jQuery) {
+            const $ = window.jQuery;
+            const _scrollTop = $.fn.scrollTop;
+            const _height = $.fn.height;
+            const _on = $.fn.on;
+
+            $.fn.scrollTop = function (val) {
+                const el = this[0];
+                if (el === src) {
+                    if (val === undefined) return $(tgt).scrollTop();
+                    $(tgt).scrollTop(val);
+                    return this;
+                }
+                return _scrollTop.apply(this, arguments);
+            };
+            $.fn.height = function () {
+                const el = this[0];
+                if (el === src) return tgt.clientHeight;
+                return _height.apply(this, arguments);
+            };
+            $.fn.on = function (types, selector, data, fn) {
+                const res = _on.apply(this, arguments);
+                try {
+                    const el = this[0];
+                    if (el === src && typeof types === 'string' && /\bscroll\b/.test(types)) {
+                        const handler = fn || data || selector;
+                        if (typeof handler === 'function') $(tgt).on(types + '.mirror', handler);
+                    }
+                } catch (e) {
+                }
+                return res;
+            };
+
+            unpatchJQ = () => {
+                $.fn.scrollTop = _scrollTop;
+                $.fn.height = _height;
+                $.fn.on = _on;
+            };
+        }
+
+        // 初始化：触发一次站内 scroll 检查
+        src.dispatchEvent(new Event('scroll', {bubbles: false}));
+        window.dispatchEvent(new Event('resize'));
+
+        return {
+            teardown() {
+                try {
+                    tgt.removeEventListener('scroll', onTargetScroll);
+                    if (twoWay) src.removeEventListener('scroll', onSourceScroll);
+                    unpatchJQ();
+                } catch (e) {
+                }
+                delete src.__bridge_to;
+                delete tgt.__bridge_from;
+            }
+        };
+    }
+
+
 /////////////////////////////针对站点
 
     /**
@@ -2496,6 +2642,9 @@ const resource = {
             width: unset !important;
             box-shadow: none !important;
         }
+        .control-cell_big {
+            justify-content: unset;
+        }
         `);
 
         const observer = new MutationObserver((mutationsList) => {
@@ -2508,70 +2657,12 @@ const resource = {
                             setWordDetail($("#pageControls"));
                             observer.disconnect();
 
-                            (function bridgeIdrviewerToDisguisedBody(){
-                                const idr = document.getElementById('idrviewer');       // 原站滚动容器（名义上）
-                                const root = document.getElementById('disguised-body'); // 实际滚动容器（你这边）
-
-                                if (!idr || !root) return; // 兜底校验
-
-                                // 0) 确保 root 是可滚动容器
-                                root.style.overflowY = root.style.overflowY || 'auto';
-
-                                // 1) 滚动事件镜像：root 滚动时，给 idr 也触发 scroll
-                                function throttle(fn, wait){ let t=0; return function(){ const n=Date.now(); if(n-t>wait){ t=n; fn(); } }; }
-                                root.addEventListener('scroll', throttle(()=>{
-                                    // 同步触发 #idrviewer 的 scroll 监听器
-                                    idr.dispatchEvent(new Event('scroll', {bubbles:false}));
-                                }, 50));
-
-                                // 2) jQuery 取值代理：把 $('#idrviewer').scrollTop()/height() 映射到 root
-                                if (window.jQuery) {
-                                    const $ = window.jQuery;
-                                    (function(){
-                                        const _scrollTop = $.fn.scrollTop;
-                                        $.fn.scrollTop = function(val){
-                                            const el = this[0];
-                                            if (el === idr) {
-                                                if (val === undefined) return $(root).scrollTop(); // 读
-                                                $(root).scrollTop(val);                             // 写
-                                                return this;
-                                            }
-                                            return _scrollTop.apply(this, arguments);
-                                        };
-                                        const _height = $.fn.height;
-                                        $.fn.height = function(){
-                                            const el = this[0];
-                                            if (el === idr) return root.clientHeight; // 把“视口高度”视为 root 的可视高度
-                                            return _height.apply(this, arguments);
-                                        };
-                                    })();
-
-                                    // 3) （可选）拦截 jQuery 的 .on：凡是对 #idrviewer 绑定 scroll，也给 root 绑同一回调
-                                    (function(){
-                                        const _on = $.fn.on;
-                                        $.fn.on = function(types, selector, data, fn /* ... */) {
-                                            const res = _on.apply(this, arguments);
-                                            try {
-                                                const el = this[0];
-                                                if (el === idr && typeof types === 'string' && /\bscroll\b/.test(types)) {
-                                                    // 推断最终的回调函数
-                                                    let handler = fn || data || selector;
-                                                    if (typeof handler === 'function') {
-                                                        $(root).on(types + '.mirror', handler);
-                                                    }
-                                                }
-                                            } catch(e){}
-                                            return res;
-                                        };
-                                    })();
-                                }
-
-                                // 4) 初始化时“假装滚动”一遍，促使原懒加载跑起来
-                                idr.dispatchEvent(new Event('scroll', {bubbles:false}));
-
-                                // 可选：同时触发一次 resize（有些逻辑在 resize 时也会测量）
-                                window.dispatchEvent(new Event('resize'));
-                            })();
+                            const {teardown} = bridgeScrollContainers('#idrviewer', '#disguised-body', {
+                                twoWay: false,
+                                patchJQuery: true,
+                                mirrorGlobal: false,
+                                syncNative: false
+                            });
                         }
                     });
                 }
