@@ -4,6 +4,8 @@
 // @license        MIT
 // @author         NiaoBlush
 // @run-at         document-start
+// @match          *://*/*
+// @exclude        *
 // ==/UserScript==
 
 (function () {
