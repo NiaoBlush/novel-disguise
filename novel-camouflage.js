@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         小说页面伪装|小说页面精简|起点页面伪装|番茄页面伪装|笔趣阁页面伪装
 // @namespace    https://github.com/NiaoBlush/novel-disguise
-// @version      2.8.1
+// @version      2.9.0
 // @description  将小说页面伪装成一个Word文档或Excel表格，同时净化小说页面，去除不必要的元素。适用于起点、番茄、笔趣阁、晋江、飞卢、69书吧、部分轻小说站等
 // @author       NiaoBlush
 // @license      MIT
@@ -43,6 +43,7 @@
 // @match        https://www.v2ex.com/recent*
 // @match        https://www.kelexs.com/book/*-*.html
 // @match        http://www.xbiqugu.la/*/*/*.html
+// @match        https://reader.z-library.sk/read/*
 // @grant        GM_addStyle
 // @grant        GM_registerMenuCommand
 // @grant        GM_getValue
@@ -150,9 +151,12 @@ const resource = {
 
 (function () {
     'use strict';
-    console.log("novel-disguise loaded");
+    printLog("novel-disguise loaded");
 
+    typeof jQuery !== "undefined" ? printLog("jQuery 版本: " + jQuery.fn.jquery) : printLog("error", "jQuery 未载入！");
     const $ = jQuery.noConflict(true);
+
+    printLog("ThemeImages", ThemeImages);
 
     const screenInfo = getScreenInfo();
     let disguised_header_img = null;
@@ -187,6 +191,39 @@ const resource = {
 
     const KEY_CONFIG = "KEY_CONFIG";
 
+    function printLog(...args) {
+        let level = 'info';
+
+        // 判断第一个参数是否为 level
+        if (typeof args[0] === 'string' && ['info', 'warn', 'error', 'success'].includes(args[0])) {
+            level = args.shift(); // 取出 level
+        }
+
+        let levelStyle = '';
+        switch (level) {
+            case 'info':
+                levelStyle = 'color:#00BFFF;font-weight:bold;';
+                break;
+            case 'warn':
+                levelStyle = 'color:#FFA500;font-weight:bold;';
+                break;
+            case 'error':
+                levelStyle = 'color:#FF4500;font-weight:bold;';
+                break;
+            default:
+                levelStyle = 'color:#000;';
+        }
+
+        const prefix = `%c🎭novel-disguise%c [${level.toUpperCase()}]`;
+
+        console.log(
+            prefix,
+            'background:#222;color:#FFD700;font-weight:bold;padding:2px 4px;border-radius:4px;',
+            'background:none;' + levelStyle,
+            ...args
+        );
+    }
+
     function readConfig() {
 
         const defaultConfig = {
@@ -205,7 +242,7 @@ const resource = {
         if (config.mode !== DICT.MODE.ORIGINAL) {
             config.lastVisibleMode = config.mode;
         }
-        console.debug("novel-disguise config loaded", config);
+        printLog("debug", "novel-disguise config loaded", config);
         return config;
     }
 
@@ -216,7 +253,7 @@ const resource = {
     }
 
     function applyMode(mode) {
-        console.log('准备切换到模式[${mode}]...');
+        printLog('准备切换到模式[${mode}]...');
         config.mode = mode;
         writeConfig();
         location.reload();
@@ -316,7 +353,7 @@ const resource = {
             return originalHeight / screenInfo.devicePixelRatio;
         }
 
-        console.log('screenInfo', screenInfo);
+        printLog('screenInfo', screenInfo);
 
         function getHeaderResource(currentMode, currentTheme, physicalWidth) {
             const wThreshold2k = 2560;
@@ -1221,7 +1258,7 @@ const resource = {
         const src = (typeof source === 'string') ? document.querySelector(source) : source;
         const tgt = (typeof target === 'string') ? document.querySelector(target) : target;
         if (!src || !tgt) {
-            console.warn('[bridgeScrollContainers] invalid', {source, target});
+            printLog('warn', '滚动桥接容器错误', {source, target});
             return {
                 teardown: () => {
                 }
@@ -1970,14 +2007,14 @@ const resource = {
                 for (const sheet of sheets) {
                     for (const rule of Array.from(sheet.cssRules)) {
                         if (rule.style && rule.style.fontFamily && rule.style.fontFamily.includes('read')) {
-                            console.log('找到规则：', rule.selectorText);
+                            printLog('找到规则：', rule.selectorText);
                             // 姑且先按 #TextContent p:nth-last-of-type(2) 的形式处理
                             const encryptedIndex = ((sel) => {
                                 if (!sel) return null;
                                 const m = sel.match(/nth-last-of-type\((\d+)\)/);
                                 return m ? +m[1] : null;
                             })(rule.selectorText);
-                            console.log('encryptedIndex', encryptedIndex);
+                            printLog('encryptedIndex', encryptedIndex);
                             if (encryptedIndex) {
                                 addExcelStyle(`
                                 .excel-table tbody tr:nth-last-of-type(${encryptedIndex}) td:nth-child(2) p {
@@ -2047,13 +2084,13 @@ const resource = {
             window.addEventListener('load', () => {
                 // 如果浏览器支持 adoptedStyleSheets，就优先用它
                 const sheets = document.styleSheets || [];
-                console.log('sheets', sheets);
+                printLog('sheets', sheets);
                 for (const sheet of sheets) {
                     for (const rule of Array.from(sheet.cssRules)) {
                         if (rule.style && rule.style.fontFamily && rule.style.fontFamily.includes('read')) {
 
                             if (!rule.selectorText || rule.selectorText.includes(".excel-table")) continue;
-                            console.log('找到规则：', rule.selectorText);
+                            printLog('找到规则：', rule.selectorText);
 
                             // 姑且先按 #TextContent p:nth-last-of-type(2) 的形式处理
                             const encryptedIndex = ((sel) => {
@@ -2063,7 +2100,7 @@ const resource = {
                             })(rule.selectorText);
 
                             if (encryptedIndex) {
-                                console.log('encryptedIndex', encryptedIndex);
+                                printLog('encryptedIndex', encryptedIndex);
                                 addExcelStyle(`
                                 .excel-table tbody tr:nth-last-of-type(${encryptedIndex}) td:nth-child(2) p {
                                     font-family: "read" !important;
@@ -2804,7 +2841,7 @@ const resource = {
     common();
     const currentHost = window.location.host;
     const currentPathName = window.location.pathname;
-    console.log('currentHost', currentHost);
+    printLog('currentHost', currentHost);
 
     switch (currentHost) {
         case 'www.qidian.com':
