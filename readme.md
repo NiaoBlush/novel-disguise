@@ -32,7 +32,7 @@ ___
 *这里的笔趣阁包含以下站: biquge.net, xbiqugu.net, biquge.co, 52wx.com, 3bqg.cc, bigee.cc, beqege.cc, biqukun.com,
 biquge.tw
 
-*z-library有多个域名, 目前适配了: z-library.sk
+*z-library有多个域名, 目前适配了: z-library.ec, z-library.sk
 
 **很多站都自称笔趣阁, 只适配了一些**
 ___
