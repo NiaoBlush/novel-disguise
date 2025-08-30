@@ -65,7 +65,7 @@ const resource = {
 
 (function () {
     'use strict';
-    printLog("novel-disguise loaded");
+    printLog("novel-disguise 开始初始化");
 
     typeof jQuery !== "undefined" ? printLog("jQuery 版本: " + jQuery.fn.jquery) : printLog("error", "jQuery 未载入！");
     const $ = jQuery.noConflict(true);
@@ -2849,5 +2849,6 @@ const resource = {
 
     GM_registerMenuCommand("设置", settings);
 
+    printLog("novel-disguise 载入完成");
 })
 ();
