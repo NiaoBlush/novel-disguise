@@ -49,7 +49,7 @@
 // @grant        GM_registerMenuCommand
 // @grant        GM_getValue
 // @grant        GM_setValue
-// @require      // @require https://update.greasyfork.org/scripts/547816/1651807/novel-disguise-jquery.js?v=2.0.3
+// @require      https://update.greasyfork.org/scripts/547816/1651807/novel-disguise-jquery.js?v=2.0.3
 // @require      https://update.greasyfork.org/scripts/547815/1651802/novel-disguise-resource.js?v=0.0.1
 // ==/UserScript==
 
