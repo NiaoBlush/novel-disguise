@@ -1602,6 +1602,8 @@ const resource = {
                 location.reload();
             }, 200);
         });
+
+        $(".arco-tooltip").remove();
     }
 
     /**
