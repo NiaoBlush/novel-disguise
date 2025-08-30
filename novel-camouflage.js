@@ -43,6 +43,7 @@
 // @match        https://www.v2ex.com/recent*
 // @match        https://www.kelexs.com/book/*-*.html
 // @match        http://www.xbiqugu.la/*/*/*.html
+// @match        https://reader.z-library.ec/read/*
 // @match        https://reader.z-library.sk/read/*
 // @grant        GM_addStyle
 // @grant        GM_registerMenuCommand
@@ -2667,6 +2668,10 @@ const resource = {
         setExcelLines([$(".conBox .btnW")], true);
     }
 
+    /**
+     * e.g. #contentContainer, svg: https://z-library.ec/book/88886268/431cbe
+     * e.g. #innerWrapper, p:  https://z-library.ec/book/29358009/64db39
+     */
     function z_library() {
 
         excelUnsupported();
@@ -2679,32 +2684,53 @@ const resource = {
         .control-cell_big {
             justify-content: unset;
         }
+        #pageControls {
+            margin-top: 1px;
+        }
+        #disguised-content div {
+            background-color: rgba(0, 0, 0, 0) !important;
+        }
         `);
 
         const observer = new MutationObserver((mutationsList) => {
             for (const mutation of mutationsList) {
                 if (mutation.type === 'childList') {
                     mutation.addedNodes.forEach(node => {
-                        if (node.id === 'viewer-wrapper') {
-                            setWordContent($("#contentContainer"));
-                            setDisguisedTitle($("#bookTitle").text());
-                            setWordDetail($("#pageControls"));
+                        if (node.id === 'container') {
                             observer.disconnect();
-
-                            const {teardown} = bridgeScrollContainers('#idrviewer', '#disguised-body', {
-                                twoWay: false,
-                                patchJQuery: true,
-                                mirrorGlobal: false,
-                                syncNative: false
-                            });
-
-                            patchNativeScrollProxy('#idrviewer', '#disguised-body');
+                            setWordContent($("#innerWrapper"));
+                            zLibraryCommon();
+                        } else if (node.id === 'viewer-wrapper') {
+                            observer.disconnect();
+                            setWordContent($("#contentContainer"));
+                            zLibraryCommon();
                         }
                     });
                 }
             }
         });
         observer.observe($("#idrviewer").get(0), {childList: true, subtree: false});
+
+        const titleObserver = new MutationObserver(function (mutationsList) {
+            mutationsList.forEach(function (mutation) {
+                if (mutation.type === 'childList' || mutation.type === 'characterData') {
+                    setDisguisedTitle($("#bookTitle").text());
+                    titleObserver.disconnect();
+                }
+            });
+        });
+        titleObserver.observe($("#bookTitle").get(0), {childList: true, characterData: true, subtree: true});
+
+        function zLibraryCommon() {
+            setWordDetail($("#pageControls"));
+            const {teardown} = bridgeScrollContainers('#idrviewer', '#disguised-body', {
+                twoWay: false,
+                patchJQuery: true,
+                mirrorGlobal: false,
+                syncNative: false
+            });
+            patchNativeScrollProxy('#idrviewer', '#disguised-body');
+        }
 
     }
 
@@ -2845,6 +2871,7 @@ const resource = {
         case 'www.kelexs.com':
             www_kelexs_com();
             break;
+        case 'reader.z-library.ec':
         case 'reader.z-library.sk':
             z_library();
     }
