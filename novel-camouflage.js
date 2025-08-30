@@ -702,15 +702,14 @@ const resource = {
                 </div>
            </div>`).appendTo("body");
 
+        overridePageTitle();
         if (config.mode === DICT.MODE.WORD) {
-            document.title = "文档1";
             GM_addStyle(`
             #disguised-content {
                 padding: 10px 30px;
             }
             `);
         } else {
-            document.title = "工作簿1";
             GM_addStyle(`
             #footer-content {
                 height: 45%;
@@ -825,6 +824,14 @@ const resource = {
 
             //占位行
             padExcelBlankLines();
+        }
+    }
+
+    function overridePageTitle() {
+        if (config.mode === DICT.MODE.WORD) {
+            document.title = "文档1";
+        } else {
+            document.title = "工作簿1";
         }
     }
 
@@ -2714,8 +2721,9 @@ const resource = {
         const titleObserver = new MutationObserver(function (mutationsList) {
             mutationsList.forEach(function (mutation) {
                 if (mutation.type === 'childList' || mutation.type === 'characterData') {
-                    setDisguisedTitle($("#bookTitle").text());
                     titleObserver.disconnect();
+                    setDisguisedTitle($("#bookTitle").text());
+                    overridePageTitle();
                 }
             });
         });
