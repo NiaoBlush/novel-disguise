@@ -1773,6 +1773,10 @@
     },
     "2025-09-20": {
         "installs": 1,
-        "update_checks": 156
+        "update_checks": 198
+    },
+    "2025-09-21": {
+        "installs": 0,
+        "update_checks": 131
     }
 }
