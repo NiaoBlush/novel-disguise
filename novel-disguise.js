@@ -45,6 +45,7 @@
 // @match        http://www.xbiqugu.la/*/*/*.html
 // @match        https://reader.z-library.ec/read/*
 // @match        https://reader.z-library.sk/read/*
+// @match        http://*/vue/index.html*
 // @grant        GM_addStyle
 // @grant        GM_registerMenuCommand
 // @grant        GM_getValue
@@ -1365,7 +1366,6 @@
             }
         };
     }
-
 
 /////////////////////////////针对站点
 
@@ -2738,6 +2738,62 @@
 
     }
 
+    /**
+    * 开源阅读 Web 服务
+    */
+    function legadoWebService() {
+        const titleSelector = ".title";
+        const contentSelector = "div[chapterindex]";
+
+        // 延迟执行，确保初始内容渲染完成
+        setTimeout(function() {
+            const $title = $(titleSelector);
+            const $content = $(contentSelector);
+
+            if ($content.length === 0) {
+                printLog("error", "未找到正文容器");
+                return;
+            }
+
+            // --- 首次伪装 ---
+            setDisguisedTitle($title.text());
+            overridePageTitle();
+            setWordContent($content.clone());
+            const contentLines = $content.find('p').toArray();
+            setExcelLines(contentLines);
+            printLog("开源阅读Web服务首次伪装完成");
+
+
+            // “DOM”，负责侦测【章节切换】
+            const initialTitleText = $title.text();
+            const chapterObserver = new MutationObserver(() => {
+                const currentTitleText = $(titleSelector).text();
+                if (currentTitleText && currentTitleText !== initialTitleText) {
+                    printLog("侦测到章节内容变化，刷新页面...");
+                    chapterObserver.disconnect(); 
+                    clearInterval(exitWatcher);   
+                    location.reload();
+                }
+            });
+            chapterObserver.observe($content.parent().get(0), { childList: true, subtree: true });
+            printLog("DOM哨兵已启动，负责监控章节切换。");
+
+
+            // “URL侦”，负责侦测【返回书架】
+            const exitWatcher = setInterval(() => {
+                // 如果URL中不再包含 chapter，说明已经退出
+                if (!window.location.hash.includes('chapter')) {
+                    printLog("侦测到已退出阅读页面，刷新页面...");
+                    chapterObserver.disconnect(); 
+                    clearInterval(exitWatcher);   
+                    location.reload();
+                }
+            }, 500); 
+            printLog("URL侦测器已启动，负责监控退出事件。");
+
+        }, 500);
+    }
+
 ///////////////////////////// 站点结束
 
     // 切换原版界面
@@ -2790,98 +2846,129 @@
     }
 
     // main
-    common();
-    const currentHost = window.location.host;
-    const currentPathName = window.location.pathname;
-    printLog('currentHost', currentHost);
+    const currentHost = window.location.host
+    const currentPathName = window.location.pathname
+    // --- 针对开源阅读的特殊流程判断 ---
+    // 检查1：是否是开源阅读的非小说页面（例如书架）
+    if (currentPathName.includes("/vue/index.html") && !window.location.hash.includes("chapter")) {
+        printLog("检测到开源阅读非小说页面，脚本进入待命状态，监听导航...")
 
-    switch (currentHost) {
-        case 'www.qidian.com':
-            qidian();
-            break;
-        case 'fanqienovel.com':
-            fanqie();
-            break;
-        case `www.biquge.net`:
-            biquge_net();
-            break;
-        case 'www.xbiqugu.net':
-        case 'www.xbiqugu.la':
-            xbiqugu_net();
-            break;
-        case 'www.biquge.co':
-            biquge_co();
-            break;
-        case 'www.52wx.com':
-            www_52wx_com();
-            break;
-        case 'www.3bqg.cc':
-            www_3bqg_cc();
-            break;
-        case 'www.bigee.cc':
-            www_bigee_cc();
-            break;
-        case 'www.beqege.cc':
-            www_beqege_cc();
-            break;
-        case 'www.biqukun.com':
-            www_biqukun_com();
-            break;
-        case 'www.biquge.tw':
-            www_biquge_tw();
-            break;
-        case 'www.wenku8.net':
-            www_wenku8_net();
-            break;
-        case 'www.linovelib.com':
-            linovelib_com();
-            break;
-        case 'www.bilinovel.com':
-            biilinovel_com();
-            break;
-        case 'www.qimao.com':
-            qimao_com();
-            break;
-        case 'www.jjwxc.net':
-            jinjiang();
-            break;
-        case 'my.jjwxc.net':
-            jinjiangBuy();
-            break;
-        case 'www.lightnovel.us':
-            lightnovel_us();
-            break;
-        case 'b.faloo.com':
-            faloo_com();
-            break;
-        case '69shuba.cx':
-        case 'www.69shuba.com':
-            _69shuba_cx();
-            break;
-        case 'www.owlook.com.cn':
-        case 'owlook.com.cn':
-            www_owlook_com_cn();
-            break;
-        case 'www.ciweimao.com':
-            ciweimao_com();
-            break;
-        case 'www.v2ex.com':
-            if (currentPathName.startsWith('/t/')) {
-                v2exThread();
-            } else if (currentPathName.startsWith('/go/') || currentPathName.startsWith('/recent') || currentPathName === '/') {
-                v2exList();
+        // 待命：不执行任何伪装，只设置一个URL轮询器等待用户导航到小说页
+        let lastUrl = window.location.href
+        const navigationWatcher = setInterval(() => {
+            if (window.location.href !== lastUrl) {
+                // 一旦URL变化，检查新URL是否是小说页
+                if (window.location.href.includes("chapter")) {
+                    clearInterval(navigationWatcher) // 停止监听
+                    location.reload() // 强制刷新，以便在新页面上完整执行脚本
+                }
+                lastUrl = window.location.href // 更新URL记录
             }
-            break;
-        case 'www.kelexs.com':
-            www_kelexs_com();
-            break;
-        case 'reader.z-library.ec':
-        case 'reader.z-library.sk':
-            z_library();
-            break;
-        default:
-            printLog("error", "当前站点未适配");
+        }, 250)
 
+        return
+    }
+
+    // --- 如果代码能执行到这里，说明是“其他所有网站”或“开源阅读的小说页面” ---
+    // 所以，无条件执行通用的伪装外壳
+    common()
+
+    // 检查2：是否是开源阅读的小说页面
+    if (currentPathName.includes("/vue/index.html") && window.location.hash.includes("chapter")) {
+        printLog("检测到开源阅读小说页面，执行专属适配...")
+        legadoWebService() // 执行开源阅读的内容填充和翻页监听
+    }
+    // 否则，执行其他网站的适配逻辑
+    else {
+        printLog("currentHost", currentHost)
+  
+        switch (currentHost) {
+            case 'www.qidian.com':
+                qidian();
+                break;
+            case 'fanqienovel.com':
+                fanqie();
+                break;
+            case `www.biquge.net`:
+                biquge_net();
+                break;
+            case 'www.xbiqugu.net':
+            case 'www.xbiqugu.la':
+                xbiqugu_net();
+                break;
+            case 'www.biquge.co':
+                biquge_co();
+                break;
+            case 'www.52wx.com':
+                www_52wx_com();
+                break;
+            case 'www.3bqg.cc':
+                www_3bqg_cc();
+                break;
+            case 'www.bigee.cc':
+                www_bigee_cc();
+                break;
+            case 'www.beqege.cc':
+                www_beqege_cc();
+                break;
+            case 'www.biqukun.com':
+                www_biqukun_com();
+                break;
+            case 'www.biquge.tw':
+                www_biquge_tw();
+                break;
+            case 'www.wenku8.net':
+                www_wenku8_net();
+                break;
+            case 'www.linovelib.com':
+                linovelib_com();
+                break;
+            case 'www.bilinovel.com':
+                biilinovel_com();
+                break;
+            case 'www.qimao.com':
+                qimao_com();
+                break;
+            case 'www.jjwxc.net':
+                jinjiang();
+                break;
+            case 'my.jjwxc.net':
+                jinjiangBuy();
+                break;
+            case 'www.lightnovel.us':
+                lightnovel_us();
+                break;
+            case 'b.faloo.com':
+                faloo_com();
+                break;
+            case '69shuba.cx':
+            case 'www.69shuba.com':
+                _69shuba_cx();
+                break;
+            case 'www.owlook.com.cn':
+            case 'owlook.com.cn':
+                www_owlook_com_cn();
+                break;
+            case 'www.ciweimao.com':
+                ciweimao_com();
+                break;
+            case 'www.v2ex.com':
+                if (currentPathName.startsWith('/t/')) {
+                    v2exThread();
+                } else if (currentPathName.startsWith('/go/') || currentPathName.startsWith('/recent') || currentPathName === '/') {
+                    v2exList();
+                }
+                break;
+            case 'www.kelexs.com':
+                www_kelexs_com();
+                break;
+            case 'reader.z-library.ec':
+            case 'reader.z-library.sk':
+                z_library();
+                break;
+            default:
+                printLog("error", "当前站点未适配");
+        }
     }
 
     GM_registerMenuCommand("设置", settings);
