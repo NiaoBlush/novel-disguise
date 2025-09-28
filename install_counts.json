@@ -1801,6 +1801,10 @@
     },
     "2025-09-27": {
         "installs": 0,
-        "update_checks": 157
+        "update_checks": 203
+    },
+    "2025-09-28": {
+        "installs": 2,
+        "update_checks": 234
     }
 }
