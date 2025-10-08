@@ -1840,7 +1840,11 @@
         "update_checks": 149
     },
     "2025-10-07": {
-        "installs": 1,
-        "update_checks": 148
+        "installs": 2,
+        "update_checks": 187
+    },
+    "2025-10-08": {
+        "installs": 4,
+        "update_checks": 163
     }
 }
