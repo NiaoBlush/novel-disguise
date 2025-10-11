@@ -1853,6 +1853,10 @@
     },
     "2025-10-10": {
         "installs": 3,
-        "update_checks": 299
+        "update_checks": 341
+    },
+    "2025-10-11": {
+        "installs": 0,
+        "update_checks": 283
     }
 }
