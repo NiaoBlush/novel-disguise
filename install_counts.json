@@ -1865,6 +1865,10 @@
     },
     "2025-10-13": {
         "installs": 6,
-        "update_checks": 277
+        "update_checks": 321
+    },
+    "2025-10-14": {
+        "installs": 4,
+        "update_checks": 300
     }
 }
