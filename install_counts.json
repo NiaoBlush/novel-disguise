@@ -1892,7 +1892,11 @@
         "update_checks": 173
     },
     "2025-10-20": {
-        "installs": 4,
-        "update_checks": 279
+        "installs": 5,
+        "update_checks": 330
+    },
+    "2025-10-21": {
+        "installs": 3,
+        "update_checks": 263
     }
 }
