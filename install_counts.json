@@ -1900,7 +1900,11 @@
         "update_checks": 318
     },
     "2025-10-22": {
-        "installs": 4,
-        "update_checks": 265
+        "installs": 5,
+        "update_checks": 321
+    },
+    "2025-10-23": {
+        "installs": 2,
+        "update_checks": 280
     }
 }
