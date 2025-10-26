@@ -1912,7 +1912,11 @@
         "update_checks": 340
     },
     "2025-10-25": {
+        "installs": 1,
+        "update_checks": 233
+    },
+    "2025-10-26": {
         "installs": 0,
-        "update_checks": 173
+        "update_checks": 154
     }
 }
