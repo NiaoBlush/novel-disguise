@@ -1956,7 +1956,11 @@
         "update_checks": 377
     },
     "2025-11-05": {
-        "installs": 0,
-        "update_checks": 269
+        "installs": 1,
+        "update_checks": 333
+    },
+    "2025-11-06": {
+        "installs": 6,
+        "update_checks": 297
     }
 }
