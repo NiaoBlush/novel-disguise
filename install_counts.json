@@ -1964,7 +1964,11 @@
         "update_checks": 368
     },
     "2025-11-07": {
+        "installs": 4,
+        "update_checks": 344
+    },
+    "2025-11-08": {
         "installs": 3,
-        "update_checks": 285
+        "update_checks": 172
     }
 }
