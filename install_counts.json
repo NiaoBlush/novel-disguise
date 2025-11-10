@@ -1972,7 +1972,11 @@
         "update_checks": 237
     },
     "2025-11-09": {
-        "installs": 0,
-        "update_checks": 165
+        "installs": 1,
+        "update_checks": 225
+    },
+    "2025-11-10": {
+        "installs": 2,
+        "update_checks": 287
     }
 }
