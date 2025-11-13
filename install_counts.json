@@ -1985,6 +1985,10 @@
     },
     "2025-11-12": {
         "installs": 0,
-        "update_checks": 286
+        "update_checks": 351
+    },
+    "2025-11-13": {
+        "installs": 2,
+        "update_checks": 291
     }
 }
