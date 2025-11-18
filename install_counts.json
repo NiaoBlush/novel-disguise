@@ -2005,6 +2005,10 @@
     },
     "2025-11-17": {
         "installs": 2,
-        "update_checks": 328
+        "update_checks": 384
+    },
+    "2025-11-18": {
+        "installs": 2,
+        "update_checks": 266
     }
 }
