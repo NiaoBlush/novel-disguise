@@ -2172,7 +2172,11 @@
         "update_checks": 210
     },
     "2025-12-29": {
+        "installs": 5,
+        "update_checks": 377
+    },
+    "2025-12-30": {
         "installs": 4,
-        "update_checks": 324
+        "update_checks": 308
     }
 }
