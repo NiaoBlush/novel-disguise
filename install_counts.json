@@ -2213,6 +2213,10 @@
     },
     "2026-01-08": {
         "installs": 6,
-        "update_checks": 347
+        "update_checks": 406
+    },
+    "2026-01-09": {
+        "installs": 5,
+        "update_checks": 298
     }
 }
