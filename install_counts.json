@@ -2272,7 +2272,11 @@
         "update_checks": 347
     },
     "2026-01-23": {
-        "installs": 3,
-        "update_checks": 292
+        "installs": 4,
+        "update_checks": 354
+    },
+    "2026-01-24": {
+        "installs": 2,
+        "update_checks": 188
     }
 }
