@@ -19,6 +19,7 @@
 // @match        https://www.bigee.cc/book/*/*.html
 // @match        https://www.beqege.cc/*/*.html
 // @match        https://www.biqukun.com/*/*/*.html
+// @match        *://www.biqukun.org/*/*/*.html
 // @match        https://www.biquge.tw/book/*/*.html
 // @match        https://www.wenku8.net/novel/*/*/*.htm
 // @exclude      https://www.wenku8.net/novel/*/*/index.htm
@@ -2825,6 +2826,7 @@
             www_beqege_cc();
             break;
         case 'www.biqukun.com':
+        case 'www.biqukun.org':
             www_biqukun_com();
             break;
         case 'www.biquge.tw':
