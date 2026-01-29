@@ -17,6 +17,7 @@
 // @match        *://www.52wx.com/*/*.html
 // @match        https://www.3bqg.cc/book/*/*.html
 // @match        https://www.bigee.cc/book/*/*.html
+// @match        *://www.bqg2912.cc/*
 // @match        https://www.beqege.cc/*/*.html
 // @match        https://www.biqukun.com/*/*/*.html
 // @match        *://www.biqukun.org/*/*/*.html
@@ -1767,6 +1768,35 @@
         www_3bqg_cc();
     }
 
+    function www_bqg2912_cc() {
+
+        function isChapter() {
+            const chapterPattern = /^#\/book\/\d+\/\d+\.html$/;
+            return chapterPattern.test(window.location.hash);
+        }
+
+        window.addEventListener('hashchange', function () {
+            const newHash = window.location.hash;
+            console.log("hashchange", newHash);
+            location.reload();
+        });
+
+        if (isChapter()) {
+
+            const observer = new MutationObserver((mutationsList) => {
+                for (const mutation of mutationsList) {
+                    if (mutation.type === 'childList') {
+                        common();
+                        www_3bqg_cc();
+                        setDisguisedTitle($("#title").text());
+                        observer.disconnect();
+                    }
+                }
+            });
+            observer.observe($("#chaptercontent").get(0), {childList: true, subtree: false});
+        }
+    }
+
     /**
      * 笔趣阁
      * beqege.cc
@@ -2791,83 +2821,113 @@
     }
 
     // main
-    common();
+    // 这里不再统一执行common(), 而是改为在switch中执行, 因为某些域名需要根据情况判断是否执行common()
+
     const currentHost = window.location.host;
     const currentPathName = window.location.pathname;
+    const currentHash = window.location.hash;
     printLog('currentHost', currentHost);
+    printLog('currentPathName', currentPathName);
+    printLog('currentHash', currentHash);
 
     switch (currentHost) {
         case 'www.qidian.com':
+            common();
             qidian();
             break;
         case 'fanqienovel.com':
+            common();
             fanqie();
             break;
         case `www.biquge.net`:
+            common();
             biquge_net();
             break;
         case 'www.xbiqugu.net':
         case 'www.xbiqugu.la':
+            common();
             xbiqugu_net();
             break;
         case 'www.biquge.co':
+            common();
             biquge_co();
             break;
         case 'www.52wx.com':
+            common();
             www_52wx_com();
             break;
         case 'www.3bqg.cc':
+            common();
             www_3bqg_cc();
             break;
         case 'www.bigee.cc':
+            common();
             www_bigee_cc();
             break;
+        case 'www.bqg2912.cc':
+            www_bqg2912_cc();
+            break;
         case 'www.beqege.cc':
+            common();
             www_beqege_cc();
             break;
         case 'www.biqukun.com':
         case 'www.biqukun.org':
+            common();
             www_biqukun_com();
             break;
         case 'www.biquge.tw':
+            common();
             www_biquge_tw();
             break;
         case 'www.wenku8.net':
+            common();
             www_wenku8_net();
             break;
         case 'www.linovelib.com':
+            common();
             linovelib_com();
             break;
         case 'www.bilinovel.com':
+            common();
             biilinovel_com();
             break;
         case 'www.qimao.com':
+            common();
             qimao_com();
             break;
         case 'www.jjwxc.net':
+            common();
             jinjiang();
             break;
         case 'my.jjwxc.net':
+            common();
             jinjiangBuy();
             break;
         case 'www.lightnovel.us':
+            common();
             lightnovel_us();
             break;
         case 'b.faloo.com':
+            common();
             faloo_com();
             break;
         case '69shuba.cx':
         case 'www.69shuba.com':
+            common();
             _69shuba_cx();
             break;
         case 'www.owlook.com.cn':
         case 'owlook.com.cn':
+            common();
             www_owlook_com_cn();
             break;
         case 'www.ciweimao.com':
+            common();
             ciweimao_com();
             break;
         case 'www.v2ex.com':
+            common();
             if (currentPathName.startsWith('/t/')) {
                 v2exThread();
             } else if (currentPathName.startsWith('/go/') || currentPathName.startsWith('/recent') || currentPathName === '/') {
@@ -2875,10 +2935,12 @@
             }
             break;
         case 'www.kelexs.com':
+            common();
             www_kelexs_com();
             break;
         case 'reader.z-library.ec':
         case 'reader.z-library.sk':
+            common();
             z_library();
             break;
         default:
