@@ -24,17 +24,19 @@ ___
 | owlook.com.cn | ✔      | ✔       |
 | V2EX          | ✔      | ✔       |
 | 可乐小说          | ✔      | ✔       |
+| shoujix.com   | ✔      | ✔       |
 | 七猫            | ✔      | ❌       |
 | 飞卢            | ✔      | ❌       |
 | 刺猬猫           | ✔      | ❌       |
 | z-library*    | ✔      | ❌       |
 
-*这里的笔趣阁包含以下站: biquge.net, xbiqugu.net, biquge.co, 52wx.com, 3bqg.cc, bigee.cc, beqege.cc, biqukun.com,
-biquge.tw
+*这里的笔趣阁包含以下站: biquge.net, xbiqugu.net, biquge.co, 52wx.com, 3bqg.cc, bigee.cc, biqukun.com,
+biquge.tw, 22biqu.com, biqukun.org, bqg2912.cc
+
+**很多站都自称笔趣阁, 只适配了一些**
 
 *z-library有多个域名, 目前适配了: z-library.ec, z-library.sk
 
-**很多站都自称笔趣阁, 只适配了一些**
 ___
 
 项目地址[在这里](https://github.com/NiaoBlush/novel-disguise)
@@ -124,6 +126,17 @@ ___
 <details>
 
 <summary>版本说明</summary>
+
+### 2.10.0
+
++ 适配biqukun.org, bqg2912.cc, 22biqu.com, shoujix.com
++ 文档中移除404的beqege.cc
+
+### 2.9.0
+
++ jquery采用greasyfork库脚本
++ 图片资源采用greasyfork库脚本
++ 支持z-library(的两个域名)的word模式
 
 ### 2.8.1
 
