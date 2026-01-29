@@ -48,6 +48,7 @@
 // @match        https://reader.z-library.ec/read/*
 // @match        https://reader.z-library.sk/read/*
 // @match        https://www.22biqu.com/*/*.html
+// @match        https://www.shoujix.com/shoujixs_*_*.html
 // @grant        GM_addStyle
 // @grant        GM_registerMenuCommand
 // @grant        GM_getValue
@@ -2779,6 +2780,20 @@
         biquge_net();
     }
 
+    /**
+     * 手机小说
+     * e.g. https://www.shoujix.com/shoujixs_217188_57820123.html
+     */
+    function www_shoujix_com(){
+        $(".lm").remove();
+        addGlobalStyle(`
+        .bookname {
+            border-bottom: none;
+        }
+        `);
+        www_beqege_cc();
+    }
+
 ///////////////////////////// 站点结束
 
     // 切换原版界面
@@ -2956,6 +2971,10 @@
         case 'www.22biqu.com':
             common();
             www_22biq_com();
+            break;
+        case 'www.shoujix.com':
+            common();
+            www_shoujix_com();
             break;
         default:
             printLog("error", "当前站点未适配");
