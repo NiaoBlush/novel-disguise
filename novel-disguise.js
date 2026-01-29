@@ -17,7 +17,10 @@
 // @match        *://www.52wx.com/*/*.html
 // @match        https://www.3bqg.cc/book/*/*.html
 // @match        https://www.bigee.cc/book/*/*.html
-// @match        *://www.bqg2912.cc/*
+// @match        https://www.bqg2912.cc/*
+// @match        https://bqg2912.cc/*
+// @match        https://www.bqg955.xyz/*
+// @match        https://bqg955.xyz/*
 // @match        https://www.beqege.cc/*/*.html
 // @match        https://www.biqukun.com/*/*/*.html
 // @match        *://www.biqukun.org/*/*/*.html
@@ -2890,6 +2893,9 @@
             www_bigee_cc();
             break;
         case 'www.bqg2912.cc':
+        case 'bqg2912.cc':
+        case 'www.bqg955.xyz':
+        case 'bqg955.xyz':
             www_bqg2912_cc();
             break;
         case 'www.beqege.cc':

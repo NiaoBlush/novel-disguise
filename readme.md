@@ -31,7 +31,7 @@ ___
 | z-library*    | ✔      | ❌       |
 
 *这里的笔趣阁包含以下站: biquge.net, xbiqugu.net, biquge.co, 52wx.com, 3bqg.cc, bigee.cc, biqukun.com,
-biquge.tw, 22biqu.com, biqukun.org, bqg2912.cc
+biquge.tw, 22biqu.com, biqukun.org, bqg2912.cc, bqg955.xyz
 
 **很多站都自称笔趣阁, 只适配了一些**
 
@@ -129,7 +129,7 @@ ___
 
 ### 2.10.0
 
-+ 适配biqukun.org, bqg2912.cc, 22biqu.com, shoujix.com
++ 适配biqukun.org, bqg2912.cc, 22biqu.com, shoujix.com, bqg955.xyz
 + 文档中移除404的beqege.cc
 
 ### 2.9.0
