@@ -47,6 +47,7 @@
 // @match        http://www.xbiqugu.la/*/*/*.html
 // @match        https://reader.z-library.ec/read/*
 // @match        https://reader.z-library.sk/read/*
+// @match        https://www.22biqu.com/*/*.html
 // @grant        GM_addStyle
 // @grant        GM_registerMenuCommand
 // @grant        GM_getValue
@@ -2769,6 +2770,15 @@
 
     }
 
+    /**
+     * 笔趣阁 www.22biqu.com
+     * e.g. https://www.22biqu.com/biqu77953/49231312.html
+     */
+    function www_22biq_com() {
+        $(".hotcmd-box").remove();
+        biquge_net();
+    }
+
 ///////////////////////////// 站点结束
 
     // 切换原版界面
@@ -2942,6 +2952,10 @@
         case 'reader.z-library.sk':
             common();
             z_library();
+            break;
+        case 'www.22biqu.com':
+            common();
+            www_22biq_com();
             break;
         default:
             printLog("error", "当前站点未适配");
