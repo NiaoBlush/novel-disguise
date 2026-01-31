@@ -2300,7 +2300,11 @@
         "update_checks": 359
     },
     "2026-01-30": {
-        "installs": 8,
-        "update_checks": 312
+        "installs": 9,
+        "update_checks": 376
+    },
+    "2026-01-31": {
+        "installs": 0,
+        "update_checks": 183
     }
 }
