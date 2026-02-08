@@ -2333,6 +2333,10 @@
     },
     "2026-02-07": {
         "installs": 1,
-        "update_checks": 179
+        "update_checks": 231
+    },
+    "2026-02-08": {
+        "installs": 0,
+        "update_checks": 159
     }
 }
