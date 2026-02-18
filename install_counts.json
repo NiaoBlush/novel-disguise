@@ -2372,7 +2372,11 @@
         "update_checks": 136
     },
     "2026-02-17": {
-        "installs": 1,
-        "update_checks": 89
+        "installs": 2,
+        "update_checks": 131
+    },
+    "2026-02-18": {
+        "installs": 0,
+        "update_checks": 93
     }
 }
