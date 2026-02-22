@@ -2389,6 +2389,10 @@
     },
     "2026-02-21": {
         "installs": 0,
-        "update_checks": 95
+        "update_checks": 147
+    },
+    "2026-02-22": {
+        "installs": 2,
+        "update_checks": 101
     }
 }
