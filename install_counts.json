@@ -2560,7 +2560,11 @@
         "update_checks": 192
     },
     "2026-04-05": {
-        "installs": 0,
-        "update_checks": 123
+        "installs": 2,
+        "update_checks": 182
+    },
+    "2026-04-06": {
+        "installs": 1,
+        "update_checks": 163
     }
 }
