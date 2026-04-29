@@ -127,6 +127,10 @@ ___
 
 <summary>版本说明</summary>
 
+### 2.11.0
+
++ 现在可以手动指定word/excel伪装图片资源的分辨率: `自动`/`1K`/`2K`/`4K` ，默认为`自动`
+
 ### 2.10.0
 
 + 适配biqukun.org, bqg2912.cc, 22biqu.com, shoujix.com, bqg955.xyz

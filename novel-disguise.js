@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         小说页面伪装|小说页面精简|起点页面伪装|番茄页面伪装|笔趣阁页面伪装
 // @namespace    https://github.com/NiaoBlush/novel-disguise
-// @version      2.10.0
+// @version      2.11.0
 // @description  将小说页面伪装成一个Word文档或Excel表格，同时净化小说页面，去除不必要的元素。适用于起点、番茄、笔趣阁、晋江、飞卢、69书吧、部分轻小说站等
 // @author       NiaoBlush
 // @license      MIT
@@ -97,6 +97,12 @@
         MARGIN_TYPE: {
             NORMAL: 'normal_margin',
             NONE: 'no_margin'
+        },
+        RESOURCE_RESOLUTION: {
+            AUTO: 'auto',
+            FORCE_1K: '1k',
+            FORCE_2K: '2k',
+            FORCE_4K: '4k'
         }
     };
 
@@ -143,6 +149,7 @@
             theme: DICT.THEME.OFFICE,
             marginType: DICT.MARGIN_TYPE.NORMAL,
             hideImage: true,
+            resourceResolution: DICT.RESOURCE_RESOLUTION.AUTO,
 
             emptyCols: 20,
             enableExcelRandomPopulate: true,
@@ -197,6 +204,13 @@
                     <label style="width: 30%;"><input type="radio" name="settings-hide-image" value="true">是</label>
                     <label style="width: 30%;"><input type="radio" name="settings-hide-image" value="false">否</label>
                 </div>
+                <div class="nd-settings-form-group">
+                    <label>资源分辨率: </label>
+                    <label><input type="radio" name="settings-res-resolution" value="${DICT.RESOURCE_RESOLUTION.AUTO}">自动</label>
+                    <label style="margin-left: 4px;"><input type="radio" name="settings-res-resolution" value="${DICT.RESOURCE_RESOLUTION.FORCE_1K}">1K</label>
+                    <label style="margin-left: 4px;"><input type="radio" name="settings-res-resolution" value="${DICT.RESOURCE_RESOLUTION.FORCE_2K}">2K</label>
+                    <label style="margin-left: 4px;"><input type="radio" name="settings-res-resolution" value="${DICT.RESOURCE_RESOLUTION.FORCE_4K}">4K</label>
+                </div>
                 
                 <div class="nd-settings-form-group" style="margin-top: 20px;">
                     <div class="nd-settings-btn-wrapper">
@@ -214,6 +228,7 @@
         $settings.find("select[name=settings-theme]").val(config.theme);
         $settings.find(`input[name=margin-type][value='${config.marginType}']`).prop('checked', true);
         $settings.find(`input[name=settings-hide-image][value='${String(config.hideImage)}']`).prop('checked', true);
+        $settings.find(`input[name=settings-res-resolution][value='${config.resourceResolution}']`).prop('checked', true);
 
         const $modal = showModal($settings, {
             title: "设置"
@@ -229,6 +244,7 @@
             config.theme = formDataObj.get('settings-theme');
             config.marginType = formDataObj.get('margin-type');
             config.hideImage = formDataObj.get('settings-hide-image') === 'true';
+            config.resourceResolution = formDataObj.get('settings-res-resolution');
             writeConfig();
 
 
@@ -271,13 +287,18 @@
             const wThreshold4k = 3840;
 
             let size;
-            if (physicalWidth >= wThreshold4k) {
-                size = "4k";
-            } else if (physicalWidth >= wThreshold2k) {
-                size = "2k";
+            if (config.resourceResolution === DICT.RESOURCE_RESOLUTION.AUTO) {
+                if (physicalWidth >= wThreshold4k) {
+                    size = "4k";
+                } else if (physicalWidth >= wThreshold2k) {
+                    size = "2k";
+                } else {
+                    size = "1k";
+                }
             } else {
-                size = "1k";
+                size = config.resourceResolution;
             }
+
 
             const header = NovelDisguiseResource.getDisguisedImage({
                 app: config.mode,
@@ -2787,7 +2808,7 @@
      * 手机小说
      * e.g. https://www.shoujix.com/shoujixs_217188_57820123.html
      */
-    function www_shoujix_com(){
+    function www_shoujix_com() {
         $(".lm").remove();
         addGlobalStyle(`
         .bookname {
