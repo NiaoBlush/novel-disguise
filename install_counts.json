@@ -2712,7 +2712,11 @@
         "update_checks": 350
     },
     "2026-05-13": {
-        "installs": 1,
-        "update_checks": 300
+        "installs": 2,
+        "update_checks": 329
+    },
+    "2026-05-14": {
+        "installs": 4,
+        "update_checks": 291
     }
 }
