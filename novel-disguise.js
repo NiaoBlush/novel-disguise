@@ -1578,7 +1578,7 @@
             display: none !important;
         }
         
-        .byte-btn {
+        .byte-btn, .muye-reader-btns button.byte-btn.byte-btn.muye-button.byte-btn-primary:hover {
             background: ${link_bg_color} !important;
             color: ${link_front_color} !important;
         }
