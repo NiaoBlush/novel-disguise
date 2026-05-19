@@ -1578,7 +1578,7 @@
             display: none !important;
         }
         
-        .byte-btn, .muye-reader-btns button.byte-btn.byte-btn.muye-button.byte-btn-primary:hover {
+        .byte-btn, .muye-reader-btns button.byte-btn.byte-btn.muye-button.byte-btn-primary:hover, .muye-reader-btns button.byte-btn.byte-btn.muye-button.byte-btn-primary:active, .muye-reader-btns button.byte-btn.byte-btn.muye-button.byte-btn-primary:focus {
             background: ${link_bg_color} !important;
             color: ${link_front_color} !important;
         }
