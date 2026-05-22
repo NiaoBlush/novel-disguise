@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         小说页面伪装|小说页面精简|起点页面伪装|番茄页面伪装|笔趣阁页面伪装
 // @namespace    https://github.com/NiaoBlush/novel-disguise
-// @version      2.11.0
+// @version      2.12.0
 // @description  将小说页面伪装成一个Word文档或Excel表格，同时净化小说页面，去除不必要的元素。适用于起点、番茄、笔趣阁、晋江、飞卢、69书吧、部分轻小说站等
 // @author       NiaoBlush
 // @license      MIT
@@ -52,6 +52,7 @@
 // @match        https://reader.z-library.sk/read/*
 // @match        https://www.22biqu.com/*/*.html
 // @match        https://www.shoujix.com/shoujixs_*_*.html
+// @match        https://www.piaotia.com/html/*/*/*.html
 // @grant        GM_addStyle
 // @grant        GM_registerMenuCommand
 // @grant        GM_getValue
@@ -2818,6 +2819,22 @@
         www_beqege_cc();
     }
 
+    /**
+     * 飘天文学网
+     * e.g. https://www.piaotia.com/html/4/4606/4991505.html
+     */
+    function www_piaotia_com() {
+        $(".toplink").remove();
+        $("#content>table").remove();
+        setDisguisedTitle($("#content>h1").text());
+        $("#content>h1").remove();
+        setWordContent($("#content"));
+        setWordContent($(".bottomlink"));
+
+        setExcelContent($("#content"));
+        setExcelLines([$(".bottomlink")], true);
+    }
+
 ///////////////////////////// 站点结束
 
     // 切换原版界面
@@ -3002,6 +3019,10 @@
         case 'www.shoujix.com':
             common();
             www_shoujix_com();
+            break;
+        case 'www.piaotia.com':
+            common();
+            www_piaotia_com();
             break;
         default:
             printLog("error", "当前站点未适配");
