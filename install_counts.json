@@ -2813,6 +2813,10 @@
     },
     "2026-06-07": {
         "installs": 0,
-        "update_checks": 123
+        "update_checks": 183
+    },
+    "2026-06-08": {
+        "installs": 1,
+        "update_checks": 280
     }
 }
