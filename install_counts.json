@@ -2832,7 +2832,11 @@
         "update_checks": 304
     },
     "2026-06-12": {
-        "installs": 3,
-        "update_checks": 246
+        "installs": 4,
+        "update_checks": 271
+    },
+    "2026-06-13": {
+        "installs": 0,
+        "update_checks": 159
     }
 }
