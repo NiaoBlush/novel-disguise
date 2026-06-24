@@ -50,6 +50,7 @@
 // @match        http://www.xbiqugu.la/*/*/*.html
 // @match        https://reader.z-library.ec/read/*
 // @match        https://reader.z-library.sk/read/*
+// @match        https://weread.qq.com/web/reader/*
 // @match        https://www.22biqu.com/*/*.html
 // @match        https://www.shoujix.com/shoujixs_*_*.html
 // @match        https://www.piaotia.com/html/*/*/*.html
@@ -1640,6 +1641,755 @@
     }
 
     /**
+     * 微信读书
+     * e.g. https://weread.qq.com/web/reader/34c32450813abb64eg015022k1d7328e029a1d7f7abc1af1
+     */
+    function weread() {
+        excelUnsupported();
+
+        // 微信读书的正文由原 reader 动态渲染；common() 隐藏原页面后，这里只在本站内部恢复它运行。
+        $('body').children(':not(#disguised-page)').show();
+
+        addWordStyle(`
+        body {
+            background: #fff !important;
+        }
+
+        #disguised-content {
+            overflow-y: auto;
+            background: #fff;
+            color: #000;
+        }
+
+        #disguised-page {
+            z-index: 99990;
+        }
+
+        #disguised-content > .readerChapterContent,
+        #disguised-content > .readerChapterContent_container,
+        #disguised-content > .readerContent,
+        #disguised-content > [class*="readerChapterContent"],
+        #disguised-content > [class*="readerContent"],
+        #disguised-content > .weread-word-content {
+            position: relative !important;
+            display: block !important;
+            box-sizing: border-box !important;
+            max-width: 900px !important;
+            min-height: auto !important;
+            margin: 0 auto !important;
+            padding: 18px 52px 90px !important;
+            background: #fff !important;
+            color: #000 !important;
+            transform: none !important;
+        }
+
+        #disguised-content > .weread-word-content p {
+            margin: 0 0 0.85em !important;
+            line-height: 1.8 !important;
+            text-indent: 2em !important;
+            font-size: 16px !important;
+            color: #000 !important;
+            white-space: pre-wrap !important;
+        }
+
+        #disguised-content > .weread-word-content p.weread-word-empty {
+            text-indent: 0 !important;
+            color: #999 !important;
+        }
+
+        #disguised-content > .weread-canvas-content {
+            position: relative !important;
+            display: flex !important;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            box-sizing: border-box !important;
+            max-width: 1000px !important;
+            min-height: auto !important;
+            margin: 0 auto !important;
+            padding: 18px 52px 90px !important;
+            background: #fff !important;
+        }
+
+        #disguised-content > .weread-canvas-content img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            background: #fff;
+        }
+
+        #disguised-content [class*="readerChapterTitle"],
+        #disguised-content [class*="chapterTitle"] {
+            display: none !important;
+        }
+
+        #footer-content .readerControls,
+        #footer-content [class*="readerControls"],
+        #footer-content [class*="readerFooter"],
+        #footer-content [class*="readerBottomBar"] {
+            display: flex !important;
+            align-items: center;
+            gap: 8px;
+            height: 100%;
+        }
+
+        #footer-content button,
+        #footer-content a {
+            background: ${link_bg_color} !important;
+            color: ${link_text_color} !important;
+        }
+
+        #footer-content .weread-word-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            height: auto;
+            margin: 28px 0 8px;
+            background: transparent !important;
+        }
+
+        #footer-content .weread-word-controls button {
+            min-width: 88px;
+            height: 34px;
+            border: 1px solid #d8d8d8;
+            border-radius: 17px;
+            padding: 0 20px;
+            background: #fff !important;
+            color: #666 !important;
+            font-size: 14px;
+            line-height: 32px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        #footer-content .weread-word-controls button:hover {
+            border-color: #b8b8b8;
+            color: #222 !important;
+            background: #f8f8f8 !important;
+        }
+
+        #disguised-content .weread-word-controls {
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            gap: 112px;
+            width: 100% !important;
+            max-width: none !important;
+            align-self: stretch !important;
+            margin: 30px 0 16px !important;
+            padding: 0;
+            background: transparent !important;
+        }
+
+        #disguised-content .weread-word-controls button {
+            min-width: 96px;
+            height: 36px;
+            border: 1px solid #d8d8d8;
+            border-radius: 18px;
+            padding: 0 22px;
+            background: #fff !important;
+            color: #666 !important;
+            font-size: 14px;
+            line-height: 34px;
+            cursor: pointer;
+            outline: none;
+            box-shadow: none;
+        }
+
+        #disguised-content .weread-word-controls button:hover {
+            border-color: #b8b8b8;
+            color: #222 !important;
+            background: #f8f8f8 !important;
+        }
+
+        `);
+
+        const titleSelectors = [
+            '.readerChapterTitle',
+            '.readerChapterContent_title',
+            '.readerChapterName',
+            '.readerChapterContent h1',
+            '.readerChapterContent h2',
+            '[class*="readerChapterTitle"]',
+            '[class*="chapterTitle"]'
+        ];
+
+        const contentSelectors = [
+            '.readerChapterContent_paragraph',
+            '.readerChapterContent_sentence',
+            '.readerChapterContent',
+            '.readerChapterContent_container',
+            '.readerContent',
+            '#readerContent',
+            '[class*="readerChapterContent_paragraph"]',
+            '[class*="readerChapterContent_sentence"]',
+            '[class*="readerChapterContent"]',
+            '[class*="readerContent"]'
+        ];
+
+        const detailSelectors = [
+            '.readerControls',
+            '.readerFooter',
+            '.readerBottomBar',
+            '[class*="readerControls"]',
+            '[class*="readerFooter"]',
+            '[class*="readerBottomBar"]'
+        ];
+
+        let currentContentEl = null;
+        let currentDetailEl = null;
+        let currentContentText = '';
+        let observeTimer = null;
+        let waitLogged = false;
+        let turnSerial = 0;
+        let renderedTurnSerial = 0;
+
+        function findFirst(selectors) {
+            for (const selector of selectors) {
+                const $el = $(selector).filter(function () {
+                    return !$(this).is('#disguised-content, #disguised-page')
+                        && $(this).closest('#footer-content').length === 0;
+                }).first();
+                if ($el.length > 0) {
+                    return $el;
+                }
+            }
+            return $();
+        }
+
+        function isBookMetaText(text) {
+            return /微信读书推荐值|人点评|推荐\(\d+\)|一般\(\d+\)|不行\(\d+\)|会员卡可读|字数|万字|加入书架|我的书架|是否关闭自动购买|自动购买|未购买章节|扉页版权信息|\+书签/.test(text);
+        }
+
+        function isCatalogText(text) {
+            const normalizedText = text.replace(/\s+/g, ' ');
+            const compactText = text.replace(/\s+/g, '');
+            const lines = normalizedText.split(/\s+/).filter(function (line) {
+                return line;
+            });
+            const catalogLineCount = lines.filter(function (line, index) {
+                const next = lines[index + 1] || '';
+                return /^\d{1,4}$/.test(line) && next.length >= 4;
+            }).length;
+            const inlineCatalogCount = (normalizedText.match(/(?:^|\s)\d{1,4}\s+[^\s。！？!?]{4,}/g) || []).length;
+            const compactCatalogCount = (compactText.match(/(?:^|[^\d])\d{1,3}[\u4e00-\u9fa5][^。！？!?]{3,40}(?=(?:\d{1,3}[\u4e00-\u9fa5])|$)/g) || []).length;
+            return catalogLineCount >= 5 || inlineCatalogCount >= 5 || compactCatalogCount >= 8;
+        }
+
+        function getContentScore($el) {
+            const text = $.trim($el.text().replace(/\s+/g, ' '));
+            if (text.length < 80 || isBookMetaText(text) || isCatalogText(text)) {
+                return -1;
+            }
+
+            const className = String($el.attr('class') || '');
+            const childText = $.trim($el.children().text().replace(/\s+/g, ' '));
+            if (!/paragraph|sentence/i.test(className) && childText.length > 0 && childText.length >= text.length - 5) {
+                return -1;
+            }
+
+            const sentenceMarkCount = (text.match(/[。！？!?]/g) || []).length;
+            const commaCount = (text.match(/[，、；：]/g) || []).length;
+            const quoteCount = (text.match(/[“”]/g) || []).length;
+            const paragraphLikeCount = $el.find('p, [class*="paragraph"], [class*="sentence"], br').length;
+            const navPenalty = /上一页|下一页|目录|首页|登录/.test(text) ? 120 : 0;
+
+            if (sentenceMarkCount + commaCount + quoteCount < 3) {
+                return -1;
+            }
+
+            return sentenceMarkCount * 80
+                + commaCount * 20
+                + quoteCount * 15
+                + paragraphLikeCount * 10
+                + Math.min(text.length, 2000) / 20
+                - navPenalty;
+        }
+
+        function findContent() {
+            let $best = $();
+            let bestScore = -1;
+
+            $('p, span, div').filter(function () {
+                if ($(this).closest('#disguised-page').length > 0) {
+                    return false;
+                }
+                const className = String(this.className || '');
+                return /reader|chapter|content|paragraph|sentence/i.test(className);
+            }).each(function () {
+                const score = getContentScore($(this));
+                if (score > bestScore) {
+                    bestScore = score;
+                    $best = $(this);
+                }
+            });
+
+            if ($best.length > 0) {
+                return $best;
+            }
+
+            for (const selector of contentSelectors) {
+                $(selector).filter(function () {
+                    return !$(this).is('#disguised-content, #disguised-page')
+                        && $(this).closest('#footer-content').length === 0
+                        && !$(this).is(titleSelectors.join(','));
+                }).each(function () {
+                    const score = getContentScore($(this));
+                    if (score > bestScore) {
+                        bestScore = score;
+                        $best = $(this);
+                    }
+                });
+            }
+
+            if ($best.length > 0) {
+                return $best;
+            }
+
+            let $fallback = $();
+            let fallbackScore = -1;
+
+            $('div').filter(function () {
+                const className = String(this.className || '');
+                if ($(this).closest('#disguised-page').length > 0 && this !== currentContentEl) {
+                    return false;
+                }
+                if ($(this).is('script, style, nav, header, footer')) {
+                    return false;
+                }
+                return /reader|chapter|content|app|render/i.test(className) || $(this).find('p, div, span').length > 0;
+            }).each(function () {
+                const $el = $(this);
+                const score = getContentScore($el);
+                if (score > fallbackScore) {
+                    fallbackScore = score;
+                    $fallback = $el;
+                }
+            });
+
+            return $fallback;
+        }
+
+        function collectContentLines($content) {
+            const lines = [];
+            const seen = {};
+            const $blocks = $content.find('p, [class*="paragraph"], [class*="sentence"], div, span').addBack();
+
+            $blocks.each(function () {
+                const $el = $(this);
+                if ($el.closest('#disguised-page').length > 0) {
+                    return;
+                }
+
+                const $children = $el.children();
+                const text = $.trim($el.text().replace(/\s+/g, ' '));
+                if (text.length < 2) {
+                    return;
+                }
+
+                const childTextLength = $.trim($children.text().replace(/\s+/g, ' ')).length;
+                if ($children.length > 0 && childTextLength > 0 && childTextLength >= text.length - 2) {
+                    return;
+                }
+
+                if (/^(上一页|下一页|目录|加入书架|登录|首页|我的书架)$/.test(text)) {
+                    return;
+                }
+
+                if (isBookMetaText(text) || isCatalogText(text) || /^\d{1,4}\s+\S{4,}/.test(text)) {
+                    return;
+                }
+
+                if (text.length < 12 && !/[。！？!?]/.test(text)) {
+                    return;
+                }
+
+                if (seen[text]) {
+                    return;
+                }
+                seen[text] = true;
+                lines.push(text);
+            });
+
+            if (lines.length === 0) {
+                const rawText = $.trim($content.text().replace(/\s+/g, ' '));
+                if (rawText) {
+                    lines.push(rawText);
+                }
+            }
+
+            return lines;
+        }
+
+        function getElementArea(el) {
+            const rect = el.getBoundingClientRect();
+            const width = rect.width || el.width || el.naturalWidth || 0;
+            const height = rect.height || el.height || el.naturalHeight || 0;
+            return width * height;
+        }
+
+        function collectCanvasImages() {
+            const images = [];
+            const seen = {};
+
+            $('canvas').filter(function () {
+                return $(this).closest('#disguised-page').length === 0
+                    && getElementArea(this) > 80000
+                    && (this.width || 0) > 100
+                    && (this.height || 0) > 100;
+            }).each(function () {
+                try {
+                    const dataUrl = getEnhancedCanvasDataUrl(this);
+                    if (!seen[dataUrl]) {
+                        seen[dataUrl] = true;
+                        images.push({
+                            src: dataUrl,
+                            width: this.width,
+                            height: this.height
+                        });
+                    }
+                } catch (e) {
+                    printLog("warn", "微信读书 canvas 无法导出，回退到 DOM 文本", e);
+                }
+            });
+
+            return images;
+        }
+
+        function getEnhancedCanvasDataUrl(sourceCanvas) {
+            const canvas = document.createElement('canvas');
+            canvas.width = sourceCanvas.width;
+            canvas.height = sourceCanvas.height;
+
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(sourceCanvas, 0, 0);
+
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+            for (let i = 0; i < data.length; i += 4) {
+                const r = data[i];
+                const g = data[i + 1];
+                const b = data[i + 2];
+                const alpha = data[i + 3];
+                const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+
+                if (alpha > 0 && luminance < 235) {
+                    const enhanced = Math.max(0, Math.min(70, (luminance - 165) * 1.05));
+                    data[i] = enhanced;
+                    data[i + 1] = enhanced;
+                    data[i + 2] = enhanced;
+                    data[i + 3] = 255;
+                }
+            }
+
+            ctx.putImageData(imageData, 0, 0);
+            return canvas.toDataURL('image/png');
+        }
+
+        function buildCanvasContent(images) {
+            const $wrapper = $('<div class="weread-canvas-content"></div>');
+            images.forEach(function (image) {
+                $wrapper.append($('<img alt="微信读书正文页">')
+                    .attr('src', image.src)
+                    .attr('width', image.width)
+                    .attr('height', image.height));
+            });
+            return $wrapper;
+        }
+
+        function buildWereadLoadingContent() {
+            return $('<div class="weread-word-content"></div>')
+                .append($('<p class="weread-word-empty"></p>').text('正在载入微信读书正文...'));
+        }
+
+        function expandContent($content) {
+            let $best = $content;
+            let bestLines = collectContentLines($content);
+            let $current = $content.parent();
+            let depth = 0;
+
+            while ($current.length > 0 && depth < 5) {
+                if ($current.is('body, html, #disguised-page, #disguised-content')) {
+                    break;
+                }
+
+                const text = $.trim($current.text().replace(/\s+/g, ' '));
+                if (!isBookMetaText(text) && !isCatalogText(text)) {
+                    const lines = collectContentLines($current);
+                    if (lines.length > bestLines.length && lines.length <= 80) {
+                        $best = $current;
+                        bestLines = lines;
+                    }
+                }
+
+                $current = $current.parent();
+                depth++;
+            }
+
+            return $best;
+        }
+
+        function buildWordContent(lines) {
+            const $wrapper = $('<div class="weread-word-content"></div>');
+            if (lines.length === 0) {
+                $wrapper.append($('<p class="weread-word-empty"></p>').text('微信读书正文容器已找到，但未能提取正文文本'));
+                return $wrapper;
+            }
+
+            lines.forEach(function (line) {
+                $wrapper.append($('<p></p>').text(line));
+            });
+            return $wrapper;
+        }
+
+        function clickOriginalReaderButton(text) {
+            const pattern = new RegExp(text);
+            const $btn = $('button, a, [role="button"], [aria-label], [title]').filter(function () {
+                if ($(this).closest('#disguised-page').length > 0) {
+                    return false;
+                }
+
+                const label = [
+                    $.trim($(this).text()),
+                    $(this).attr('aria-label') || '',
+                    $(this).attr('title') || '',
+                    $(this).attr('class') || ''
+                ].join(' ');
+                return pattern.test(label);
+            }).first();
+
+            if ($btn.length > 0) {
+                const el = $btn.get(0);
+                el.click();
+                return true;
+            }
+
+            return false;
+        }
+
+        function dispatchReaderKey(key) {
+            const keyCodeMap = {
+                ArrowLeft: 37,
+                ArrowRight: 39
+            };
+            const keyCode = keyCodeMap[key] || 0;
+            ['keydown', 'keyup'].forEach(function (type) {
+                document.dispatchEvent(new KeyboardEvent(type, {
+                    key: key,
+                    code: key,
+                    keyCode: keyCode,
+                    which: keyCode,
+                    bubbles: true,
+                    cancelable: true
+                }));
+            });
+            return true;
+        }
+
+        function dispatchReaderWheel(direction) {
+            const deltaY = direction === 'next' ? window.innerHeight * 0.8 : -window.innerHeight * 0.8;
+            const originalTarget = $('body').children(':not(#disguised-page)').filter(function () {
+                return $(this).is(':visible');
+            }).first().get(0);
+
+            if (!originalTarget || !originalTarget.dispatchEvent) {
+                return false;
+            }
+            originalTarget.dispatchEvent(new WheelEvent('wheel', {
+                deltaY: deltaY,
+                bubbles: true,
+                cancelable: true
+            }));
+            return true;
+        }
+
+        function scrollOriginalReader(direction) {
+            const delta = direction === 'next' ? window.innerHeight * 0.85 : -window.innerHeight * 0.85;
+            const $targets = $('div, main, section').filter(function () {
+                if ($(this).closest('#disguised-page').length > 0) {
+                    return false;
+                }
+                return $(this).is(':visible') && this.scrollHeight > this.clientHeight + 20;
+            });
+
+            if ($targets.length > 0) {
+                $targets.each(function () {
+                    this.scrollTop += delta;
+                });
+                return true;
+            }
+
+            window.scrollBy(0, delta);
+            return true;
+        }
+
+        function turnReaderPage(direction) {
+            const isNext = direction === 'next';
+            const buttonText = isNext ? '下一页' : '上一页';
+            const key = isNext ? 'ArrowRight' : 'ArrowLeft';
+            const currentTurnSerial = ++turnSerial;
+
+            if (!clickOriginalReaderButton(buttonText)) {
+                if (!dispatchReaderKey(key)) {
+                    if (!dispatchReaderWheel(direction)) {
+                        scrollOriginalReader(direction);
+                    }
+                }
+            }
+
+            [300, 800, 1600, 2600].forEach(function (delay) {
+                setTimeout(function () {
+                    renderWeread();
+                    if (delay === 2600 && renderedTurnSerial < currentTurnSerial) {
+                        scrollDisguisedToTop();
+                    }
+                }, delay);
+            });
+        }
+
+        function scrollDisguisedToTop() {
+            $('#disguised-body').scrollTop(0);
+            $('#disguised-content').scrollTop(0);
+        }
+
+        function buildWereadControls() {
+            return $(`
+                <div class="weread-word-controls">
+                    <button type="button" data-weread-action="prev">上一页</button>
+                    <button type="button" data-weread-action="next">下一页</button>
+                </div>
+            `);
+        }
+
+        function getChapterTitle() {
+            const $title = findFirst(titleSelectors);
+            const titleText = $.trim($title.clone().children().remove().end().text());
+            if (titleText) {
+                return titleText;
+            }
+            return originalTitle.replace(/\s*-\s*微信读书\s*$/, '').split(' - ').slice(1).join(' - ') || originalTitle;
+        }
+
+        function getBookInfo() {
+            const parts = originalTitle.replace(/\s*-\s*微信读书\s*$/, '').split(' - ');
+            return parts.length > 1 ? parts[0] : '';
+        }
+
+        function renderWeread() {
+            const canvasImages = collectCanvasImages();
+            if (canvasImages.length > 0) {
+                setDisguisedTitle(getChapterTitle());
+                setWordDetail(getBookInfo());
+
+                const contentText = canvasImages.map(function (image) {
+                    return `${image.width}x${image.height}:${image.src.length}`;
+                }).join('|');
+
+                if (contentText !== currentContentText) {
+                    clearWordContent();
+                    setWordContent(buildCanvasContent(canvasImages));
+                    setWordContent(buildWereadControls());
+                    currentContentText = contentText;
+                    renderedTurnSerial = turnSerial;
+                    scrollDisguisedToTop();
+                }
+
+                printLog("微信读书 canvas 页面伪装完成", {
+                    imageCount: canvasImages.length,
+                    images: canvasImages.map(function (image) {
+                        return `${image.width}x${image.height}`;
+                    })
+                });
+                return true;
+            }
+
+            if (!currentContentText) {
+                clearWordContent();
+                setWordContent(buildWereadLoadingContent());
+                currentContentText = 'weread-loading';
+                setWordDetail(getBookInfo());
+                printLog("微信读书 canvas 未就绪，等待正文渲染");
+                return false;
+            }
+
+            if (currentContentText === 'weread-loading') {
+                return false;
+            }
+
+            const $content = findContent();
+            if ($content.length === 0) {
+                if (!waitLogged) {
+                    printLog("warn", "微信读书正文容器未找到，等待页面加载");
+                    waitLogged = true;
+                }
+                return false;
+            }
+
+            setDisguisedTitle(getChapterTitle());
+
+            const $detail = findFirst(detailSelectors);
+            if ($detail.length > 0) {
+                setWordDetail(getBookInfo());
+                currentDetailEl = $detail.get(0);
+            } else if (!currentDetailEl) {
+                setWordDetail(getBookInfo());
+            } else {
+                setDisguisedTitle(getChapterTitle());
+            }
+
+            const $expandedContent = expandContent($content);
+            const lines = collectContentLines($expandedContent);
+            const contentText = lines.join('\n');
+            if ($content.get(0) !== currentContentEl || contentText !== currentContentText) {
+                clearWordContent();
+                setWordContent(buildWordContent(lines));
+                setWordContent(buildWereadControls());
+                currentContentEl = $expandedContent.get(0);
+                currentContentText = contentText;
+                renderedTurnSerial = turnSerial;
+                scrollDisguisedToTop();
+            }
+
+            printLog("微信读书页面伪装完成", {lineCount: lines.length, preview: lines.slice(0, 5)});
+            return true;
+        }
+
+        function scheduleRender() {
+            clearTimeout(observeTimer);
+            observeTimer = setTimeout(renderWeread, 300);
+        }
+
+        if (!renderWeread()) {
+            scheduleRender();
+        }
+
+        const observer = new MutationObserver(scheduleRender);
+        observer.observe(document.body, {childList: true, subtree: true, characterData: true});
+        setTimeout(function () {
+            observer.disconnect();
+        }, 20000);
+
+        $(document).on('click', 'button, a', function () {
+            const text = $.trim($(this).text());
+            if (/上一页|下一页|目录/.test(text)) {
+                setTimeout(scheduleRender, 800);
+            }
+        });
+
+        $(document).on('click', '[data-weread-action]', function () {
+            const action = $(this).attr('data-weread-action');
+            if (action === 'prev') {
+                turnReaderPage('prev');
+            } else if (action === 'next') {
+                turnReaderPage('next');
+            }
+        });
+    }
+
+    /**
      * 笔趣阁
      * biquge.net
      */
@@ -3011,6 +3761,10 @@
         case 'reader.z-library.sk':
             common();
             z_library();
+            break;
+        case 'weread.qq.com':
+            common();
+            weread();
             break;
         case 'www.22biqu.com':
             common();
