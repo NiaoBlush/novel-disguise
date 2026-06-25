@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         小说页面伪装|小说页面精简|起点页面伪装|番茄页面伪装|笔趣阁页面伪装
 // @namespace    https://github.com/NiaoBlush/novel-disguise
-// @version      2.13.0
+// @version      2.14.0
 // @description  将小说页面伪装成一个Word文档或Excel表格，同时净化小说页面，去除不必要的元素。适用于起点、番茄、笔趣阁、晋江、飞卢、69书吧、部分轻小说站等
 // @author       NiaoBlush
 // @license      MIT
@@ -54,6 +54,8 @@
 // @match        https://www.22biqu.com/*/*.html
 // @match        https://www.shoujix.com/shoujixs_*_*.html
 // @match        https://www.piaotia.com/html/*/*/*.html
+// @match        https://twkan.com/txt/*/*
+// @exclude      https://twkan.com/txt/*/end.html
 // @grant        GM_addStyle
 // @grant        GM_registerMenuCommand
 // @grant        GM_getValue
@@ -3585,6 +3587,42 @@
         setExcelLines([$(".bottomlink")], true);
     }
 
+    /**
+     * 台湾小说网
+     * e.g. https://twkan.com/txt/98379/56613760
+     */
+    function twkan_com() {
+        $("#txtcontent0 div").remove();
+
+        addGlobalStyle(`
+        .page1 {
+            border: none !important;
+        }
+        .page1 a:hover {
+            color: unset !important;
+        }
+        `);
+        addWordStyle(`
+        .page1 {
+            margin-top: 20px !important;
+        }
+        `)
+        addExcelStyle(`
+        .page1 a {
+            line-height: unset; !important
+        }
+        `)
+
+        setWordContent($("#txtcontent0"));
+        setWordContent($(".page1"));
+
+        setExcelContent($("#txtcontent0"));
+        setExcelLines([$(".page1")], true);
+
+        setDisguisedTitle($(".txtnav>h1").text());
+        setWordDetail($(".txtinfo").text());
+    }
+
 ///////////////////////////// 站点结束
 
     // 切换原版界面
@@ -3762,10 +3800,6 @@
             common();
             z_library();
             break;
-        case 'weread.qq.com':
-            common();
-            weread();
-            break;
         case 'www.22biqu.com':
             common();
             www_22biq_com();
@@ -3777,6 +3811,14 @@
         case 'www.piaotia.com':
             common();
             www_piaotia_com();
+            break;
+        case 'weread.qq.com':
+            common();
+            weread();
+            break;
+        case 'twkan.com':
+            common();
+            twkan_com();
             break;
         default:
             printLog("error", "当前站点未适配");
