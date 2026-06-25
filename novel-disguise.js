@@ -2102,7 +2102,7 @@
 
         function buildWereadLoadingContent() {
             return $('<div class="weread-word-content"></div>')
-                .append($('<p class="weread-word-empty"></p>').text('正在载入微信读书正文...'));
+                .append($('<p class="weread-word-empty"></p>').text('正在载入...'));
         }
 
         function expandContent($content) {
