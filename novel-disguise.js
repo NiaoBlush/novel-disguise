@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         小说页面伪装|小说页面精简|起点页面伪装|番茄页面伪装|笔趣阁页面伪装
 // @namespace    https://github.com/NiaoBlush/novel-disguise
-// @version      2.14.0
+// @version      2.14.1
 // @description  将小说页面伪装成一个Word文档或Excel表格，同时净化小说页面，去除不必要的元素。适用于起点、番茄、笔趣阁、晋江、飞卢、69书吧、部分轻小说站等
 // @author       NiaoBlush
 // @license      MIT
@@ -1639,7 +1639,55 @@
             }, 200);
         });
 
-        $(".arco-tooltip").remove();
+        // ==========================================
+        // 纯键盘事件穿透补丁（直接加在 fanqie 函数最底部）
+        // 感谢来自 @entelechy4 的代码 (https://greasyfork.org/zh-CN/scripts/499657-%E5%B0%8F%E8%AF%B4%E9%A1%B5%E9%9D%A2%E4%BC%AA%E8%A3%85-%E5%B0%8F%E8%AF%B4%E9%A1%B5%E9%9D%A2%E7%B2%BE%E7%AE%80-%E8%B5%B7%E7%82%B9%E9%A1%B5%E9%9D%A2%E4%BC%AA%E8%A3%85-%E7%95%AA%E8%8C%84%E9%A1%B5%E9%9D%A2%E4%BC%AA%E8%A3%85-%E7%AC%94%E8%B6%A3%E9%98%81%E9%A1%B5%E9%9D%A2%E4%BC%AA%E8%A3%85/discussions/333294)
+        // ==========================================
+
+        // 1. 修复按钮鼠标手势，防止无法点击
+        GM_addStyle(`
+        .muye-reader-btns button, .chapter-btn, [class*="chapter-btn"] { cursor: pointer !important; }
+        `);
+
+        // 2. 监听点击“下一章”按钮（兼容新老类名）
+        $(document).off('click', '.chapter-btn.next, .disguised-next-btn, [class*="btn-next"]');
+        $(document).on('click', '.chapter-btn.next, .disguised-next-btn, [class*="btn-next"]', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            // 模拟按下并抬起键盘“右方向键 (→)”触发翻页
+            const kdown = new KeyboardEvent('keydown', {
+                bubbles: true,
+                cancelable: true,
+                key: 'ArrowRight',
+                keyCode: 39
+            });
+            const kup = new KeyboardEvent('keyup', {bubbles: true, cancelable: true, key: 'ArrowRight', keyCode: 39});
+            document.dispatchEvent(kdown);
+            document.dispatchEvent(kup);
+            window.dispatchEvent(kdown);
+            window.dispatchEvent(kup);
+        });
+
+        // 3. 监听点击“上一章”按钮（兼容新老类名）
+        $(document).off('click', '.chapter-btn.last, .disguised-prev-btn, [class*="btn-prev"]');
+        $(document).on('click', '.chapter-btn.last, .disguised-prev-btn, [class*="btn-prev"]', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            // 模拟按下并抬起键盘“左方向键 (←)”触发翻页
+            const kdown = new KeyboardEvent('keydown', {
+                bubbles: true,
+                cancelable: true,
+                key: 'ArrowLeft',
+                keyCode: 37
+            });
+            const kup = new KeyboardEvent('keyup', {bubbles: true, cancelable: true, key: 'ArrowLeft', keyCode: 37});
+            document.dispatchEvent(kdown);
+            document.dispatchEvent(kup);
+            window.dispatchEvent(kdown);
+            window.dispatchEvent(kup);
+        });
     }
 
     /**
@@ -3606,12 +3654,12 @@
         .page1 {
             margin-top: 20px !important;
         }
-        `)
+        `);
         addExcelStyle(`
         .page1 a {
             line-height: unset; !important
         }
-        `)
+        `);
 
         setWordContent($("#txtcontent0"));
         setWordContent($(".page1"));
