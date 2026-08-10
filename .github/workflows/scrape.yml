@@ -7,16 +7,19 @@ on:
 #    branches:
 #      - master
 
+permissions:
+  contents: write
+
 jobs:
   scrape:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
@@ -33,13 +36,15 @@ jobs:
         run: python .github/scripts/generate_graph.py
 
       - name: Commit and push data
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
           if [ -f install_counts.json ]; then git add install_counts.json; fi
           if [ -f install_count.png ]; then git add install_count.png; fi
-          git commit -m "Update install count and graph" || echo "No changes to commit"
-          git push "https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "Update install count and graph"
+          git push
 
