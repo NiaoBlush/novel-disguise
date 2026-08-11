@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         小说页面伪装|小说页面精简|起点页面伪装|番茄页面伪装|笔趣阁页面伪装
 // @namespace    https://github.com/NiaoBlush/novel-disguise
-// @version      2.14.1
+// @version      2.15.0
 // @description  将小说页面伪装成一个Word文档或Excel表格，同时净化小说页面，去除不必要的元素。适用于起点、番茄、笔趣阁、晋江、飞卢、69书吧、部分轻小说站等
 // @author       NiaoBlush
 // @license      MIT
@@ -56,6 +56,7 @@
 // @match        https://www.piaotia.com/html/*/*/*.html
 // @match        https://twkan.com/txt/*/*
 // @exclude      https://twkan.com/txt/*/end.html
+// @match        https://www.sudugu.org/*/*.html
 // @grant        GM_addStyle
 // @grant        GM_registerMenuCommand
 // @grant        GM_getValue
@@ -830,6 +831,11 @@
                 margin: 0;
                 padding: 0;
                 text-align: unset;
+            }
+            .excel-table > tbody > tr > td:first-child {
+                white-space: nowrap;
+                word-break: normal;
+                overflow-wrap: normal;
             }
             `);
 
@@ -3671,6 +3677,62 @@
         setWordDetail($(".txtinfo").text());
     }
 
+    /**
+     * 速读谷
+     * e.g. https://www.sudugu.org/1875/706430.html
+     */
+    function www_sudugu_org() {
+        addGlobalStyle(`
+        .prenext {
+            border: none;
+            display: flex !important;
+            line-height: normal !important;
+            height: unset;
+        }
+        .prenext > a, .prenext > span {
+            margin-right: 10px;
+        }
+        .prenext a {
+            color: ${link_text_color} !important;
+        }
+        .con {
+            border: none;
+        }
+
+        `);
+        addWordStyle(`
+        .prenext {
+            justify-content: space-between;
+            padding: 0 20%;
+        }
+        `)
+        addExcelStyle(`
+        .prenext {
+            padding: 0 !important;
+        }
+        `)
+
+        const $heading = $(".submenu > h1").first();
+        const bookName = $.trim($heading.find("a").first().text());
+        const title = $.trim($heading.clone().children().remove().end().text()).replace(/^>\s*/, '')
+            || $.trim($(".con > p").first().text());
+        const $content = $(".con").first();
+        const $firstParagraph = $content.children("p").first();
+
+        if ($.trim($firstParagraph.text()) === title) {
+            $firstParagraph.remove();
+        }
+
+        setDisguisedTitle(title);
+        setWordDetail(bookName);
+        setWordContent($content);
+        setWordContent($(".prenext").first());
+
+        setExcelContent($content, "p");
+        setExcelLines([$(".prenext").first()], true);
+        padExcelBlankLines(49);
+    }
+
 ///////////////////////////// 站点结束
 
     // 切换原版界面
@@ -3867,6 +3929,12 @@
         case 'twkan.com':
             common();
             twkan_com();
+            break;
+        case 'www.sudugu.org':
+            if (/^\/\d+\/\d+(?:-\d+)?\.html$/.test(currentPathName)) {
+                common();
+                www_sudugu_org();
+            }
             break;
         default:
             printLog("error", "当前站点未适配");
