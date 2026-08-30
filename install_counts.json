@@ -3145,6 +3145,10 @@
     },
     "2026-08-29": {
         "installs": 4,
-        "update_checks": 167
+        "update_checks": 192
+    },
+    "2026-08-30": {
+        "installs": 0,
+        "update_checks": 156
     }
 }
