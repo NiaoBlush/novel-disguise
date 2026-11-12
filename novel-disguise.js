@@ -85,10 +85,6 @@
 
     const originalTitle = document.title;
 
-    const link_text_color = "rgba(0,0,0,.7)";
-    const link_bg_color = "#f6f6f6";
-    const link_front_color = "rgba(0,0,0,.7)";
-
     const DICT = {
         MODE: {
             WORD: 'mode_word',
@@ -108,6 +104,10 @@
             FORCE_1K: '1k',
             FORCE_2K: '2k',
             FORCE_4K: '4k'
+        },
+        SCHEME: {
+            LIGHT: 'light',
+            DARK: 'dark'
         }
     };
 
@@ -155,6 +155,7 @@
             marginType: DICT.MARGIN_TYPE.NORMAL,
             hideImage: true,
             resourceResolution: DICT.RESOURCE_RESOLUTION.AUTO,
+            scheme: DICT.SCHEME.LIGHT,
 
             emptyCols: 20,
             enableExcelRandomPopulate: true,
@@ -170,6 +171,11 @@
     }
 
     const config = readConfig();
+
+    const isDarkScheme = config.scheme === DICT.SCHEME.DARK;
+    const link_text_color = isDarkScheme ? "rgba(255,255,255,.75)" : "rgba(0,0,0,.7)";
+    const link_bg_color = isDarkScheme ? "#373737" : "#f6f6f6";
+    const link_front_color = isDarkScheme ? "rgba(255,255,255,.8)" : "rgba(0,0,0,.7)";
 
     function writeConfig() {
         GM_setValue(KEY_CONFIG, config);
@@ -216,7 +222,12 @@
                     <label style="margin-left: 4px;"><input type="radio" name="settings-res-resolution" value="${DICT.RESOURCE_RESOLUTION.FORCE_2K}">2K</label>
                     <label style="margin-left: 4px;"><input type="radio" name="settings-res-resolution" value="${DICT.RESOURCE_RESOLUTION.FORCE_4K}">4K</label>
                 </div>
-                
+
+                <div class="nd-settings-form-group">
+                    <label>配色模式: </label>
+                    <label><input type="radio" name="settings-scheme" value="${DICT.SCHEME.LIGHT}">亮色</label>
+                    <label style="margin-left: 4px;"><input type="radio" name="settings-scheme" value="${DICT.SCHEME.DARK}">暗色</label>
+                </div>
                 <div class="nd-settings-form-group" style="margin-top: 20px;">
                     <div class="nd-settings-btn-wrapper">
                         <button type="button" name="tip">好活，当赏❤️</button>
@@ -234,6 +245,7 @@
         $settings.find(`input[name=margin-type][value='${config.marginType}']`).prop('checked', true);
         $settings.find(`input[name=settings-hide-image][value='${String(config.hideImage)}']`).prop('checked', true);
         $settings.find(`input[name=settings-res-resolution][value='${config.resourceResolution}']`).prop('checked', true);
+        $settings.find(`input[name=settings-scheme][value='${config.scheme}']`).prop('checked', true);
 
         const $modal = showModal($settings, {
             title: "设置"
@@ -250,6 +262,7 @@
             config.marginType = formDataObj.get('margin-type');
             config.hideImage = formDataObj.get('settings-hide-image') === 'true';
             config.resourceResolution = formDataObj.get('settings-res-resolution');
+            config.scheme = formDataObj.get('settings-scheme');
             writeConfig();
 
 
@@ -709,6 +722,166 @@
         .nd_msg-err{background:#c33}
         .nd_msg-warn{background:#FF9900}
         `);
+
+        // 暗色模式
+        if (isDarkScheme) {
+            GM_addStyle(`
+            #disguised-page {
+                color-scheme: dark;
+            }
+
+            /* 顶栏/底栏伪装图为亮色素材，反色模拟暗色主题 */
+            #disguised-header,
+            #disguised-footer {
+                filter: invert(1) hue-rotate(180deg) brightness(0.85);
+            }
+
+            #disguised-title {
+                color: #edffff;
+            }
+
+            #disguised-page #disguised-body {
+                background-image: none !important;
+                background-color: #1E1E1E;
+            }
+
+            #disguised-page #disguised-content {
+                background-color: #252526 !important;
+                color: #D4D4D4;
+                border-left-color: #3F3F3F;
+                border-right-color: #3F3F3F;
+            }
+
+            #disguised-page #disguised-content p {
+                color: #D4D4D4 !important;
+            }
+
+            #disguised-page #disguised-content div {
+                background-color: #252526 !important;
+            }
+
+            #disguised-page .disguised-link,
+            #disguised-page .disguised-img-indicator {
+                color: rgba(255, 255, 255, .75);
+            }
+
+            #disguised-body,
+            #disguised-content {
+                scrollbar-color: #555 #2D2D30;
+            }
+
+            /* 弹窗 */
+            #disguised-page .disguised-modal-wrapper {
+                border-color: #454545;
+                background-color: #2D2D30;
+            }
+            #disguised-page .disguised-modal-header {
+                background-color: #252526;
+            }
+            #disguised-page .disguised-modal-title {
+                color: #D4D4D4;
+            }
+            #disguised-page .disguised-modal-header-close::before,
+            #disguised-page .disguised-modal-header-close::after {
+                background-color: #D4D4D4;
+            }
+            #disguised-page .disguised-modal-body {
+                background-color: #2D2D30;
+                color: #D4D4D4;
+            }
+
+            /* 设置表单 */
+            #disguised-page .nd-settings-form-group label {
+                color: #D4D4D4;
+            }
+            #disguised-page .nd-settings-form-group select,
+            #disguised-page .nd-settings-form-group input[type="radio"] {
+                border-color: #555;
+                background-color: #3C3C3C;
+                color: #D4D4D4;
+            }
+            #disguised-page .nd-settings-form-group button {
+                border-color: #555;
+                background-color: #3C3C3C;
+                color: #D4D4D4;
+            }
+            #disguised-page .nd-settings-form-group button:hover {
+                background-color: #505050;
+            }
+            #disguised-page .nd-settings-form-group button:active {
+                background-color: #666666;
+            }
+            #disguised-page .nd-settings-form-group button:focus {
+                outline-color: #888888;
+            }
+            `);
+
+            // Excel 表格暗色
+            addExcelStyle(`
+            #disguised-page .excel-table > thead {
+                background-color: #333333;
+            }
+            #disguised-page .excel-table > thead > tr > th {
+                color: #D4D4D4 !important;
+                background-color: #333333;
+                outline-color: #555555;
+            }
+            #disguised-page .excel-table > tbody > tr > td:nth-child(1) {
+                background-color: #2D2D30;
+            }
+            #disguised-page .excel-table > tbody > tr > td {
+                border-color: #404040;
+            }
+            #disguised-page .excel-table > tbody > tr > td,
+            #disguised-page .excel-table tbody td p {
+                color: #D4D4D4 !important;
+            }
+            `);
+
+            // 站点强制亮色底/字的地方，用更高优先级覆盖
+            addGlobalStyle(`
+            #disguised-page #side-sheet div,
+            #disguised-page #side-sheet section {
+                background-color: #252526;
+            }
+            #disguised-page #content {
+                color: #D4D4D4 !important;
+            }
+            #disguised-page .nd_owllook_pager a {
+                color: #D4D4D4;
+            }
+            #disguised-page small,
+            #disguised-page small a:link,
+            #disguised-page small a:visited {
+                color: #D4D4D4 !important;
+            }
+            #disguised-page div.intro {
+                color: #D4D4D4;
+            }
+            #disguised-page a.count_livid:link {
+                background-color: #3A3A3A;
+            }
+            #disguised-page #disguised-content > .weread-word-content,
+            #disguised-page #disguised-content > .weread-canvas-content {
+                background: #252526 !important;
+                color: #D4D4D4 !important;
+            }
+            #disguised-page #disguised-content > .weread-word-content p {
+                color: #D4D4D4 !important;
+            }
+            #disguised-page #disguised-content > .weread-word-content p.weread-word-empty {
+                color: #999999 !important;
+            }
+            #disguised-page #disguised-content .weread-word-controls button {
+                background: #3C3C3C !important;
+                color: #D4D4D4 !important;
+                border-color: #555555 !important;
+            }
+            #disguised-page #disguised-content .weread-word-controls button:hover {
+                background: #505050 !important;
+            }
+            `);
+        }
 
         // 图标
         var link = $('<link rel="icon" type="image/x-icon">').attr('href', disguised_icon_img);
