@@ -3485,6 +3485,14 @@
     },
     "2026-11-22": {
         "installs": 0,
-        "update_checks": 211
+        "update_checks": 232
+    },
+    "2026-11-23": {
+        "installs": 1,
+        "update_checks": 343
+    },
+    "2026-11-24": {
+        "installs": 1,
+        "update_checks": 12
     }
 }
